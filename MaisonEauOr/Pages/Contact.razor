@@ -1,0 +1,99 @@
+@page "/Contact"
+@using System.ComponentModel.DataAnnotations
+@using System.Net
+@using System.Net.Mail
+
+@inject ISnackbar Snackbar
+
+<PageTitle>Maison eau d'or - Contact</PageTitle>
+
+<MudContainer>
+    <MudGrid Class="mt-6" Justify="Justify.Center">
+        <MudItem xs="6">
+            <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator/>
+                <MudStack Row="false">
+                    <MudText Typo="Typo.h3"><b>Nous contacter</b></MudText>
+                    <MudTextField T="string" @bind-Value="_model.Name" Label="Nom" For="() => _model.Name" Variant="Variant.Outlined"/>
+                    <MudTextField T="string" @bind-Value="_model.Email" Label="Email" For="() => _model.Email" Variant="Variant.Outlined"/>
+                    <MudTextField T="string" @bind-Value="_model.Subject" Label="Objet" For="() => _model.Subject" Variant="Variant.Outlined"/>
+                    <MudTextField T="string" @bind-Value="_model.Message" Label="Message" For="() => _model.Message" Lines="5" Variant="Variant.Outlined"/>
+                    <MudStack Row>
+                        <MudCheckBox @bind-Checked="_model.ConditionsAccepted" Color="Color.Dark" Required />
+                        <MudText>
+                            En envoyant un message, j'accepte les <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">Conditions générales</MudLink> et la 
+                            <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">Politique de confidentialité</MudLink>,
+                            et j'autorise Maison Eau D'or à traiter mes données afin de répondre à mon message.
+                        </MudText>
+                    </MudStack>
+                    <MudStack Row>
+                        <MudButton Color="Color.Dark" ButtonType="ButtonType.Submit" Variant="Variant.Filled" FullWidth>Envoyer</MudButton>
+                    </MudStack>
+                </MudStack>
+            </EditForm>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+
+@code {
+    private ContactModel _model = new();
+    
+    private void OnValidSubmit()
+    {
+        if (_model.ConditionsAccepted)
+        {
+            try
+            {
+                var mail = new MailMessage
+                {
+                    From = new MailAddress(_model.Email),
+                    Subject = _model.Subject,
+                    Body = _model.Message
+                };
+                mail.To.Add("maximebrochard.pro@gmail.com");
+
+                var smtp = new SmtpClient("smtp.gmail.com", 587);
+                smtp.Credentials = new NetworkCredential("maximebrochard.pro@gmail.com", "rpoc umgi leaw hbkg");
+                smtp.EnableSsl = true;
+                smtp.Send(mail);
+            }
+            catch (Exception e)
+            {
+                Snackbar.Add($"Impossible d'envoyer le message : {e.Message}", Severity.Error, options =>
+                {
+                    options.VisibleStateDuration = 2500;
+                    options.ShowCloseIcon = false;
+                });
+            }
+            
+        }
+        else
+        {
+            Snackbar.Add("Veuillez accepter nos conditions générales et notre politique de confidentialité.", Severity.Error, options =>
+            {
+                options.VisibleStateDuration = 2500;
+                options.ShowCloseIcon = false;
+                options.DuplicatesBehavior = SnackbarDuplicatesBehavior.Prevent;
+            });
+        }
+    }
+    
+    public sealed class ContactModel
+    {
+        [Required(ErrorMessage = "Veuillez renseigner votre nom")]
+        public string Name { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Veuillez renseigner votre email")]
+        public string Email { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Veuillez renseigner un objet")]
+        public string Subject { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Veuillez renseigner un message")]
+        public string Message { get; set; } = string.Empty;
+        
+        [Required(ErrorMessage = "Veuillez accepter les conditions")]
+        public bool ConditionsAccepted { get; set; }
+    }
+}
