@@ -1,0 +1,84 @@
+@page "/Basket"
+
+<PageTitle>Maison eau d'or - Basket</PageTitle>
+
+<MudContainer Class="justify-space-between d-flex">
+
+    <MudPaper Class="Basket mt-16 pa-4 ">
+        <MudText Justify="Justify.Center" Typo="Typo.body1">Basket</MudText>
+        <MudDivider Class="my-2" />
+        @foreach (var item in items)
+        {
+
+            <MudPaper Class="pa-4 ">
+                <MudPaper Class="d-flex justify-content-between">
+                    <MudImage Src="images/logo.png" Alt="Mony the dog" Heigth="100" Width="100" />
+                    <MudText Class="" Typo="Typo.body1">@item.Name</MudText>
+                    <MudText Class="" Typo="Typo.body2">Option : 50ml</MudText>
+                    <MudIconButton Class="" Icon="@Icons.Delete" Color="Color.Dark" Size="Size.Medium" />
+                </MudPaper>
+                <MudText Class="" Typo="Typo.body1">@item.Price</MudText>
+
+                <MudPaper Class="mud-width-full py-8">
+                    <MudIconButton Icon="@Icons.ArrowBackIos" OnClick="@(() => UpdateBreaks(item,-1))" Size="Size.Small" />
+                    <MudText Typo="Typo.body1" Align="Align.Center">@item.Amount</MudText>
+                    <MudIconButton Icon="@Icons.ArrowForwardIos" OnClick="@(() => UpdateBreaks(item,1))" Size="Size.Small" />
+                </MudPaper>
+            </MudPaper>
+        }
+    </MudPaper>
+    
+    <MudPaper Class=" Basket mt-16 pa-4 ">
+        <MudDivider Class="my-2" />
+        <MudText Justify="Justify.left" Typo="Typo.body1">Coût total        180.00€</MudText>
+        <MudDivider Class="my-2" />
+        <MudText Justify="Justify.left" Typo="Typo.body1">Livraison     calculé au momentde paiement</MudText>
+        <MudDivider Class="my-2" />
+        <MudText Justify="Justify.left" Typo="Typo.body1">Total             180.00€</MudText>
+        <MudText Justify="Justify.left" Typo="Typo.body2">dont TVA:0.00€</MudText>
+        <MudButton Class="mt-2" Variant="Variant.Filled" DisableElevation="true" Color="Color.Dark">PAYER 180.00€</MudButton>
+
+    </MudPaper>
+</MudContainer>
+
+
+@code {
+    private List<Product> items = new();
+
+    protected override void OnInitialized()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            var product = new Product
+                {
+                    Price = 30f + i ,
+                    Name = $"Supreme flower{i}",
+                    Amount = 1
+                };
+
+            items.Add(product);
+        }
+    }
+
+    private void UpdateBreaks(Product product, int amount)
+    {
+        product.Amount += amount;
+        StateHasChanged();
+
+    }
+
+    public sealed class Product
+    {
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public float Price { get; set; }
+        public string Name { get; set; }
+        public int Amount { get; set; }
+    }
+}
+
+<style>
+    .Basket {
+        width: 30%; /* Définir la largeur souhaitée */
+        height: 30%; /* Définir la hauteur souhaitée */
+    }
+</style>
