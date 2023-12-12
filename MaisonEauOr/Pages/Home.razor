@@ -1,11 +1,45 @@
 ﻿@page "/"
 
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject AuthenticationStateProvider AuthStateProvider
+
 <PageTitle>Maison eau d'or</PageTitle>
 
 <MudContainer>
     <MudText Align="Align.Center">Hello tout le monde</MudText>
 </MudContainer>
 
-@code {
 
+@code {
+    private MeoDbContext _context = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var authService = (AuthenticationService)AuthStateProvider;
+            var defaultSession = new UserSession
+                {
+                    Identifier = Guid.NewGuid(),
+                    Role = UserRole.Guest,
+                    UserName = string.Empty
+                };
+            await authService.UpdateAuthentificationState(defaultSession);
+            if (_context.UserAccounts.All(x => x.Email != "root@admin.meo"))
+            {
+                _context = await Factory.CreateDbContextAsync();
+                _context.UserAccounts.Add(new UserAccount
+                {
+                    Email = "root@admin.meo",
+                    Password = BC.HashPassword("toor")
+                });
+                await _context.SaveChangesAsync();
+            }
+        }        
+    }
 }
