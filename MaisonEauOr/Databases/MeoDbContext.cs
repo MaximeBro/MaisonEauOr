@@ -1,11 +1,11 @@
 using MaisonEauOr.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace MaisonEauOr.Data;
+namespace MaisonEauOr.Databases;
 
 public class MeoDbContext : DbContext
 {
-    public DbSet<UserAccount> UserAccounts;
+    public DbSet<UserAccount> UserAccounts { get; set; }
     
     public MeoDbContext(DbContextOptions<MeoDbContext> options) : base(options)
     { }
