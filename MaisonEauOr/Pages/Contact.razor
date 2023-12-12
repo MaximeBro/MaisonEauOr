@@ -57,6 +57,12 @@
                 smtp.Credentials = new NetworkCredential("maximebrochard.pro@gmail.com", "rpoc umgi leaw hbkg");
                 smtp.EnableSsl = true;
                 smtp.Send(mail);
+                _model = new();
+                Snackbar.Add("Votre message a bien été envoyé", Severity.Success, options =>
+                {
+                    options.VisibleStateDuration = 2500;
+                    options.ShowCloseIcon = false;
+                });
             }
             catch (Exception e)
             {
