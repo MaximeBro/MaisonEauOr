@@ -1,5 +1,9 @@
 ﻿@page "/signin"
+@using Microsoft.EntityFrameworkCore
+@using MaisonEauOr.Data
 @layout LoginLayout
+
+@inject IDbContextFactory<MeoDbContext> Factory
 
 <PageTitle>Maison eau d'or - Connexion</PageTitle>
 
@@ -16,15 +20,15 @@
                     <MudText Align="Align.Center" Typo="Typo.h3">Se connecter</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
-            <MudCardContent>
-                <MudTextField T="string" Class="mb-5" @bind-Value="_model.Username" Label="Identifiant" InputType="InputType.Text" 
-                                For="@(() => _model.Username)" Style="max-width: 300px;" Variant="Variant.Outlined"
-                                Required RequiredError="Veuillez renseigner votre identifiant" />
-                
-                 <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
-                               AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
-                                For="@(() => _model.Password)" Style="max-width: 300px;" Variant="Variant.Outlined"
-                                Required RequiredError="Veuillez renseigner votre mot de passe" />
+            <MudCardContent Class="mt-n5">
+                <MudTextField T="string" Class="mb-3" @bind-Value="_model.Username" Label="Identifiant" InputType="InputType.Text"
+                              For="@(() => _model.Username)" Style="max-width: 300px;" Variant="Variant.Text"
+                              Required RequiredError="Veuillez renseigner votre identifiant"/>
+
+                <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+                              AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
+                              For="@(() => _model.Password)" Style="max-width: 300px;" Variant="Variant.Text"
+                              Required RequiredError="Veuillez renseigner votre mot de passe"/>
             </MudCardContent>
             <MudCardActions Class="flex-column">
                 <MudStack Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
@@ -42,22 +46,31 @@
     </MudContainer>
 </EditForm>
 
- @code {
+<MudButton Style=""></MudButton>
+
+@code {
     private LoginModel _model = new();
+
+    private MeoDbContext _context;
 
     private InputType _passwordFieldType = InputType.Password;
     private string _passwordFieldIcon = Icons.VisibilityOff;
     private bool _isPasswordShown = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+    }
+
     private void ShowPassword()
     {
-        if (_isPasswordShown) 
+        if (_isPasswordShown)
         {
             _isPasswordShown = false;
             _passwordFieldIcon = Icons.VisibilityOff;
             _passwordFieldType = InputType.Password;
         }
-        else 
+        else
         {
             _isPasswordShown = true;
             _passwordFieldIcon = Icons.Visibility;
@@ -68,7 +81,14 @@
 
     private void OnValidSubmit()
     {
-        // TODO: Fetch DB and check user login form then update its credentials to sessionStorage
+    // TODO: Fetch DB and check user login form then update its credentials to sessionStorage
+        var users = _context.UserAccounts.ToList();
+        UserAccount? user = users.FirstOrDefault(x => x.Firstname == _model.Username);
+
+        if (user != null)
+        {
+            
+        }
     }
 
     private sealed class LoginModel
@@ -76,4 +96,5 @@
         public string Username { get; set; }
         public string Password { get; set; }
     }
+
 }

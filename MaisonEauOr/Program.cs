@@ -1,6 +1,8 @@
+using MaisonEauOr.Data;
 using MaisonEauOr.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
 
 namespace MaisonEauOr
@@ -17,7 +19,8 @@ namespace MaisonEauOr
             builder.Services.AddMudServices();
             builder.Services.AddScoped<ProtectedSessionStorage>();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationService>();
-
+            builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction => optionsAction.UseSqlite("Data Source=../meo-data/meo.db"));
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
