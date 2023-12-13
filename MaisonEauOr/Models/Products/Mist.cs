@@ -1,5 +1,5 @@
 ﻿namespace MaisonEauOr.Models.Products;
 
-public class Mist
+public class Mist : IProduct
 {
 }

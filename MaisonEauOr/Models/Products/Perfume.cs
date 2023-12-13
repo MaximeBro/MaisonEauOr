@@ -1,6 +1,5 @@
 ﻿namespace MaisonEauOr.Models.Products;
 
-public class Perfume
+public class Perfume : IProduct
 {
-	public bool Gourmet {get; set; }
 }

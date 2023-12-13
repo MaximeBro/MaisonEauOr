@@ -1,5 +1,5 @@
 ﻿@page "/admin-products"
-@using MaisonEauOr.Components
+@using Humanizer
 @using MaisonEauOr.Models.Products
 @attribute [Authorize(Roles = "Admin")]
 
@@ -8,16 +8,46 @@
 
 <PageTitle>Administration - Produits</PageTitle>
 
-<MudText Typo="Typo.h3">Gestion des stocks</MudText>
-<MudDataGrid T="IProduct" Items="_products" Bordered Hover Filterable Hideable Square Striped>
+<MudText Class="mt-4 ml-4" Typo="Typo.h3">Gestion des stocks</MudText>
+<MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Ajouter un produit</MudButton>
+<MudDataGrid T="ProductModel" Class="mx-8" Items="@_products" Bordered Hover Filterable Hideable Square Striped QuickFilter="@QuickFilter" FixedHeader>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Table des produits</MudText>
+        <MudSpacer/>
+        <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search" />
+    </ToolBarContent>
     <Columns>
-        <PropertyColumn Title="Nom Produit" Property="x => x.Name"></PropertyColumn>
+        <PropertyColumn Title="Quantité" Property="x => x.AmountInStock"/>
+        <PropertyColumn Title="Nom Produit" Property="x => x.Name"/>
+        <PropertyColumn Title="Catégorie" Property="x => x.Category"/>
+        <PropertyColumn Title="Prix" Property="x => x.Price" Format="C"/>
+        <PropertyColumn Title="Actif" Property="x => x.IsAvailable"/>
+        <PropertyColumn Title="Date d'ajout" Property="x => x.AddedAt"/>
+        <TemplateColumn>
+            <CellTemplate>
+                <MudStack Row>
+                    <MudIconButton Icon="@Icons.Edit" OnClick="() => EditProductAsync(context.Item)" />
+                    <MudIconButton Icon="@Icons.Delete" OnClick="() => DeleteProductAsync(context.Item)" />
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
 </MudDataGrid>
 
 @code {
     private MeoDbContext _context = null!;
-    private List<IProduct> _products = null!;
+    private List<ProductModel> _products = new();
+    private string _searchString = string.Empty;
+
+    public Func<ProductModel, bool> QuickFilter => x =>
+    {
+        if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.Price.ToString("C").Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.AmountInStock.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.Category.Humanize().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        
+        return false;
+    };
 
     private DialogOptions _dialogOptions = new DialogOptions
     {
@@ -29,13 +59,13 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
-        _products.AddRange(_context.Cosmetics.ToList());
-        _products.AddRange(_context.HairProducts.ToList());
-        _products.AddRange(_context.Honeys.ToList());
-        _products.AddRange(_context.MadeHome.ToList());
-        _products.AddRange(_context.Mists.ToList());
-        _products.AddRange(_context.MuscTaharas.ToList());
-        _products.AddRange(_context.Perfumes.ToList());
+        _products.AddRange(_context.Cosmetics.ToList().ToIProduct().ToProductModel(ProductCategory.Cosmetic));
+        _products.AddRange(_context.HairProducts.ToList().ToIProduct().ToProductModel(ProductCategory.HairProduct));
+        _products.AddRange(_context.Honeys.ToList().ToIProduct().ToProductModel(ProductCategory.Honey));
+        _products.AddRange(_context.MadeHome.ToList().ToIProduct().ToProductModel(ProductCategory.MadeHome));
+        _products.AddRange(_context.Mists.ToList().ToIProduct().ToProductModel(ProductCategory.Mist));
+        _products.AddRange(_context.MuscTaharas.ToList().ToIProduct().ToProductModel(ProductCategory.MuscTahara));
+        _products.AddRange(_context.Perfumes.ToList().ToIProduct().ToProductModel(ProductCategory.Perfume));
     }
 
     private async Task AddProductAsync()
@@ -43,22 +73,392 @@
         var dialog = await DialogService.ShowAsync<AddProductDialog>("Ajout d'un produit", _dialogOptions);
         var result = await dialog.Result;
 
-        if (result != null)
+        if (result is { Data : ProductModel model })
         {
+            switch (model.Category)
+            {
+                case ProductCategory.Cosmetic:
+                {
+                    _context.Cosmetics.Add(new Cosmetics
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+                case ProductCategory.HairProduct:
+                {
+                    _context.HairProducts.Add(new HairProduct
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+                case ProductCategory.Honey:
+                {
+                    _context.Honeys.Add(new Honey
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+                case ProductCategory.MadeHome:
+                {
+                    _context.MadeHome.Add(new MadeHome
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+                case ProductCategory.Mist:
+                {
+                    _context.Mists.Add(new Mist
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+                case ProductCategory.MuscTahara:
+                {
+                    _context.MuscTaharas.Add(new MuscTahara
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+                case ProductCategory.Perfume:
+                {
+                    _context.Perfumes.Add(new Perfume
+                    {
+                        Id = model.ProductID,
+                        Name = model.Name,
+                        Price = model.Price,
+                        StockAmount = model.AmountInStock,
+                        IsAvailable = model.IsAvailable,
+                        ImagePath = model.ImagePath,
+                        AddedAt = model.AddedAt,
+                        Description = model.Description,
+                        Options = model.Options
+                    });
+                    await _context.SaveChangesAsync();
+                    break;
+                }
+            }
             
+            _products.Add(model);
+            await RefreshProductsAsync();
         }
     }
 
+    private async Task EditProductAsync(ProductModel model)
+    {
+        var parameters = new DialogParameters<EditProductDialog> { { x => x.Model, model } };
+        var dialog = await DialogService.ShowAsync<EditProductDialog>("Ajout d'un produit", parameters, _dialogOptions);
+        var result = await dialog.Result;
+        var modelID = model.ProductID;
+        _products.Remove(model);
+
+        if (result is { Data : ProductModel newModel })
+        {
+            switch (model.Category)
+            {
+                case ProductCategory.Cosmetic:
+                {
+                    var item = await _context.Cosmetics.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.Cosmetics.Remove(item);
+                    }
+                    _context.Cosmetics.Add(new Cosmetics
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+                case ProductCategory.HairProduct:
+                {
+                    var item = await _context.HairProducts.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.HairProducts.Remove(item);
+                    }
+                    _context.HairProducts.Add(new HairProduct
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+                case ProductCategory.Honey:
+                {
+                    var item = await _context.Honeys.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.Honeys.Remove(item);
+                    }
+                    _context.Honeys.Add(new Honey
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+                case ProductCategory.MadeHome:
+                {
+                    var item = await _context.MadeHome.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.MadeHome.Remove(item);
+                    }
+                    _context.MadeHome.Add(new MadeHome
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+                case ProductCategory.Mist:
+                {
+                    var item = await _context.Mists.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.Mists.Remove(item);
+                    }
+                    _context.Mists.Add(new Mist
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+                case ProductCategory.MuscTahara:
+                {
+                    var item = await _context.MuscTaharas.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.MuscTaharas.Remove(item);
+                    }
+                    _context.MuscTaharas.Add(new MuscTahara
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+                case ProductCategory.Perfume:
+                {
+                    var item = await _context.Perfumes.FirstOrDefaultAsync(x => x.Id == modelID);
+                    if (item != null)
+                    {
+                        _context.Perfumes.Remove(item);
+                    }
+                    _context.Perfumes.Add(new Perfume
+                    {
+                        Id = newModel.ProductID,
+                        Name = newModel.Name,
+                        Price = newModel.Price,
+                        StockAmount = newModel.AmountInStock,
+                        IsAvailable = newModel.IsAvailable,
+                        ImagePath = newModel.ImagePath,
+                        AddedAt = newModel.AddedAt,
+                        Description = newModel.Description,
+                        Options = newModel.Options
+                    });
+                    break;
+                }
+            }
+            
+            _products.Add(newModel);
+            await _context.SaveChangesAsync();
+            await RefreshProductsAsync();
+        }
+    }
+
+    private async Task DeleteProductAsync(ProductModel model)
+    {
+        _products.Remove(model);
+        switch (model.Category)
+        {
+            case ProductCategory.Cosmetic:
+            {
+                var item = await _context.Cosmetics.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.Cosmetics.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+            case ProductCategory.HairProduct:
+            {
+                var item = await _context.HairProducts.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.HairProducts.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+            case ProductCategory.Honey:
+            {
+                var item = await _context.Honeys.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.Honeys.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+            case ProductCategory.MadeHome:
+            {
+                var item = await _context.MadeHome.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.MadeHome.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+            case ProductCategory.Mist:
+            {
+                var item = await _context.Mists.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.Mists.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+            case ProductCategory.MuscTahara:
+            {
+                var item = await _context.MuscTaharas.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.MuscTaharas.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+            case ProductCategory.Perfume:
+            {
+                var item = await _context.Perfumes.FirstOrDefaultAsync(x => x.Id == model.ProductID);
+                if (item != null)
+                {
+                    _context.Perfumes.Remove(item);
+                    await _context.SaveChangesAsync();
+                }
+                break;
+            }
+        }
+        await RefreshProductsAsync();
+    }
+    
     private Task RefreshProductsAsync()
     {
         _products.Clear();
-        _products.AddRange(_context.Cosmetics.ToList());
-        _products.AddRange(_context.HairProducts.ToList());
-        _products.AddRange(_context.Honeys.ToList());
-        _products.AddRange(_context.MadeHome.ToList());
-        _products.AddRange(_context.Mists.ToList());
-        _products.AddRange(_context.MuscTaharas.ToList());
-        _products.AddRange(_context.Perfumes.ToList());
+        _products.AddRange(_context.Cosmetics.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.Cosmetic));
+        _products.AddRange(_context.HairProducts.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.HairProduct));
+        _products.AddRange(_context.Honeys.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.Honey));
+        _products.AddRange(_context.MadeHome.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.MadeHome));
+        _products.AddRange(_context.Mists.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.Mist));
+        _products.AddRange(_context.MuscTaharas.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.MuscTahara));
+        _products.AddRange(_context.Perfumes.Include(x => x.Options).ToList().ToIProduct().ToProductModel(ProductCategory.Perfume));
         StateHasChanged();
         return Task.CompletedTask;
     }

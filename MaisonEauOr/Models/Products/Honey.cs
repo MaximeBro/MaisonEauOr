@@ -1,5 +1,6 @@
 ﻿namespace MaisonEauOr.Models.Products;
 
-public class Honey
+public class Honey : IProduct
 {
+    
 }

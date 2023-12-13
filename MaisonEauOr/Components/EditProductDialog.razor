@@ -1,4 +1,4 @@
-﻿@inject ISnackbar Snackbar
+@inject ISnackbar Snackbar
 @using Humanizer
 @using MaisonEauOr.Models.Products
 <MudDialog>
@@ -13,8 +13,8 @@
                 }
             </MudSelect>
             <MudStack Row>
-                <MudNumericField T="int" @bind-Value="_amountInStock" Min="0" Label="Quantité"/>
-                <MudNumericField T="double" @bind-Value="_price" Min="0" Label="Prix"/>
+                <MudNumericField T="int" @bind-Value="_amountInStock" Min="0" Label="Quantité" />
+                <MudNumericField T="double" @bind-Value="_price" Min="0" Label="Prix" />
             </MudStack>
             <MudTable T="Option" Items="_options" Bordered Hover>
                 <HeaderContent>
@@ -23,24 +23,14 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd>@context.Name</MudTd>
-                    <MudTd>
-                        <MudTooltip Text="Supprimer">
-                            <MudIconButton Icon="@Icons.Delete" OnClick="() => DeleteOption(context)"/>
-                        </MudTooltip>
-                    </MudTd>
+                    <MudTd><MudTooltip Text="Supprimer"><MudIconButton Icon="@Icons.Delete" OnClick="() =>DeleteOption(context)"/></MudTooltip></MudTd>
                 </RowTemplate>
                 <FooterContent>
-                    <MudTd>
-                        <MudTextField T="string" Class="mb-2" @bind-Value="_optionName" Label="Nom de l'option" Variant="Variant.Text"/>
-                    </MudTd>
-                    <MudTd>
-                        <MudTooltip Text="Valider" Arrow>
-                            <MudIconButton Icon="@Icons.CheckCircle" OnClick="AddOption"/>
-                        </MudTooltip>
-                    </MudTd>
+                    <MudTd><MudTextField T="string" Class="mb-2" @bind-Value="_optionName" Label="Nom de l'option" Variant="Variant.Text"/></MudTd>
+                    <MudTd><MudTooltip Text="Valider" Arrow><MudIconButton Icon="@Icons.CheckCircle" OnClick="AddOption"/></MudTooltip></MudTd>
                 </FooterContent>
             </MudTable>
-            <MudCheckBox @bind-Checked="_isAvailable" Label="Actif"/>
+            <MudCheckBox @bind-Checked="_isAvailable" Label="Actif" />
             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFilesAsync" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
                 <ButtonTemplate>
                     <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.CloudUpload" for="@context.Id">
@@ -50,7 +40,7 @@
                     {
                         <div class="d-flex">
                             <MudText Class="mx-4" Typo="Typo.h6">@_imageName</MudText>
-                            <MudIconButton Icon="@Icons.Delete" OnClick="DeleteUploadedFile"/>
+                            <MudIconButton Icon="@Icons.Delete" OnClick="DeleteUploadedFile" />
                         </div>
                     }
                 </ButtonTemplate>
@@ -63,11 +53,12 @@
 </MudDialog>
 
 @code {
-
     [CascadingParameter]
     public MudDialogInstance MudDialog { get; set; } = null!;
 
-    private Guid _productId = Guid.NewGuid();
+    [Parameter]
+    public ProductModel Model { get; set; } = null!;
+
     private string _productName = string.Empty;
     private string _description = string.Empty;
     private ProductCategory _selectedCategory;
@@ -80,11 +71,24 @@
 
     private string _imageName = string.Empty;
 
+    protected override void OnInitialized()
+    {
+        _productName = Model.Name;
+        _description = Model.Description;
+        _selectedCategory = Model.Category;
+        _amountInStock = Model.AmountInStock;
+        _price = Model.Price;
+        _isAvailable = Model.IsAvailable;
+        _options = Model.Options.ToList();
+        _imagePath = Model.ImagePath;
+        _imageName = Path.GetFileName(_imagePath);
+    }
+
     public void AddProduct()
     {
         var product = new ProductModel
         {
-            ProductID = _productId,
+            ProductID = Guid.NewGuid(),
             Category = _selectedCategory,
             Name = _productName,
             Description = _description,
@@ -92,10 +96,10 @@
             Price = _price,
             IsAvailable = _isAvailable,
             AddedAt = DateTime.Now,
-            Options = _options.ToList(),
+            Options = _options,
             ImagePath = _imagePath
         };
-
+        
         MudDialog.Close(product);
     }
 
@@ -103,7 +107,7 @@
     {
         if (!string.IsNullOrWhiteSpace(_optionName))
         {
-            _options.Add(new Option { Name = _optionName, ProductID = _productId });
+            _options.Add(new Option { Name = _optionName, ProductID = Model.ProductID });
             _optionName = string.Empty;
         }
     }
@@ -112,27 +116,18 @@
     {
         _options.Remove(option);
     }
-
+    
     private async Task UploadFilesAsync(IBrowserFile file)
     {
         try
         {
             _imageName = file.Name;
             var fileStream = file.OpenReadStream(1000000000L);
-            _imagePath = $"{Directory.GetCurrentDirectory()}\\wwwroot\\images\\upload\\{file.Name}";
-            if (File.Exists(_imagePath))
-            {
-                Snackbar.Add($"Une image avec ce nom est déjà enregistrée !", Severity.Error);
-                _imagePath = string.Empty;
-                _imageName = string.Empty;
-                await fileStream.DisposeAsync();
-            }
-            else
-            {
-                var targetStream = new FileStream(_imagePath, FileMode.Create);
-                await fileStream.CopyToAsync(targetStream);
-                targetStream.Close();
-            }
+            var extension = Path.GetExtension(file.Name);
+            _imagePath = $"{Directory.GetCurrentDirectory()}\\wwwroot\\images\\upload\\{Guid.NewGuid()}{extension}";
+            var targetStream = new FileStream(_imagePath, FileMode.Create);
+            await fileStream.CopyToAsync(targetStream);
+            targetStream.Close();
         }
         catch (Exception e)
         {
@@ -158,5 +153,4 @@
             Snackbar.Add($"Une erreur est survenue : {e.Message}", Severity.Error);
         }
     }
-
 }

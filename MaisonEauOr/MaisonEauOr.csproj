@@ -21,5 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Temp\" />
+    <Folder Include="wwwroot\images\upload\" />
   </ItemGroup>
 </Project>

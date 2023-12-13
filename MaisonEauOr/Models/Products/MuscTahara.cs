@@ -1,5 +1,5 @@
 ﻿namespace MaisonEauOr.Models.Products;
 
-public class MuscTahara
+public class MuscTahara : IProduct
 {
 }
