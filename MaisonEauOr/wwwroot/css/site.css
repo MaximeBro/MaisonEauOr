@@ -3,15 +3,20 @@
 
 html, body {
     font-family: 'Lora', 'Times New Roman', serif;
+    min-width: 100%;
 }
-
 
 /*
     HEADER, nav
 */
 header {
-    padding-top: 10px;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,.1);
+    padding-top: 10px;
+    width: 100%;
+}
+
+header #burger{
+    display: none;
 }
 
 /* Navbar container */
@@ -19,7 +24,7 @@ nav.navbar {
     font-family: 'Lora', 'Times New Roman', serif;
     text-transform: uppercase;
     display: flex;
-    justify-content: space-around;
+    justify-content: space-evenly;
     padding: 0;
 }
 
@@ -29,6 +34,7 @@ nav.navbar a {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 nav.navbar a:hover{
@@ -49,6 +55,7 @@ nav.navbar a:hover{
     background-color: inherit;
     text-transform: uppercase;
     margin: 0; /* Important for vertical align on mobile phones */
+    transition: all 0.2s ease;
 }
 
 .dropbtn::after{
@@ -76,6 +83,7 @@ nav.navbar a:hover{
     text-decoration: none;
     display: block;
     text-align: left;
+    transition: all 0.2s ease;
 }
 
 /* Add a grey background color to dropdown links on hover */
@@ -85,10 +93,56 @@ nav.navbar a:hover{
 
 /* Show the dropdown menu on hover */
 .dropdown-div:hover .dropdown-content {
+
+}
+.show{
     display: flex;
     flex-direction: column;
 }
 /* end - Header Navbar*/
+
+@media only screen and (max-width: 768px) {  
+    html, body{
+        min-width:100%;
+    }
+    header{
+        padding-bottom: 10px;
+        padding-right: 10px;
+    }
+    
+    #toolbar{
+        flex: none !important;
+    }
+
+    header #burger{
+        display: block;
+    }
+
+    nav.navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        display: none;
+
+    }
+    
+    .dropdown-content{
+        position: relative;
+        box-shadow: none;
+        
+    }
+    .dropdown-div {
+        display: grid;
+    }
+    .navbar .dropdown-div a{
+        text-align: left !important;
+        margin-left: 20px;
+    }
+    
+    .dropbtn{
+        justify-content: left;
+    }
+    
+}
 
 
 

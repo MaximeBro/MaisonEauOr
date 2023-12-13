@@ -1,24 +1,27 @@
 ﻿<header>
-    <MudStack Class="d-flex justify-content-between" Row="true" AlignItems="AlignItems.Center">
-        <MudSpacer/>
+    <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="AlignItems.Center" Class="flex-wrap">
+        <div class="d-flex justify-content-start flex-1">
+            <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@toggle" id="burger"/>
+        </div>
         <MudLink Href="/">
             <MudImage Src="images/logo.png" Alt="Maison Eau D'or" Height="76"></MudImage>
         </MudLink>
-        <div class="flex-1 d-flex justify-content-end">
+        <div id="toolbar" class="d-flex justify-content-end flex-1">
             <MudToolBar>
+                <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4"/>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
                 <MudIconButton Icon="@Icons.Person" Color="Color.Dark"/>
                 <MudIconButton Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
             </MudToolBar>
         </div>
     </MudStack>
-    <nav class="navbar">
+    <nav style="@_style" class="navbar">
         <div class="dropdown-div">
-            <button class="dropbtn">
+            <button onclick="@(()=> open(0))" class="dropbtn">
                 Parfums
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content">
+            <div class="dropdown-content @(isOpen[0]?"show":"")">
                 <a Href="#">Le Bar à parfums</a>
                 <a Href="#">Les Evasions Gourmandes</a>
             </div>
@@ -27,21 +30,21 @@
         <a Href="#">Muscs Tahara intime</a>
         <a Href="#">Cosmétiques</a>
         <div class="dropdown-div">
-            <button class="dropbtn">
+            <button onclick="@(()=> open(1))" class="dropbtn">
                 Brumes
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content">
+            <div class="dropdown-content @(isOpen[1]?"show":"")">
                 <a Href="#">Brumes RP</a>
                 <a Href="#">Brumes Gris Montaigne</a>
             </div>
         </div>
         <div Class="dropdown-div">
-            <button class="dropbtn">
+            <button onclick="@(()=> open(2))" class="dropbtn">
                 Produits Capillaire
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content">
+            <div class="dropdown-content @(isOpen[2]?"show":"")">
                 <a Href="#">KeraQueens</a>
                 <a Href="#">Rose Baie</a>
                 <a Href="#">RedOne</a>
@@ -50,5 +53,31 @@
     </nav>
 </header>
 
+@code
+{
+    private bool[] isOpen = new bool[3];
 
+    private string _burger = Icons.Menu;
+    private string _style;
+    
+    private void open(int num) {
+        for (int i = 0; i < isOpen.Length; i++)
+        {
+            isOpen[i] = (i == num && !isOpen[i]);
+        }
+    }
 
+    private void toggle()
+    {
+        if (_burger == Icons.Menu)
+        {
+            _burger = Icons.Close;
+            _style = "display:flex;";
+        }
+        else
+        {
+            _burger = Icons.Menu;
+            _style = "";
+        }
+    }
+}
