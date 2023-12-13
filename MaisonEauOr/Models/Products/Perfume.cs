@@ -10,4 +10,6 @@ public class Perfume
 	public string Description { get; set; }
 	public DateTime AddedAt { get; set; }
 	public int StockAmount { get; set; }
+	public bool IsAvailable { get; set; }
+	public string ImagePath { get; set; }
 }
