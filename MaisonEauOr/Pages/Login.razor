@@ -90,10 +90,11 @@
             var authService = (AuthenticationService)AuthStateProvider;
             await authService.UpdateAuthentificationState(new UserSession
             {
+                Identifier = user.Id,
                 UserName = $"{user.Firstname} {user.Lastname}",
                 Role = user.Role
             });
-            NavManager.NavigateTo("/");
+            NavManager.NavigateTo("/admin-products");
         }
         else
         {
