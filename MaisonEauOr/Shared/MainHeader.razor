@@ -1,11 +1,54 @@
-﻿<MudAppBar Style="background-color: transparent;" Fixed="true">
-    <MudStack>
-        <MudSpacer />
-        <MudToolBar>
-            <MudIconButton Icon="@Icons.Search" Color="Color.Dark" />
-            <MudIconButton Icon="@Icons.People" Color="Color.Dark" />
-            <MudIconButton Icon="@Icons.ShoppingBasket" Color="Color.Dark" />
-        </MudToolBar>
+﻿<header>
+    <MudStack Class="d-flex justify-content-between" Row="true" AlignItems="AlignItems.Center">
+        <MudSpacer/>
+        <MudLink Href="/">
+            <MudImage Src="images/logo.png" Alt="Maison Eau D'or" Height="76"></MudImage>
+        </MudLink>
+        <div class="flex-1 d-flex justify-content-end">
+            <MudToolBar>
+                <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
+                <MudIconButton Icon="@Icons.Person" Color="Color.Dark"/>
+                <MudIconButton Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+            </MudToolBar>
+        </div>
     </MudStack>
-</MudAppBar>
+    <nav class="navbar">
+        <div class="dropdown-div">
+            <button class="dropbtn">
+                Parfums
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a Href="#">Le Bar à parfums</a>
+                <a Href="#">Les Evasions Gourmandes</a>
+            </div>
+        </div>
+        <a Href="#">Maison</a>
+        <a Href="#">Muscs Tahara intime</a>
+        <a Href="#">Cosmétiques</a>
+        <div class="dropdown-div">
+            <button class="dropbtn">
+                Brumes
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a Href="#">Brumes RP</a>
+                <a Href="#">Brumes Gris Montaigne</a>
+            </div>
+        </div>
+        <div Class="dropdown-div">
+            <button class="dropbtn">
+                Produits Capillaire
+                <i class="fa fa-caret-down"></i>
+            </button>
+            <div class="dropdown-content">
+                <a Href="#">KeraQueens</a>
+                <a Href="#">Rose Baie</a>
+                <a Href="#">RedOne</a>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
 
