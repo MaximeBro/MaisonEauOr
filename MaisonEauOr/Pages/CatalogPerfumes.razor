@@ -1,9 +1,9 @@
-﻿@page "/catalogHoney"
+﻿@page "/catalogPerfume"
 @using MaisonEauOr.Models.Products
 
 @inject IDbContextFactory<MeoDbContext> Factory
 
-<PageTitle>Maison eau d'or - Miels</PageTitle>
+<PageTitle>Maison eau d'or - Parfums</PageTitle>
 
 <MudStack Class="mt-10" Row>
     <MudSpacer />
@@ -11,14 +11,14 @@
 </MudStack>
 
 <MudGrid Class="px-6" Spacing="5" Justify="Justify.Center">
-    @foreach (Honey honey in honeyList)
+    @foreach (Perfume perfume in perfumeList)
     {
         <MudItem Class="mt-5" Style="width:20%!important;" xs="12" sm="6" md="4" lg="3">
             <MudCard>
-                <MudImage Src="@honey.ImagePath" Alt="@honey.Name" />
+                <MudImage Src="@perfume.ImagePath" Alt="@perfume.Name" />
                 <MudCardContent>
-                    <MudText Align="Align.Center" Typo="Typo.h5"><b>@honey.Name</b></MudText>
-                    <MudText Align="Align.Center" Typo="Typo.body2">@honey.Price</MudText>
+                    <MudText Align="Align.Center" Typo="Typo.h5"><b>@perfume.Name</b></MudText>
+                    <MudText Align="Align.Center" Typo="Typo.body2">@perfume.Price</MudText>
                     </MudCardContent>
                     <MudCardActions Class="justify-center">
                         <MudButton Variant="Variant.Filled" Color="Color.Surface">Ajouter au panier</MudButton>
@@ -29,12 +29,12 @@
 </MudGrid>
 
 @code {
-    private List<Honey> honeyList = new List<Honey>();
+    private List<Perfume> perfumeList = new List<Perfume>();
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
-        honeyList = _context.Honeys.Where(x => x.IsAvailable).ToList();
+        perfumeList = _context.Perfume.Where(x => x.IsAvailable).ToList();
     }
     private MeoDbContext _context = null!;
 }
