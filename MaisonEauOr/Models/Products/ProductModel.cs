@@ -1,11 +1,11 @@
 using System.ComponentModel;
-using MaisonEauOr.Models.Products;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MaisonEauOr.Models;
 
 public class ProductModel
 {
-    public Guid ProductID { get; set; }
+    public Guid Id { get; set; }
     public int AmountInStock { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
@@ -13,7 +13,8 @@ public class ProductModel
     public double Price { get; set; }
     public bool IsAvailable { get; set; }
     public DateTime AddedAt { get; set; }
-    public List<Option> Options { get; set; } 
+    [NotMapped] 
+    public List<Option> Options { get; set; } = new();
     public string ImagePath { get; set; }
 }
 

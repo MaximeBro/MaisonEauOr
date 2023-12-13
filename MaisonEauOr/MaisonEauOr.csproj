@@ -20,8 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Temp\" />
     <Folder Include="wwwroot\images\upload\" />
+
+    <Folder Include="Lang\" />
+
   </ItemGroup>
 </Project>

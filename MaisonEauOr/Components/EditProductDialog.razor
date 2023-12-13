@@ -1,6 +1,5 @@
 @inject ISnackbar Snackbar
-@using Humanizer
-@using MaisonEauOr.Models.Products
+
 <MudDialog>
     <DialogContent>
         <MudStack Row="false">
@@ -31,7 +30,7 @@
                 </FooterContent>
             </MudTable>
             <MudCheckBox @bind-Checked="_isAvailable" Label="Actif" />
-            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFilesAsync" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
                 <ButtonTemplate>
                     <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.CloudUpload" for="@context.Id">
                         Upload Files
@@ -48,7 +47,7 @@
         </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProduct">Valider</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Valider</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -59,6 +58,7 @@
     [Parameter]
     public ProductModel Model { get; set; } = null!;
 
+    private Guid _productID = Guid.NewGuid();
     private string _productName = string.Empty;
     private string _description = string.Empty;
     private ProductCategory _selectedCategory;
@@ -70,6 +70,7 @@
     private string _imagePath = string.Empty;
 
     private string _imageName = string.Empty;
+    private IBrowserFile? _currentImage;
 
     protected override void OnInitialized()
     {
@@ -84,11 +85,16 @@
         _imageName = Path.GetFileName(_imagePath);
     }
 
-    public void AddProduct()
+    public async Task AddProductAsync()
     {
+        if (_currentImage != null)
+        {
+            await UploadFileAsync(_currentImage);
+        }
+        foreach (var opt in _options) opt.ProductID = _productID;
         var product = new ProductModel
         {
-            ProductID = Guid.NewGuid(),
+            Id = _productID,
             Category = _selectedCategory,
             Name = _productName,
             Description = _description,
@@ -107,7 +113,7 @@
     {
         if (!string.IsNullOrWhiteSpace(_optionName))
         {
-            _options.Add(new Option { Name = _optionName, ProductID = Model.ProductID });
+            _options.Add(new Option { Name = _optionName, ProductID = _productID });
             _optionName = string.Empty;
         }
     }
@@ -116,8 +122,14 @@
     {
         _options.Remove(option);
     }
+
+    private void UploadFile(IBrowserFile file)
+    {
+        _currentImage = file;
+        _imageName = file.Name;
+    }
     
-    private async Task UploadFilesAsync(IBrowserFile file)
+    private async Task UploadFileAsync(IBrowserFile file)
     {
         try
         {
@@ -138,19 +150,7 @@
 
     private void DeleteUploadedFile()
     {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(_imagePath) && File.Exists(_imagePath))
-            {
-                File.Delete(_imageName);
-                _imagePath = string.Empty;
-                _imageName = string.Empty;
-                StateHasChanged();
-            }
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add($"Une erreur est survenue : {e.Message}", Severity.Error);
-        }
+        _currentImage = null;
+        _imageName = string.Empty;
     }
 }

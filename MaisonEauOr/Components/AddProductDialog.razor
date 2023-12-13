@@ -1,6 +1,5 @@
 ﻿@inject ISnackbar Snackbar
 @using Humanizer
-@using MaisonEauOr.Models.Products
 <MudDialog>
     <DialogContent>
         <MudStack Row="false">
@@ -41,7 +40,7 @@
                 </FooterContent>
             </MudTable>
             <MudCheckBox @bind-Checked="_isAvailable" Label="Actif"/>
-            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFilesAsync" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
                 <ButtonTemplate>
                     <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.CloudUpload" for="@context.Id">
                         Upload Files
@@ -58,7 +57,7 @@
         </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProduct">Valider</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Valider</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -79,12 +78,18 @@
     private string _imagePath = string.Empty;
 
     private string _imageName = string.Empty;
+    private IBrowserFile? _currentImage;
 
-    public void AddProduct()
+    public async Task AddProductAsync()
     {
+        if (_currentImage != null)
+        {
+            await UploadFileAsync(_currentImage);
+        }
+        
         var product = new ProductModel
         {
-            ProductID = _productId,
+            Id = _productId,
             Category = _selectedCategory,
             Name = _productName,
             Description = _description,
@@ -113,7 +118,13 @@
         _options.Remove(option);
     }
 
-    private async Task UploadFilesAsync(IBrowserFile file)
+    private void UploadFile(IBrowserFile file)
+    {
+        _currentImage = file;
+        _imageName = file.Name;
+    }
+    
+    private async Task UploadFileAsync(IBrowserFile file)
     {
         try
         {
@@ -143,20 +154,8 @@
 
     private void DeleteUploadedFile()
     {
-        try
-        {
-            if (!string.IsNullOrWhiteSpace(_imagePath) && File.Exists(_imagePath))
-            {
-                File.Delete(_imageName);
-                _imagePath = string.Empty;
-                _imageName = string.Empty;
-                StateHasChanged();
-            }
-        }
-        catch (Exception e)
-        {
-            Snackbar.Add($"Une erreur est survenue : {e.Message}", Severity.Error);
-        }
+        _currentImage = null;
+        _imageName = string.Empty;
     }
 
 }
