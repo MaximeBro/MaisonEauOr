@@ -1,0 +1,65 @@
+﻿@page "/admin-products"
+@using MaisonEauOr.Components
+@using MaisonEauOr.Models.Products
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject IDialogService DialogService
+
+<PageTitle>Administration - Produits</PageTitle>
+
+<MudText Typo="Typo.h3">Gestion des stocks</MudText>
+<MudDataGrid T="IProduct" Items="_products" Bordered Hover Filterable Hideable Square Striped>
+    <Columns>
+        <PropertyColumn Title="Nom Produit" Property="x => x.Name"></PropertyColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private MeoDbContext _context = null!;
+    private List<IProduct> _products = null!;
+
+    private DialogOptions _dialogOptions = new DialogOptions
+    {
+        CloseButton = true,
+        DisableBackdropClick = false,
+        CloseOnEscapeKey = true
+    };
+    
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+        _products.AddRange(_context.Cosmetics.ToList());
+        _products.AddRange(_context.HairProducts.ToList());
+        _products.AddRange(_context.Honeys.ToList());
+        _products.AddRange(_context.MadeHome.ToList());
+        _products.AddRange(_context.Mists.ToList());
+        _products.AddRange(_context.MuscTaharas.ToList());
+        _products.AddRange(_context.Perfumes.ToList());
+    }
+
+    private async Task AddProductAsync()
+    {
+        var dialog = await DialogService.ShowAsync<AddProductDialog>("Ajout d'un produit", _dialogOptions);
+        var result = await dialog.Result;
+
+        if (result != null)
+        {
+            
+        }
+    }
+
+    private Task RefreshProductsAsync()
+    {
+        _products.Clear();
+        _products.AddRange(_context.Cosmetics.ToList());
+        _products.AddRange(_context.HairProducts.ToList());
+        _products.AddRange(_context.Honeys.ToList());
+        _products.AddRange(_context.MadeHome.ToList());
+        _products.AddRange(_context.Mists.ToList());
+        _products.AddRange(_context.MuscTaharas.ToList());
+        _products.AddRange(_context.Perfumes.ToList());
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

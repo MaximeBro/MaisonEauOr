@@ -1,0 +1,21 @@
+﻿<MudDialog>
+    <DialogContent>
+        
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Dark" OnClick="MudDialog.Dispose">Annuler</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProduct">Valider</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
+
+    public void AddProduct()
+    {
+        
+        MudDialog.Close();
+    }
+}
