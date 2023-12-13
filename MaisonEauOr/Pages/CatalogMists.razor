@@ -1,6 +1,9 @@
-﻿@page "/catalogMists"
+﻿@page "/catalogmist"
+@using MaisonEauOr.Models.Products
 
-<PageTitle>Maison eau d'or - Mists</PageTitle>
+@inject IDbContextFactory<MeoDbContext> Factory
+
+<PageTitle>Maison eau d'or - Brume</PageTitle>
 
 <MudStack Class="mt-10" Row>
     <MudSpacer />
@@ -8,205 +11,30 @@
 </MudStack>
 
 <MudGrid Class="px-6" Spacing="5" Justify="Justify.Center">
-    @foreach(ProductCard pC in productList)
+    @foreach (Mist mist in mistList)
     {
         <MudItem Class="mt-5" Style="width:20%!important;" xs="12" sm="6" md="4" lg="3">
             <MudCard>
-                <MudImage Src="@pC.productImage" Alt="@pC.productName"/>
+                <MudImage Src="@mist.ImagePath" Alt="@mist.Name" />
                 <MudCardContent>
-                    <MudText Align="Align.Center" Typo="Typo.h5"><b>@pC.productName</b></MudText>
-                    <MudText Align="Align.Center" Typo="Typo.body2">@pC.productPrice</MudText>
-                </MudCardContent>
+                    <MudText Align="Align.Center" Typo="Typo.h5"><b>@mist.Name</b></MudText>
+                    <MudText Align="Align.Center" Typo="Typo.body2">@mist.Price</MudText>
+                    </MudCardContent>
                     <MudCardActions Class="justify-center">
-                    <MudButton Variant="Variant.Filled" Color="Color.Surface">Ajouter au panier</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
+                        <MudButton Variant="Variant.Filled" Color="Color.Surface">Ajouter au panier</MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
     }
 </MudGrid>
 
 @code {
-    private List<ProductCard> productList = new List<ProductCard>();
+    private List<Mist> mistList = new List<Mist>();
 
-    public sealed class ProductCard
+    protected override async Task OnInitializedAsync()
     {
-        public string productName = "";
-        public double productPrice;
-        public string productImage = "";
-        public string imageWidth = "";
-        public string imageHeight = "";
+        _context = await Factory.CreateDbContextAsync();
+        mistList = _context.Mists.Where(x => x.IsAvailable).ToList();
     }
-
-    protected override void OnInitialized()
-    {
-        productList = new List<ProductCard>();
-
-        productList.Add(new ProductCard
-            {
-                productName = "Maxime Brochard",
-                productPrice = 35.99D,
-                productImage = "images/brochettes.png"
-    });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Jules Guesdon",
-                productPrice = 35.99D,
-                productImage = "images/guidon.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Alexandre Kotowicz",
-                productPrice = 35.99D,
-                productImage = "images/vodka.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Maxime Brochard",
-                productPrice = 35.99D,
-                productImage = "images/brochettes.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Jules Guesdon",
-                productPrice = 35.99D,
-                productImage = "images/guidon.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Alexandre Kotowicz",
-                productPrice = 35.99D,
-                productImage = "images/vodka.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Maxime Brochard",
-                productPrice = 35.99D,
-                productImage = "images/brochettes.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Jules Guesdon",
-                productPrice = 35.99D,
-                productImage = "images/guidon.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Alexandre Kotowicz",
-                productPrice = 35.99D,
-                productImage = "images/vodka.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Maxime Brochard",
-                productPrice = 35.99D,
-                productImage = "images/brochettes.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Jules Guesdon",
-                productPrice = 35.99D,
-                productImage = "images/guidon.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Alexandre Kotowicz",
-                productPrice = 35.99D,
-                productImage = "images/vodka.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Maxime Brochard",
-                productPrice = 35.99D,
-                productImage = "images/brochettes.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Jules Guesdon",
-                productPrice = 35.99D,
-                productImage = "images/guidon.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Alexandre Kotowicz",
-                productPrice = 35.99D,
-                productImage = "images/vodka.png"
-            });
-
-        productList.Add(new ProductCard
-            {
-                productName = "Elie Brion",
-                productPrice = 30.99D,
-                productImage = "images/chanteur.png"
-            });
-    }
+    private MeoDbContext _context = null!;
 }
