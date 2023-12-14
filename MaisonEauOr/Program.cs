@@ -15,6 +15,9 @@ builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationService>();
 builder.Services.AddAuthenticationCore();
 builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction => optionsAction.UseSqlite("Data Source=../meo-data/meo.db"));
+builder.Services.AddTransient<DoubleAuthService>();
+builder.Services.AddSingleton<MailerService>();
+
 
 var app = builder.Build();
 

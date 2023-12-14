@@ -69,6 +69,9 @@
 </MudStack>
 
 @code {
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout Layout { get; set; } = null!;
+    
     private MeoDbContext _context = null!;
     private UserAccount? _currentUser;
 
@@ -98,7 +101,6 @@
     private async Task RedirectHomeAsync()
     {
         var authService = (AuthenticationService)AuthStateProvider;
-        var user = await authService.GetCurrentUser();
         await authService.UpdateAuthenticationState(null);
         Snackbar.Add("Une erreur s'est produite. Redirection en cours...", Severity.Error);
         NavManager.NavigateTo("/");
@@ -242,6 +244,7 @@
     {
         var authService = (AuthenticationService)AuthStateProvider;
         await authService.UpdateAuthenticationState(null);
+        await Layout.RefreshUserSession();
         NavManager.NavigateTo("/");
     }
 
