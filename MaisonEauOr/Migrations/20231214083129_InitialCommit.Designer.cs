@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231213190142_InitialCommit")]
+    [Migration("20231214083129_InitialCommit")]
     partial class InitialCommit
     {
         /// <inheritdoc />

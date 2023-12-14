@@ -1,5 +1,5 @@
 ﻿@page "/catalogHoney"
-@using MaisonEauOr.Models.Products
+@using MaisonEauOr.Models
 
 @inject IDbContextFactory<MeoDbContext> Factory
 
@@ -11,7 +11,7 @@
 </MudStack>
 
 <MudGrid Class="px-6" Spacing="5" Justify="Justify.Center">
-    @foreach (Honey honey in honeyList)
+    @foreach (ProductModel honey in honeyList)
     {
         <MudItem Class="mt-5" Style="width:20%!important;" xs="12" sm="6" md="4" lg="3">
             <MudCard>
@@ -29,12 +29,16 @@
 </MudGrid>
 
 @code {
-    private List<Honey> honeyList = new List<Honey>();
+    private List<ProductModel> honeyList = new List<ProductModel>();
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
-        honeyList = _context.Honeys.Where(x => x.IsAvailable).ToList();
+        honeyList = _context.Products.Where(x => x.Category == ProductCategory.Honey).ToList();
+        foreach (var product in honeyList)
+        {
+            product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
+        }
     }
     private MeoDbContext _context = null!;
 }
