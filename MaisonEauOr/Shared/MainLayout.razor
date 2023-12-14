@@ -7,9 +7,19 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MainHeader />
-
+    <MainHeader @ref="_mainHeader"/>
     <MudMainContent>
-        @Body
+        <CascadingValue Name="MainLayoutInstance" Value="@this">
+            @Body
+        </CascadingValue>
     </MudMainContent>
 </MudLayout>
+
+@code {
+    private MainHeader _mainHeader = new();
+    
+    public async Task RefreshUserSession()
+    {
+        await _mainHeader.RefreshUserSession();
+    }
+}

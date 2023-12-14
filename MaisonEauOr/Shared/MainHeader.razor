@@ -78,6 +78,12 @@
         }
     }
 
+    public async Task RefreshUserSession()
+    {
+        var authService = (AuthenticationService)AuthStateProvider;
+        _currentUser = await authService.GetCurrentUser();
+    }
+
     private void CheckUserSession()
     {
         if (_currentUser != null && _currentUser.Role != UserRole.Guest)

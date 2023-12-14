@@ -1,8 +1,7 @@
 @page "/Contact"
 @using System.ComponentModel.DataAnnotations
-@using System.Net
-@using System.Net.Mail
 
+@inject MailerService MailerService
 @inject ISnackbar Snackbar
 
 <PageTitle>Maison eau d'or - Contact</PageTitle>
@@ -10,7 +9,7 @@
 <MudContainer>
     <MudGrid Class="mt-6" Justify="Justify.Center">
         <MudItem xs="6">
-            <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+            <EditForm Model="@_model" OnValidSubmit="OnValidSubmitAsync">
                 <DataAnnotationsValidator/>
                 <MudStack Row="false">
                     <MudText Typo="Typo.h3"><b>Nous contacter</b></MudText>
@@ -39,24 +38,13 @@
 @code {
     private ContactModel _model = new();
     
-    private void OnValidSubmit()
+    private async Task OnValidSubmitAsync()
     {
         if (_model.ConditionsAccepted)
         {
             try
             {
-                var mail = new MailMessage
-                {
-                    From = new MailAddress(_model.Email),
-                    Subject = _model.Subject,
-                    Body = _model.Message
-                };
-                mail.To.Add("maximebrochard.pro@gmail.com");
-
-                var smtp = new SmtpClient("smtp.gmail.com", 587);
-                smtp.Credentials = new NetworkCredential("maximebrochard.pro@gmail.com", "rpoc umgi leaw hbkg");
-                smtp.EnableSsl = true;
-                smtp.Send(mail);
+                await MailerService.SendEmailAsync("maximebrochard.pro@gmail.com", _model.Subject, _model.Message, null);
                 _model = new();
                 Snackbar.Add("Votre message a bien été envoyé", Severity.Success, options =>
                 {
@@ -72,7 +60,6 @@
                     options.ShowCloseIcon = false;
                 });
             }
-            
         }
         else
         {

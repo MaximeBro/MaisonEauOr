@@ -1,0 +1,52 @@
+﻿@inject DoubleAuthService DoubleAuthService
+
+<MudDialog>
+    <DialogContent>
+        @if (_loading)
+        {
+            <MudStack Row="false" Justify="Justify.Center">
+                <MudProgressCircular Indeterminate Color="Color.Dark" />
+                <MudText Align="Align.Center">Chargement...</MudText>
+            </MudStack>
+        }
+        else
+        {
+            <MudStack Class="px-8" Row="false">
+                <MudTextField T="string" @bind-Value="_code" Mask="@(new PatternMask("000000"))" Label="Code" Clearable Adornment="Adornment.Start" 
+                                          AdornmentColor="Color.Secondary" AdornmentIcon="@Icons.Numbers"/>
+                <MudText>Veuillez renseigner le code envoyé à l'adresse <MudText Color="Color.Info">@CurrentUser.Email</MudText></MudText>
+                <MudText>Le code fourni est valide pour une durée de 10 minutes !</MudText>
+            </MudStack>
+        }
+    </DialogContent>
+    <DialogActions>
+        @if (!_loading)
+        {
+            <MudButton Color="Color.Success" OnClick="@AuthenticateUser" Variant="Variant.Filled">Valider</MudButton>
+        }
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public UserAccount CurrentUser { get; set; } = null!;
+
+    private string _code = string.Empty;
+    private bool _loading;
+
+    private async Task AuthenticateUser()
+    {
+        _loading = true;
+
+        var status = await DoubleAuthService.Validate2ARequest(CurrentUser, _code);
+        if (status == TokenStatus.Valid)
+        {
+            MudDialog.Close(true);
+        }
+        _loading = false;
+    }
+
+}

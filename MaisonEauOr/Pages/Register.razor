@@ -62,6 +62,14 @@
                                   AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
                                   For="@(() => _model.Confirm)" Variant="Variant.Text"/>
                 </MudStack>
+                <MudStack Row>
+                    <MudCheckBox @bind-Checked="_conditionsAccepted" Color="Color.Dark" Required />
+                    <MudText>
+                        En envoyant un message, j'accepte les <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">Conditions générales</MudLink> et la 
+                        <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">Politique de confidentialité</MudLink>,
+                        et j'autorise Maison Eau D'or à traiter mes données afin de répondre à mon message.
+                    </MudText>
+                </MudStack>
             </MudCardContent>
             <MudCardActions Class="flex-column">
                 <MudStack Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
@@ -91,6 +99,8 @@
     private InputType _confirmFieldType = InputType.Password;
     private string _confirmFieldIcon = Icons.VisibilityOff;
     private bool _isConfirmShown;
+
+    private bool _conditionsAccepted;
 
     protected override async Task OnInitializedAsync()
     {
@@ -144,6 +154,18 @@
             });
             return;
         }
+        
+        if (!_conditionsAccepted)
+        {
+            Snackbar.Add("Veuillez accepter nos conditions générales et notre politique de confidentialité.", Severity.Error, options =>
+            {
+                options.VisibleStateDuration = 2500;
+                options.ShowCloseIcon = false;
+                options.DuplicatesBehavior = SnackbarDuplicatesBehavior.Prevent;
+            });
+            return;
+        }
+        
         if (users.All(x => x.Email != _model.Email))
         {
             var user = new UserAccount
