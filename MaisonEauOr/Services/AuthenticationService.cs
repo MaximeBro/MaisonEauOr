@@ -31,6 +31,7 @@ public class AuthenticationService : AuthenticationStateProvider
             {
                 new Claim(ClaimTypes.NameIdentifier, userSession.Identifier.ToString()),
                 new Claim(ClaimTypes.Name, userSession.UserName),
+                new Claim(ClaimTypes.Email, userSession.Email),
                 new Claim(ClaimTypes.Role, userSession.Role.ToString())
             }, "AuthorizedAuth"));
 
@@ -53,6 +54,7 @@ public class AuthenticationService : AuthenticationStateProvider
             {
                 new Claim(ClaimTypes.NameIdentifier, userSession.Identifier.ToString()),
                 new Claim(ClaimTypes.Name, userSession.UserName),
+                new Claim(ClaimTypes.Email, userSession.Email),
                 new Claim(ClaimTypes.Role, userSession.Role.ToString())
             }));
         }

@@ -140,6 +140,7 @@
             var targetStream = new FileStream(_imagePath, FileMode.Create);
             await fileStream.CopyToAsync(targetStream);
             targetStream.Close();
+            _imagePath = $"images\\upload\\{Guid.NewGuid()}{extension}";
         }
         catch (Exception e)
         {

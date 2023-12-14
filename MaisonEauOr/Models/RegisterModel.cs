@@ -14,7 +14,7 @@ public class RegisterModel
 	public string Email { get; set; } = string.Empty;
         
 	[Required(ErrorMessage = "Veuillez renseigner votre date de naissance")]
-	public DateTime? BornAt { get; set; } = DateTime.UnixEpoch;
+	public DateTime? BornAt { get; set; }
         
 	[Required(ErrorMessage = "Veuillez renseigner votre téléphone")]
 	public string PhoneNumber { get; set; } = string.Empty;
@@ -24,6 +24,9 @@ public class RegisterModel
         
 	[Required(ErrorMessage = "Veuillez renseigner votre ville")]
 	public string Town { get; set; } = string.Empty;
+	
+	[Required(ErrorMessage = "Veuillez renseigner votre pays")]
+	public string Country { get; set; } = string.Empty;
         
 	[Required(ErrorMessage = "Veuillez renseigner votre code postal")]
 	public int PostalCode { get; set; }

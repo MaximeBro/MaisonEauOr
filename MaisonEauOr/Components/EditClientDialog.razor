@@ -14,8 +14,8 @@
         <MudStack Row>
             <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
                           For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
-            <MudDatePicker Class="mb-2" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
-                           Style="max-width: 220px;" Variant="Variant.Text" Editable/>
+            <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
+                            Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
         </MudStack>
         <MudStack Row Justify="Justify.SpaceBetween">
             <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
@@ -26,6 +26,8 @@
         <MudStack Row>
             <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
                           For="@(() => _model.Address)" Variant="Variant.Text"/>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+                          For="@(() => _model.Country)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>
             <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
@@ -85,17 +87,15 @@
     private void ShowPassword()
     {
         _isPasswordShown = !_isPasswordShown;
-        _passwordFieldIcon = _isPasswordShown ? Icons.VisibilityOff : Icons.Visibility;
-        _passwordFieldType = _isPasswordShown ? InputType.Password : InputType.Text;
-        StateHasChanged();
+        _passwordFieldIcon = _passwordFieldIcon == Icons.Visibility ? Icons.VisibilityOff : Icons.Visibility;
+        _passwordFieldType = _passwordFieldType == InputType.Text ? InputType.Password : InputType.Text;
     }
     
     private void ShowConfirm()
     {
         _isConfirmShown = !_isConfirmShown;
-        _confirmFieldIcon = _isConfirmShown ? Icons.VisibilityOff : Icons.Visibility;
-        _confirmFieldType = _isConfirmShown ? InputType.Password : InputType.Text;
-        StateHasChanged();
+        _confirmFieldIcon = _confirmFieldIcon == Icons.Visibility ? Icons.VisibilityOff : Icons.Visibility;
+        _confirmFieldType = _confirmFieldType == InputType.Text ? InputType.Password : InputType.Text;
     }
 
     protected override void OnInitialized()
@@ -107,6 +107,7 @@
         _model.BornAt = CurrentUser.BornAt;
         _model.Town = CurrentUser.Town?? string.Empty;
         _model.Address = CurrentUser.Address?? string.Empty;
+        _model.Country = CurrentUser.Country ?? string.Empty;
         _selectedRole = CurrentUser.Role;
     }
 
@@ -125,10 +126,11 @@
                 Lastname = _model.Lastname,
                 Email = _model.Email,
                 PhoneNumber = _model.PhoneNumber,
-                BornAt = _model.BornAt!.Value,
+                BornAt = _model.BornAt ?? default,
                 PostalCode = _model.PostalCode,
                 Town = _model.Town,
                 Address = _model.Address,
+                Country = _model.Country,
                 Password = BC.HashPassword(_model.Password),
                 Role = _selectedRole
             };
