@@ -1,5 +1,5 @@
 ﻿@inject ISnackbar Snackbar
-@using Humanizer
+
 <MudDialog>
     <DialogContent>
         <MudStack Row="false">
@@ -143,6 +143,7 @@
                 var targetStream = new FileStream(_imagePath, FileMode.Create);
                 await fileStream.CopyToAsync(targetStream);
                 targetStream.Close();
+                _imagePath = $"images\\upload\\{file.Name}";
             }
         }
         catch (Exception e)

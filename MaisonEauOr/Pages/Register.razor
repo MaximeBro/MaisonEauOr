@@ -1,5 +1,4 @@
 @page "/signup"
-@using System.ComponentModel.DataAnnotations
 @layout LoginLayout
 
 @inject IDbContextFactory<MeoDbContext> Factory
@@ -38,8 +37,8 @@
                 <MudStack Row>
                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
                                   For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
-                    <MudDatePicker Class="mb-2" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
-                                   Style="max-width: 220px;" Variant="Variant.Text" Editable/>
+                    <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
+                                   Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
                 </MudStack>
                 <MudStack Row Justify="Justify.SpaceBetween">
                     <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
@@ -50,6 +49,8 @@
                 <MudStack Row>
                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
                                   For="@(() => _model.Address)" Variant="Variant.Text"/>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+                                  For="@(() => _model.Country)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
@@ -72,7 +73,7 @@
                         <MudText Align="Align.Center">Déjà inscrit ?</MudText>
                         <MudDivider Style="border-color: black!important;"/>
                     </MudStack>
-                    <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Variant="Variant.Filled" Color="Color.Dark">Se connecter</MudButton>
+                    <MudButton Class="mb-3 py-2 rounded-lg" Href="/signin" Style="padding-inline: 2.5rem;" Variant="Variant.Filled" Color="Color.Dark">Se connecter</MudButton>
                 </MudStack>
             </MudCardActions>
         </MudCard>
@@ -151,10 +152,11 @@
                 Lastname = _model.Lastname,
                 Email = _model.Email,
                 PhoneNumber = _model.PhoneNumber,
-                BornAt = _model.BornAt!.Value,
+                BornAt = _model.BornAt?? default,
                 PostalCode = _model.PostalCode,
                 Town = _model.Town,
                 Address = _model.Address,
+                Country = _model.Country,
                 Password = BC.HashPassword(_model.Password),
                 Role = UserRole.Client
             };
@@ -163,7 +165,9 @@
             var authService = (AuthenticationService)AuthStateProvider;
             await authService.UpdateAuthenticationState(new UserSession
             {
+                Identifier = user.Id,
                 UserName = $"{_model.Firstname} {_model.Lastname}",
+                Email = user.Email,
                 Role = UserRole.Client
             });
             NavManager.NavigateTo("/");

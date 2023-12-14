@@ -42,7 +42,7 @@
                         <MudText Align="Align.Center">Nouveau client ?</MudText>
                         <MudDivider Style="border-color: black!important;"/>
                     </MudStack>
-                    <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Variant="Variant.Filled" Color="Color.Dark">S'inscrire</MudButton>
+                    <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Href="/signup" Variant="Variant.Filled" Color="Color.Dark">S'inscrire</MudButton>
                 </MudStack>
             </MudCardActions>
         </MudCard>
@@ -92,9 +92,11 @@
             {
                 Identifier = user.Id,
                 UserName = user.Firstname!,
+                Email = user.Email,
                 Role = user.Role
             };
             await authService.UpdateAuthenticationState(userSession);
+            Snackbar.Clear();
             NavManager.NavigateTo("/");
         }
         else
@@ -110,8 +112,8 @@
 
     private sealed class LoginModel
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 
 }

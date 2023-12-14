@@ -30,6 +30,7 @@
         <PropertyColumn Title="Code postal" Property="x => x.PostalCode"/>
         <PropertyColumn Title="Ville" Property="x => x.Town"/>
         <PropertyColumn Title="Adresse" Property="x => x.Address"/>
+        <PropertyColumn Title="Pays" Property="x => x.Country"/>
         <PropertyColumn Title="Status" Property="x => x.Role.Humanize()"/>
         <PropertyColumn Title="Date de naissance" Property="x => x.BornAt" Format="dd-MM-yyyy"/>
         <TemplateColumn Filterable="false">
@@ -55,6 +56,9 @@
         if (x.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (!string.IsNullOrWhiteSpace(x.PhoneNumber) && x.PhoneNumber.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
         if (x.Role.Humanize().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!string.IsNullOrWhiteSpace(x.Country) && x.Country.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!string.IsNullOrWhiteSpace(x.Address) && x.Address.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.PostalCode.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
         
         return false;
     };

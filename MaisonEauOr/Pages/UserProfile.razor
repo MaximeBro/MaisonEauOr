@@ -1,0 +1,267 @@
+﻿@page "/profile"
+@attribute [Authorize(Roles = "Admin, Client")]
+
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavManager
+@inject ISnackbar Snackbar
+
+<PageTitle>Maison eau d'or - Profil</PageTitle>
+<MudText Align="Align.Center" Typo="Typo.h4">Vos informations personnelles</MudText>
+
+<MudStack Class="mt-8 mx-16" Row Justify="Justify.Center">
+    <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
+        <MudText Class="my-3 ml-3" Typo="Typo.h6">Changement des informations générales</MudText>
+        <MudStack Row Justify="Justify.SpaceBetween">
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="Prénom" InputType="InputType.Text"
+                          For="@(() => _model.Firstname)" Style="max-width: 220px;" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre prénom"/>
+
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="Nom" InputType="InputType.Text"
+                          For="@(() => _model.Lastname)" Style="max-width: 220px;" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre nom"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="Email" InputType="InputType.Email"
+                          For="@(() => _model.Email)" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre email"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
+                          For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
+            <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd-MM-yyyy"
+                           Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
+        </MudStack>
+        <MudStack Row Justify="Justify.SpaceBetween">
+            <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
+                             For="@(() => _model.PostalCode)" Style="max-width: 150px;" Variant="Variant.Text"/>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
+                          For="@(() => _model.Town)" Style="max-width: 260px;" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
+                          For="@(() => _model.Address)" Variant="Variant.Text"/>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+                          For="@(() => _model.Country)" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Class="mt-6" Row Justify="Justify.Center">
+            <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveProfile">Enregistrer</MudButton>
+        </MudStack>
+    </MudPaper>
+    <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
+        <MudText Class="my-3 ml-3" Typo="Typo.h6">Changement du mot de passe</MudText>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_passwordModel.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+                          AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
+                          For="@(() => _passwordModel.Password)" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre mot de passe"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_passwordModel.Confirm" Label="Confirmer" InputType="@_confirmFieldType"
+                          AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
+                          For="@(() => _passwordModel.Confirm)" Variant="Variant.Text" Required RequiredError="Veuillez confirmer votre mot de passe"/>
+        </MudStack>
+        <MudStack Class="mt-6" Row Justify="Justify.Center">
+            <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SavePassword">Enregistrer</MudButton>
+        </MudStack>
+    </MudPaper>
+</MudStack>
+<MudStack Class="mt-6 mb-8" Row Justify="Justify.Center">
+    <MudPaper Class="py-2 px-12" Elevation="1" Outlined>
+        <MudButton Color="Color.Info" OnClick="@LogoutUserAsync">Déconnexion</MudButton>
+    </MudPaper>
+</MudStack>
+
+@code {
+    private MeoDbContext _context = null!;
+    private UserAccount? _currentUser;
+
+    private GeneralModel _model = new();
+    private PasswordModel _passwordModel = new();
+    private InputType _passwordFieldType = InputType.Password;
+    private string _passwordFieldIcon = Icons.VisibilityOff;
+    private bool _isPasswordShown;
+
+    private InputType _confirmFieldType = InputType.Password;
+    private string _confirmFieldIcon = Icons.VisibilityOff;
+    private bool _isConfirmShown;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await RefreshModel();
+        }
+    }
+
+    private async Task RedirectHomeAsync()
+    {
+        var authService = (AuthenticationService)AuthStateProvider;
+        var user = await authService.GetCurrentUser();
+        await authService.UpdateAuthenticationState(null);
+        Snackbar.Add("Une erreur s'est produite. Redirection en cours...", Severity.Error);
+        NavManager.NavigateTo("/");
+    }
+
+    private void ShowPassword()
+    {
+        _isPasswordShown = !_isPasswordShown;
+        _passwordFieldIcon = _passwordFieldIcon == Icons.Visibility ? Icons.VisibilityOff : Icons.Visibility;
+        _passwordFieldType = _passwordFieldType == InputType.Text ? InputType.Password : InputType.Text;
+    }
+
+    private void ShowConfirm()
+    {
+        _isConfirmShown = !_isConfirmShown;
+        _confirmFieldIcon = _confirmFieldIcon == Icons.Visibility ? Icons.VisibilityOff : Icons.Visibility;
+        _confirmFieldType = _confirmFieldType == InputType.Text ? InputType.Password : InputType.Text;
+    }
+
+    private async Task SaveProfile()
+    {
+        if (_currentUser != null)
+        {
+            _context.UserAccounts.Remove(_currentUser);
+            _currentUser = new UserAccount
+            {
+                Firstname = _model.Firstname,
+                Lastname = _model.Lastname,
+                Email = _model.Email,
+                PhoneNumber = _model.PhoneNumber,
+                BornAt = _model.BornAt ?? default,
+                PostalCode = _model.PostalCode,
+                Town = _model.Town,
+                Address = _model.Address,
+                Country = _model.Country,
+                Password = _currentUser.Password,
+                Role = _currentUser.Role
+            };
+            _context.UserAccounts.Add(_currentUser);
+            await _context.SaveChangesAsync();
+            await RefreshAsync();
+            await RefreshModel();
+            Snackbar.Add("Modifications enregistrées", Severity.Success);   
+        }
+        else
+        {
+            await RedirectHomeAsync();
+        }
+    }
+
+    private async Task SavePassword()
+    {
+        if (_currentUser != null)
+        {
+            if (!string.IsNullOrWhiteSpace(_passwordModel.Password) && !string.IsNullOrWhiteSpace(_passwordModel.Confirm) &&
+                _passwordModel.Password == _passwordModel.Confirm)
+            {
+                _context.UserAccounts.Remove(_currentUser);
+                _currentUser = new UserAccount
+                {
+                    Firstname = _model.Firstname,
+                    Lastname = _model.Lastname,
+                    Email = _model.Email,
+                    PhoneNumber = _model.PhoneNumber,
+                    BornAt = _model.BornAt ?? default,
+                    PostalCode = _model.PostalCode,
+                    Town = _model.Town,
+                    Address = _model.Address,
+                    Country = _model.Country,
+                    Password = BC.HashPassword(_passwordModel.Password),
+                    Role = _currentUser.Role
+                };
+                _context.UserAccounts.Add(_currentUser);
+                await _context.SaveChangesAsync();
+                await RefreshAsync();
+                _passwordModel = new();
+                Snackbar.Add("Modifications enregistrées", Severity.Success);
+            }
+            else
+            {
+                Snackbar.Add("Les mots de passe ne correspondent pas !", Severity.Error);
+            }
+        }
+        else
+        {
+            await RedirectHomeAsync();
+        }
+    }
+
+    private async Task RefreshAsync()
+    {
+        if (_currentUser != null)
+        {
+            _model.Firstname = _currentUser.Firstname ?? string.Empty;
+            _model.Lastname = _currentUser.Lastname ?? string.Empty;
+            _model.Email = _currentUser.Email;
+            _model.Address = _currentUser.Address ?? string.Empty;
+            _model.Town = _currentUser.Town ?? string.Empty;
+            _model.PostalCode = _currentUser.PostalCode;
+            _model.PhoneNumber = _currentUser.PhoneNumber ?? string.Empty;
+            StateHasChanged();
+        }
+        else
+        {
+            await RedirectHomeAsync();
+        }
+    }
+
+    private async Task RefreshModel()
+    {
+        var authService = (AuthenticationService)AuthStateProvider;
+        var user = await authService.GetCurrentUser();
+        if (user != null)
+        {
+            _currentUser = _context.UserAccounts.FirstOrDefault(x => x.Email == user.Email);
+            if (_currentUser != null)
+            {
+                _model.Firstname = _currentUser.Firstname ?? string.Empty;
+                _model.Lastname = _currentUser.Lastname ?? string.Empty;
+                _model.Email = _currentUser.Email;
+                _model.BornAt = _currentUser.BornAt;
+                _model.Address = _currentUser.Address ?? string.Empty;
+                _model.Town = _currentUser.Town ?? string.Empty;
+                _model.Country = _currentUser.Country ?? string.Empty; 
+                _model.PostalCode = _currentUser.PostalCode;
+                _model.PhoneNumber = _currentUser.PhoneNumber ?? string.Empty;
+                StateHasChanged();
+            }
+            else
+            {
+                await RedirectHomeAsync();
+            }
+        }
+        else
+        {
+            await RedirectHomeAsync();
+        }
+    }
+
+    private async Task LogoutUserAsync()
+    {
+        var authService = (AuthenticationService)AuthStateProvider;
+        await authService.UpdateAuthenticationState(null);
+        NavManager.NavigateTo("/");
+    }
+
+    public class GeneralModel
+    {
+        public string Firstname { get; set; } = null!;
+        public string Lastname { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string PhoneNumber { get; set; } = null!;
+        public DateTime? BornAt { get; set; }
+        public int PostalCode { get; set; }
+        public string Town { get; set; } = null!;
+        public string Address { get; set; } = null!;
+        public string Country { get; set; } = null!;
+    }
+
+    public class PasswordModel
+    {
+        public string Password = string.Empty;
+        public string Confirm = string.Empty;
+    }
+
+}

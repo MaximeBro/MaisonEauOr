@@ -17,7 +17,7 @@
                     </Authorized>
                 </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
-                <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="CheckUserSession"/>
+                <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="@CheckUserSession"/>
                 <MudIconButton Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
             </MudToolBar>
         </div>
@@ -82,7 +82,7 @@
     {
         if (_currentUser != null && _currentUser.Role != UserRole.Guest)
         {
-            // TODO: Redirect to personnal profile
+            NavManager.NavigateTo("/profile");
         }
         else
         {
