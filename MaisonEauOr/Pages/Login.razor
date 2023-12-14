@@ -88,17 +88,18 @@
         if (user != null)
         {
             var authService = (AuthenticationService)AuthStateProvider;
-            await authService.UpdateAuthentificationState(new UserSession
+            var userSession = new UserSession
             {
                 Identifier = user.Id,
-                UserName = $"{user.Firstname} {user.Lastname}",
+                UserName = user.Firstname!,
                 Role = user.Role
-            });
-            NavManager.NavigateTo("/admin-products");
+            };
+            await authService.UpdateAuthenticationState(userSession);
+            NavManager.NavigateTo("/");
         }
         else
         {
-            Snackbar.Add("Cet utilisateur n'existe pas !", Severity.Error, options =>
+            Snackbar.Add("Mauvais couple d'identifiants !", Severity.Error, options =>
             {
                 options.VisibleStateDuration = 2500;
                 options.ShowCloseIcon = false;

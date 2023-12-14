@@ -1,4 +1,6 @@
-﻿namespace MaisonEauOr.Models
+﻿using System.ComponentModel;
+
+namespace MaisonEauOr.Models
 {
     public class UserSession
     {
@@ -9,8 +11,13 @@
 
     public enum UserRole
     {
+        [Description("Visiteur")]
         Guest,
+        
+        [Description("Client")]
         Client,
+        
+        [Description("Administrateur")]
         Admin
     }
 }

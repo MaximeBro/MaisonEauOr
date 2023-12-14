@@ -42,7 +42,7 @@ public class AuthenticationService : AuthenticationStateProvider
         }
     }
 
-    public async Task UpdateAuthentificationState(UserSession? userSession)
+    public async Task UpdateAuthenticationState(UserSession? userSession)
     {
         ClaimsPrincipal claimsPrincipal;
 

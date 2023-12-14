@@ -1,4 +1,7 @@
-﻿<header>
+﻿@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+<header>
     <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="AlignItems.Center" Class="flex-wrap">
         <div class="d-flex justify-content-start flex-1">
             <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@toggle" id="burger"/>
@@ -8,9 +11,13 @@
         </MudLink>
         <div id="toolbar" class="d-flex justify-content-end flex-1">
             <MudToolBar>
-                <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4"/>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4" Href="/admin-panel"/>
+                    </Authorized>
+                </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
-                <MudIconButton Icon="@Icons.Person" Color="Color.Dark"/>
+                <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="CheckUserSession"/>
                 <MudIconButton Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
             </MudToolBar>
         </div>
@@ -59,6 +66,29 @@
 
     private string _burger = Icons.Menu;
     private string _style;
+
+    private UserSession? _currentUser;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var authService = (AuthenticationService)AuthStateProvider;
+            _currentUser = await authService.GetCurrentUser();
+        }
+    }
+
+    private void CheckUserSession()
+    {
+        if (_currentUser != null && _currentUser.Role != UserRole.Guest)
+        {
+            // TODO: Redirect to personnal profile
+        }
+        else
+        {
+            NavManager.NavigateTo("/signin");
+        }
+    }
     
     private void open(int num) {
         for (int i = 0; i < isOpen.Length; i++)

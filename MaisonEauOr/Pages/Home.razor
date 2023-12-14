@@ -34,7 +34,7 @@
 
     <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Découvrez nos produits</MudText>
     
-    @* Caroussel catérogies (parfums, sprays intérieur, cosmétiques) *@
+    @* Caroussel catégories (parfums, sprays intérieur, cosmétiques) *@
     <MudCarousel Class="px-16 py-4 mb-16 mud-full-width" Style="height: 520px; background-color: #F7E1C7;" ShowArrows ShowBullets="false" EnableSwipeGesture TData="object">
         <MudCarouselItem Transition="Transition.Slide">
             <MudStack Row Justify="Justify.SpaceEvenly">
@@ -103,18 +103,18 @@
         if (firstRender)
         {
             var authService = (AuthenticationService)AuthStateProvider;
-            var defaultSession = new UserSession
+            var userSession = await authService.GetCurrentUser();
+            if (userSession is null)
             {
-                Identifier = Guid.NewGuid(),
-                Role = UserRole.Guest,
-                UserName = string.Empty
-            };
-            await authService.UpdateAuthentificationState(defaultSession);
+                await authService.UpdateAuthenticationState(null);
+            }
             if (_context.UserAccounts.All(x => x.Email != "root@admin.meo"))
             {
                 _context = await Factory.CreateDbContextAsync();
                 _context.UserAccounts.Add(new UserAccount
                 {
+                    Firstname = "admin",
+                    Lastname = "meo",
                     Email = "root@admin.meo",
                     Password = BC.HashPassword("toor"),
                     Role = UserRole.Admin

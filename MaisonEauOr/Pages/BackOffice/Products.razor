@@ -3,12 +3,20 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject IDialogService DialogService
+@inject NavigationManager NavManager
 
 <PageTitle>Administration - Produits</PageTitle>
 
-<MudText Class="mt-4 ml-4" Typo="Typo.h3">Gestion des stocks</MudText>
-<MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Ajouter un produit</MudButton>
-<MudDataGrid T="ProductModel" Class="mx-8" Items="@_products" Bordered Hover Filterable Hideable Square Striped QuickFilter="@QuickFilter" FixedHeader>
+<MudText Class="ml-4" Typo="Typo.h3">Gestion des stocks</MudText>
+<MudStack Row>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Ajouter un produit</MudButton>
+    <MudSpacer/>
+    <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
+        Panel d'administration
+    </MudButton>
+</MudStack>
+
+<MudDataGrid T="ProductModel" Class="mx-8" Items="@_products" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Table des produits</MudText>
         <MudSpacer/>
@@ -21,11 +29,11 @@
         <PropertyColumn Title="Prix" Property="x => x.Price" Format="C"/>
         <PropertyColumn Title="Actif" Property="x => x.IsAvailable"/>
         <PropertyColumn Title="Date d'ajout" Property="x => x.AddedAt" Format="dd-MM-yyyy"/>
-        <TemplateColumn>
+        <TemplateColumn Filterable="false">
             <CellTemplate>
-                <MudStack Row>
-                    <MudIconButton Icon="@Icons.Edit" OnClick="() => EditProductAsync(context.Item)" />
-                    <MudIconButton Icon="@Icons.Delete" OnClick="() => DeleteProductAsync(context.Item)" />
+                <MudStack Row Justify="Justify.SpaceEvenly">
+                    <MudIconButton Icon="@Icons.Edit" OnClick="@(() => EditProductAsync(context.Item))" />
+                    <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteProductAsync(context.Item))" />
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
