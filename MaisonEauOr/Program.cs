@@ -8,12 +8,12 @@ using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthenticationCore();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationService>();
+builder.Services.AddAuthenticationCore();
 builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction => optionsAction.UseSqlite("Data Source=../meo-data/meo.db"));
 
 var app = builder.Build();
