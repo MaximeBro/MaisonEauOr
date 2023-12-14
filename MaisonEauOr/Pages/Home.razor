@@ -116,7 +116,8 @@
                 _context.UserAccounts.Add(new UserAccount
                 {
                     Email = "root@admin.meo",
-                    Password = BC.HashPassword("toor")
+                    Password = BC.HashPassword("toor"),
+                    Role = UserRole.Admin
                 });
                 await _context.SaveChangesAsync();
             }

@@ -1,0 +1,161 @@
+﻿@inject ISnackbar Snackbar
+@using Humanizer
+<MudDialog>
+    <DialogContent>
+        <MudStack Row="false">
+            <MudTextField T="string" @bind-Value="_productName" Label="Nom du produit"/>
+            <MudTextField T="string" @bind-Value="_description" Label="Description"/>
+            <MudSelect T="ProductCategory" @bind-Value="_selectedCategory" Variant="Variant.Text" Label="Catégorie" AnchorOrigin="Origin.BottomCenter">
+                @foreach (var categ in Enum.GetValues<ProductCategory>())
+                {
+                    <MudSelectItem Value="categ">@categ.Humanize()</MudSelectItem>
+                }
+            </MudSelect>
+            <MudStack Row>
+                <MudNumericField T="int" @bind-Value="_amountInStock" Min="0" Label="Quantité"/>
+                <MudNumericField T="double" @bind-Value="_price" Min="0" Label="Prix"/>
+            </MudStack>
+            <MudTable T="Option" Items="_options" Bordered Hover>
+                <HeaderContent>
+                    <MudTh>Nom de l'option</MudTh>
+                    <MudTh>Action</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.Name</MudTd>
+                    <MudTd>
+                        <MudTooltip Text="Supprimer">
+                            <MudIconButton Icon="@Icons.Delete" OnClick="() => DeleteOption(context)"/>
+                        </MudTooltip>
+                    </MudTd>
+                </RowTemplate>
+                <FooterContent>
+                    <MudTd>
+                        <MudTextField T="string" Class="mb-2" @bind-Value="_optionName" Label="Nom de l'option" Variant="Variant.Text"/>
+                    </MudTd>
+                    <MudTd>
+                        <MudTooltip Text="Valider" Arrow>
+                            <MudIconButton Icon="@Icons.CheckCircle" OnClick="AddOption"/>
+                        </MudTooltip>
+                    </MudTd>
+                </FooterContent>
+            </MudTable>
+            <MudCheckBox @bind-Checked="_isAvailable" Label="Actif"/>
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.CloudUpload" for="@context.Id">
+                        Upload Files
+                    </MudButton>
+                    @if (!string.IsNullOrWhiteSpace(_imageName))
+                    {
+                        <div class="d-flex">
+                            <MudText Class="mx-4" Typo="Typo.h6">@_imageName</MudText>
+                            <MudIconButton Icon="@Icons.Delete" OnClick="DeleteUploadedFile"/>
+                        </div>
+                    }
+                </ButtonTemplate>
+            </MudFileUpload>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Valider</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
+
+    private Guid _productId = Guid.NewGuid();
+    private string _productName = string.Empty;
+    private string _description = string.Empty;
+    private ProductCategory _selectedCategory;
+    private int _amountInStock;
+    private double _price;
+    private bool _isAvailable;
+    private string _optionName = string.Empty;
+    private List<Option> _options = new();
+    private string _imagePath = string.Empty;
+
+    private string _imageName = string.Empty;
+    private IBrowserFile? _currentImage;
+
+    public async Task AddProductAsync()
+    {
+        if (_currentImage != null)
+        {
+            await UploadFileAsync(_currentImage);
+        }
+        
+        var product = new ProductModel
+        {
+            Id = _productId,
+            Category = _selectedCategory,
+            Name = _productName,
+            Description = _description,
+            AmountInStock = _amountInStock,
+            Price = _price,
+            IsAvailable = _isAvailable,
+            AddedAt = DateTime.Now,
+            Options = _options.ToList(),
+            ImagePath = _imagePath
+        };
+
+        MudDialog.Close(product);
+    }
+
+    private void AddOption()
+    {
+        if (!string.IsNullOrWhiteSpace(_optionName))
+        {
+            _options.Add(new Option { Name = _optionName, ProductID = _productId });
+            _optionName = string.Empty;
+        }
+    }
+
+    private void DeleteOption(Option option)
+    {
+        _options.Remove(option);
+    }
+
+    private void UploadFile(IBrowserFile file)
+    {
+        _currentImage = file;
+        _imageName = file.Name;
+    }
+    
+    private async Task UploadFileAsync(IBrowserFile file)
+    {
+        try
+        {
+            _imageName = file.Name;
+            var fileStream = file.OpenReadStream(1000000000L);
+            _imagePath = $"{Directory.GetCurrentDirectory()}\\wwwroot\\images\\upload\\{file.Name}";
+            if (File.Exists(_imagePath))
+            {
+                Snackbar.Add($"Une image avec ce nom est déjà enregistrée !", Severity.Error);
+                _imagePath = string.Empty;
+                _imageName = string.Empty;
+                await fileStream.DisposeAsync();
+            }
+            else
+            {
+                var targetStream = new FileStream(_imagePath, FileMode.Create);
+                await fileStream.CopyToAsync(targetStream);
+                targetStream.Close();
+            }
+        }
+        catch (Exception e)
+        {
+            _imageName = string.Empty;
+            Snackbar.Add($"Une erreur est survenue : {e.Message}", Severity.Error);
+        }
+    }
+
+    private void DeleteUploadedFile()
+    {
+        _currentImage = null;
+        _imageName = string.Empty;
+    }
+
+}
