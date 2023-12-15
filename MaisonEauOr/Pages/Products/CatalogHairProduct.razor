@@ -1,4 +1,4 @@
-﻿@page "/catalogHairProduct"
+﻿@page "/catalog-hairProduct"
 @using MaisonEauOr.Models
 
 @inject IDbContextFactory<MeoDbContext> Factory
@@ -7,7 +7,14 @@
 
 <MudStack Class="mt-10" Row>
     <MudSpacer />
-    <MudButton Class="mr-16" Variant="Variant.Filled" StartIcon="@Icons.FilterAlt" Color="Color.Surface">Filtrer</MudButton>
+    <MudSelect T="string" @bind-Value="_selectedFilter" Style="max-width: 350px;" Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" Label="Filtrer" AnchorOrigin="Origin.BottomCenter">
+        <MudSelectItem T="string" Value="@("Tous")">Tous</MudSelectItem>
+        <MudSelectItem T="string" Value="@("A-Z")">A-Z</MudSelectItem>
+        <MudSelectItem T="string" Value="@("Z-A")">Z-A</MudSelectItem>
+        <MudSelectItem T="string" Value="@("Prix croissant")">Prix croissant</MudSelectItem>
+        <MudSelectItem T="string" Value="@("Prix décroissant")">Prix décroissant</MudSelectItem>
+    </MudSelect>
+
 </MudStack>
 
 <MudGrid Class="px-6" Spacing="5" Justify="Justify.Center">
@@ -30,11 +37,12 @@
 
 @code {
     private List<ProductModel> hairProductList = new List<ProductModel>();
+    private string _selectedFilter = "Tous";
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
-        hairProductList = _context.Products.Where(x => x.Category == ProductCategory.HairProduct).ToList();
+        hairProductList = _context.Products.Where(x => x.Category == ProductCategory.HairProduct && x.IsAvailable).ToList();
         foreach (var product in hairProductList)
         {
             product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
