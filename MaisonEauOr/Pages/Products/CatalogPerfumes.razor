@@ -7,12 +7,12 @@
 
 <MudStack Class="mt-10" Row>
     <MudSpacer />
-    <MudSelect T="string" Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" Label="Filtrer" AnchorOrigin="Origin.BottomCenter" >
-        <MudSelectItem T="string">Tous</MudSelectItem>
-        <MudSelectItem T="string">A-Z</MudSelectItem>
-        <MudSelectItem T="string">Z-A</MudSelectItem>
-        <MudSelectItem T="string">Prix croissant</MudSelectItem>
-        <MudSelectItem T="string">Prix décroissant</MudSelectItem>
+    <MudSelect T="string" @bind-Value="_selectedFilter" Style="max-width: 350px;" Variant="Variant.Filled" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" Label="Filtrer" AnchorOrigin="Origin.BottomCenter" >
+        <MudSelectItem T="string" Value="@("Tous")">Tous</MudSelectItem>
+        <MudSelectItem T="string" Value="@("A-Z")">A-Z</MudSelectItem>
+        <MudSelectItem T="string" Value="@("Z-A")">Z-A</MudSelectItem>
+        <MudSelectItem T="string" Value="@("Prix croissant")">Prix croissant</MudSelectItem>
+        <MudSelectItem T="string" Value="@("Prix décroissant")">Prix décroissant</MudSelectItem>
 </MudSelect>
 
 </MudStack>
@@ -35,13 +35,14 @@
     }
 </MudGrid>
 
-@code {
+    @code {
     private List<ProductModel> perfumeList = new List<ProductModel>();
+    private string _selectedFilter = "Tous";
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
-        perfumeList = _context.Products.Where(x => x.Category == ProductCategory.Perfume).ToList();
+        perfumeList = _context.Products.Where(x => x.Category == ProductCategory.Perfume && x.IsAvailable).ToList();
         foreach (var product in perfumeList)
         {
             product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
