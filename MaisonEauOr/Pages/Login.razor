@@ -59,7 +59,7 @@
 
     private InputType _passwordFieldType = InputType.Password;
     private string _passwordFieldIcon = Icons.VisibilityOff;
-    private bool _isPasswordShown = false;
+    private bool _isPasswordShown;
 
     private DialogOptions _dialogOptions = new DialogOptions
     {
@@ -97,9 +97,11 @@
 
         if (user != null)
         {
-            #if DEBUG // DO NOT FORGET TO DELETE THIS BEFORE DEPLOYMENT FOR PRODUCTION
-            await ValidateUser(user);
-            #endif
+            if (!user.DoubleAuth)
+            {
+                await ValidateUser(user);
+                return;
+            }
             
             var canReceiveNewCode = await DoubleAuthService.Check2ATokens(user);
             if (canReceiveNewCode)
@@ -113,7 +115,7 @@
                 if (delivered)
                 {
                     var parameters = new DialogParameters<DoubleAuthDialog> { { x => x.CurrentUser, user } };
-                    var dialog = await DialogService.ShowAsync<DoubleAuthDialog>("Authentification à deux facteurs", parameters);
+                    var dialog = await DialogService.ShowAsync<DoubleAuthDialog>("Authentification à deux facteurs", parameters, _dialogOptions);
                     var result = await dialog.Result;
 
                     if (result.Data is true)
@@ -129,7 +131,7 @@
             else
             {
                 var parameters = new DialogParameters<DoubleAuthDialog> { { x => x.CurrentUser, user } };
-                var dialog = await DialogService.ShowAsync<DoubleAuthDialog>("Authentification à deux facteurs", parameters);
+                var dialog = await DialogService.ShowAsync<DoubleAuthDialog>("Authentification à deux facteurs", parameters, _dialogOptions);
                 var result = await dialog.Result;
 
                 if (result.Data is true)

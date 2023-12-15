@@ -61,6 +61,15 @@
             <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SavePassword">Enregistrer</MudButton>
         </MudStack>
     </MudPaper>
+    <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
+        <MudText Class="my-3 ml-3" Typo="Typo.h6">Double authentification</MudText>
+        <MudStack Row>
+            <MudCheckBox @bind-Checked="_doubleAuth" Label="@DoubleAuthText" Color="Color.Tertiary"/>
+        </MudStack>
+        <MudStack Class="mt-6" Row Justify="Justify.Center">
+            <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveDoubleAuth">Enregistrer</MudButton>
+        </MudStack>
+    </MudPaper>
 </MudStack>
 <MudStack Class="mt-6 mb-8" Row Justify="Justify.Center">
     <MudPaper Class="py-2 px-12" Elevation="1" Outlined>
@@ -84,6 +93,9 @@
     private InputType _confirmFieldType = InputType.Password;
     private string _confirmFieldIcon = Icons.VisibilityOff;
     private bool _isConfirmShown;
+
+    private bool _doubleAuth;
+    private string DoubleAuthText => _doubleAuth ? "Authentification à deux facteurs activée (par mail)" : "Authentification à deux facteurs désactivée";
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,6 +149,7 @@
                 Address = _model.Address,
                 Country = _model.Country,
                 Password = _currentUser.Password,
+                DoubleAuth = _currentUser.DoubleAuth,
                 Role = _currentUser.Role
             };
             _context.UserAccounts.Add(_currentUser);
@@ -171,6 +184,7 @@
                     Address = _model.Address,
                     Country = _model.Country,
                     Password = BC.HashPassword(_passwordModel.Password),
+                    DoubleAuth = _currentUser.DoubleAuth,
                     Role = _currentUser.Role
                 };
                 _context.UserAccounts.Add(_currentUser);
@@ -183,6 +197,37 @@
             {
                 Snackbar.Add("Les mots de passe ne correspondent pas !", Severity.Error);
             }
+        }
+        else
+        {
+            await RedirectHomeAsync();
+        }
+    }
+
+    private async Task SaveDoubleAuth()
+    {
+        if (_currentUser != null)
+        {
+            _context.UserAccounts.Remove(_currentUser);
+            _currentUser = new UserAccount
+            {
+                Firstname = _currentUser.Firstname,
+                Lastname = _currentUser.Lastname,
+                Email = _currentUser.Email,
+                PhoneNumber = _currentUser.PhoneNumber,
+                BornAt = _currentUser.BornAt,
+                PostalCode = _currentUser.PostalCode,
+                Town = _currentUser.Town,
+                Address = _currentUser.Address,
+                Country = _currentUser.Country,
+                Password = _currentUser.Password,
+                DoubleAuth = _doubleAuth,
+                Role = _currentUser.Role
+            };
+            _context.UserAccounts.Add(_currentUser);
+            await _context.SaveChangesAsync();
+            await RefreshAsync();
+            Snackbar.Add("Modifications enregistrées", Severity.Success);
         }
         else
         {
@@ -227,6 +272,7 @@
                 _model.Country = _currentUser.Country ?? string.Empty; 
                 _model.PostalCode = _currentUser.PostalCode;
                 _model.PhoneNumber = _currentUser.PhoneNumber ?? string.Empty;
+                _doubleAuth = _currentUser.DoubleAuth;
                 StateHasChanged();
             }
             else

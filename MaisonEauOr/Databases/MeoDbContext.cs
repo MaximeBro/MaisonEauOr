@@ -6,6 +6,7 @@ namespace MaisonEauOr.Databases;
 public class MeoDbContext : DbContext
 {
     public DbSet<UserAccount> UserAccounts { get; set; }
+    public DbSet<AuthTokenModel> AuthTokens { get; set; }
     public DbSet<ProductModel> Products { get; set; }
     public DbSet<Option> Options { get; set; }
     
