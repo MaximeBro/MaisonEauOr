@@ -14,4 +14,5 @@ public class UserAccount
     public int PostalCode { get; set; }
     public UserRole Role { get; set; }
     public string Password { get; set; }
+    public bool DoubleAuth { get; set; } = true;
 }

@@ -117,7 +117,8 @@
                     Lastname = "meo",
                     Email = "root@admin.meo",
                     Password = BC.HashPassword("toor"),
-                    Role = UserRole.Admin
+                    Role = UserRole.Admin,
+                    DoubleAuth = false
                 });
                 await _context.SaveChangesAsync();
             }

@@ -14,17 +14,27 @@ builder.Services.AddMudServices();
 builder.Services.AddScoped<ProtectedSessionStorage>();
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationService>();
 builder.Services.AddAuthenticationCore();
-builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction => optionsAction.UseSqlite("Data Source=../meo-data/meo.db"));
+builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction =>
+{
+    optionsAction.UseSqlite("Data Source=../meo-data/meo.db");
+});
 builder.Services.AddTransient<DoubleAuthService>();
 builder.Services.AddSingleton<MailerService>();
 
 
 var app = builder.Build();
 
+using (var serviceScope = app.Services.CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetRequiredService<MeoDbContext>();
+    dbContext.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
+    app.UseHttpsRedirection();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
