@@ -27,6 +27,7 @@
         <PropertyColumn Title="Nom Produit" Property="x => x.Name"/>
         <PropertyColumn Title="Catégorie" Property="x => x.Category.Humanize()"/>
         <PropertyColumn Title="Prix" Property="x => x.Price" Format="C"/>
+        <PropertyColumn Title="Prix" Property="x => x.Tva" Format="P2"/>
         <PropertyColumn Title="Actif" Property="x => x.IsAvailable"/>
         <PropertyColumn Title="Date d'ajout" Property="x => x.AddedAt" Format="dd-MM-yyyy"/>
         <TemplateColumn Filterable="false">

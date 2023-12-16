@@ -257,7 +257,7 @@
     private async Task RefreshModel()
     {
         var authService = (AuthenticationService)AuthStateProvider;
-        var user = await authService.GetCurrentUser();
+        var user = await authService.GetCurrentUserAsync();
         if (user != null)
         {
             _currentUser = _context.UserAccounts.FirstOrDefault(x => x.Email == user.Email);

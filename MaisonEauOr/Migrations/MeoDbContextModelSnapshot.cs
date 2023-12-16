@@ -38,6 +38,36 @@ namespace MaisonEauOr.Migrations
                     b.ToTable("AuthTokens");
                 });
 
+            modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClientID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Option")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductAmount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ProductID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BasketProducts");
+                });
+
             modelBuilder.Entity("MaisonEauOr.Models.Option", b =>
                 {
                     b.Property<Guid>("Id")
@@ -87,6 +117,9 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Price")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Tva")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
@@ -141,6 +174,23 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAccounts");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
+                {
+                    b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MaisonEauOr.Models.UserAccount", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

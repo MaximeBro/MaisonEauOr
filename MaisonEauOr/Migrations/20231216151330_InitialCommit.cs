@@ -48,6 +48,7 @@ namespace MaisonEauOr.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Category = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<double>(type: "REAL", nullable: false),
+                    Tva = table.Column<double>(type: "REAL", nullable: false),
                     IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
                     AddedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false)
@@ -79,6 +80,43 @@ namespace MaisonEauOr.Migrations
                 {
                     table.PrimaryKey("PK_UserAccounts", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "BasketProducts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    UserId = table.Column<Guid>(type: "TEXT", nullable: true),
+                    ProductAmount = table.Column<int>(type: "INTEGER", nullable: false),
+                    Option = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BasketProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BasketProducts_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BasketProducts_UserAccounts_UserId",
+                        column: x => x.UserId,
+                        principalTable: "UserAccounts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BasketProducts_ProductID",
+                table: "BasketProducts",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BasketProducts_UserId",
+                table: "BasketProducts",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -86,6 +124,9 @@ namespace MaisonEauOr.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AuthTokens");
+
+            migrationBuilder.DropTable(
+                name: "BasketProducts");
 
             migrationBuilder.DropTable(
                 name: "Options");

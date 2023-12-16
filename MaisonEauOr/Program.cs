@@ -18,16 +18,16 @@ builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction =>
 {
     optionsAction.UseSqlite("Data Source=../meo-data/meo.db");
 });
-builder.Services.AddTransient<DoubleAuthService>();
+builder.Services.AddSingleton<DoubleAuthService>();
 builder.Services.AddSingleton<MailerService>();
-
+builder.Services.AddSingleton<BasketService>();
 
 var app = builder.Build();
 
 using (var serviceScope = app.Services.CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<MeoDbContext>();
-    dbContext.Database.Migrate();
+    dbContext.Database.EnsureCreated();
 }
 
 // Configure the HTTP request pipeline.
