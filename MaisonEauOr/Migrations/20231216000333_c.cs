@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MaisonEauOr.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCommit : Migration
+    public partial class c : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,6 +23,21 @@ namespace MaisonEauOr.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AuthTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BasketProducts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductAmount = table.Column<int>(type: "INTEGER", nullable: false),
+                    Option = table.Column<string>(type: "TEXT", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BasketProducts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -48,6 +63,7 @@ namespace MaisonEauOr.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: false),
                     Category = table.Column<int>(type: "INTEGER", nullable: false),
                     Price = table.Column<double>(type: "REAL", nullable: false),
+                    Tva = table.Column<double>(type: "REAL", nullable: false),
                     IsAvailable = table.Column<bool>(type: "INTEGER", nullable: false),
                     AddedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ImagePath = table.Column<string>(type: "TEXT", nullable: false)
@@ -86,6 +102,9 @@ namespace MaisonEauOr.Migrations
         {
             migrationBuilder.DropTable(
                 name: "AuthTokens");
+
+            migrationBuilder.DropTable(
+                name: "BasketProducts");
 
             migrationBuilder.DropTable(
                 name: "Options");

@@ -4,7 +4,7 @@
 <header>
     <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="AlignItems.Center" Class="flex-wrap">
         <div class="d-flex justify-content-start flex-1">
-            <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@toggle" id="burger"/>
+            <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@Toggle" id="burger"/>
         </div>
         <MudLink Href="/">
             <MudImage Src="images/logo.png" Alt="Maison Eau D'or" Height="76"></MudImage>
@@ -18,17 +18,26 @@
                 </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
                 <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="@CheckUserSession"/>
-                <MudIconButton Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                @if (_currentUser != null && _basketCount > 0)
+                {
+                    <MudBadge Overlap Color="Color.Primary" Content="@_basketCount">
+                        <MudIconButton OnClick="@(() => ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                    </MudBadge>
+                }
+                else
+                {
+                    <MudIconButton OnClick="@(() => ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                }
             </MudToolBar>
         </div>
     </MudStack>
     <nav style="@_style" class="navbar">
         <div class="dropdown-div">
-            <button onclick="@(()=> open(0))" class="dropbtn">
+            <button onclick="@(() => Open(0))" class="dropbtn">
                 Parfums
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content @(isOpen[0]?"show":"")">
+            <div class="dropdown-content @(_isOpen[0] ? "show" : "")">
                 <a Href="#">Le Bar à parfums</a>
                 <a Href="#">Les Evasions Gourmandes</a>
             </div>
@@ -37,52 +46,61 @@
         <a Href="#">Muscs Tahara intime</a>
         <a Href="#">Cosmétiques</a>
         <div class="dropdown-div">
-            <button onclick="@(()=> open(1))" class="dropbtn">
+            <button onclick="@(() => Open(1))" class="dropbtn">
                 Brumes
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content @(isOpen[1]?"show":"")">
+            <div class="dropdown-content @(_isOpen[1] ? "show" : "")">
                 <a Href="#">Brumes RP</a>
                 <a Href="#">Brumes Gris Montaigne</a>
             </div>
         </div>
         <div Class="dropdown-div">
-            <button onclick="@(()=> open(2))" class="dropbtn">
+            <button onclick="@(() => Open(2))" class="dropbtn">
                 Produits Capillaire
                 <i class="fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content @(isOpen[2]?"show":"")">
+            <div class="dropdown-content @(_isOpen[2] ? "show" : "")">
                 <a Href="#">KeraQueens</a>
                 <a Href="#">Rose Baie</a>
                 <a Href="#">RedOne</a>
             </div>
         </div>
     </nav>
+    <BasketDrawer @ref="_drawer"/>
 </header>
 
 @code
 {
-    private bool[] isOpen = new bool[3];
-
-    private string _burger = Icons.Menu;
-    private string _style;
-
     private UserSession? _currentUser;
+    private BasketDrawer _drawer = new();
+    private int _basketCount = 0;
+
+    private bool[] _isOpen = new bool[3];
+    private string _burger = Icons.Menu;
+    private string? _style;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             var authService = (AuthenticationService)AuthStateProvider;
-            _currentUser = await authService.GetCurrentUser();
+            _currentUser = await authService.GetCurrentUserAsync();
+            _drawer.CurrentUser = _currentUser;
         }
     }
 
     public async Task RefreshUserSession()
     {
-        var authService = (AuthenticationService)AuthStateProvider;
-        _currentUser = await authService.GetCurrentUser();
+        if (AuthStateProvider != null)
+        {
+            var authService = (AuthenticationService)AuthStateProvider;
+            _currentUser = await authService.GetCurrentUserAsync();
+            _drawer.CurrentUser = _currentUser;
+        }
     }
+
+    public void RefreshBasketCount(int count) => _basketCount = _currentUser != null ? count : 0;
 
     private void CheckUserSession()
     {
@@ -95,15 +113,21 @@
             NavManager.NavigateTo("/signin");
         }
     }
-    
-    private void open(int num) {
-        for (int i = 0; i < isOpen.Length; i++)
+
+    private void ToggleDrawer(bool toggle = true)
+    {
+        _ = _drawer.ToggleDrawer(toggle);
+    }
+
+    private void Open(int num)
+    {
+        for (int i = 0; i < _isOpen.Length; i++)
         {
-            isOpen[i] = (i == num && !isOpen[i]);
+            _isOpen[i] = (i == num && !_isOpen[i]);
         }
     }
 
-    private void toggle()
+    private void Toggle()
     {
         if (_burger == Icons.Menu)
         {

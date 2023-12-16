@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231215102053_InitialCommit")]
-    partial class InitialCommit
+    [Migration("20231216000333_c")]
+    partial class c
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,29 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AuthTokens");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClientID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Option")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductAmount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ProductID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BasketProducts");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.Option", b =>
@@ -90,6 +113,9 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Price")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Tva")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");

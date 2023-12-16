@@ -11,6 +11,7 @@ public class ProductModel
     public string Description { get; set; }
     public ProductCategory Category { get; set; }
     public double Price { get; set; }
+    public double Tva { get; set; }
     public bool IsAvailable { get; set; }
     public DateTime AddedAt { get; set; }
     [NotMapped] 

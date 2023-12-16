@@ -1,0 +1,167 @@
+@inject BasketService BasketService
+@inject NavigationManager NavManager
+@inject ISnackbar Snackbar
+
+<MudDrawer @bind-Open="_toggleDrawer" Anchor="Anchor.End" Elevation="1" Variant="DrawerVariant.Temporary" Width="350px" Height="100%">
+    <MudDrawerHeader>
+        <MudIconButton Class="absolute mt-n1 ml-n2" Icon="@Icons.ArrowForwardIos" OnClick="@(() => ToggleDrawer(false))" Color="Color.Dark"/>
+        <MudStack Class="flex-grow-1" Row="false">
+            <MudText Typo="Typo.h6" Align="Align.Center">Panier</MudText>
+            <MudDivider Style="border-color: black!important;"/>
+        </MudStack>
+    </MudDrawerHeader>
+    <MudDrawerContainer Style="height: 100%!important;">
+        @if (CurrentUser is null)
+        {
+            <MudStack Style="height: 100%" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudText>Vous n'êtes pas connecté !</MudText>
+                <MudLink Href="/signin" Underline="Underline.Hover">Cliquez ici pour vous connecter</MudLink>
+            </MudStack>
+            return;
+        }
+
+        @if (_basketProducts.Any())
+        {
+            <MudStack Row="false">
+                @foreach (var product in _basketProducts)
+                {
+                    <MudStack Row>
+                        <MudStack>
+                            <MudImage Src="@product.Product.ImagePath" Alt="@product.Product.Name" Width="88" Height="88"/>
+                        </MudStack>
+                        <MudStack Row="false">
+                            <MudStack Row>
+                                <MudText Align="Align.Left" Typo="Typo.h6">
+                                    <b>@product.Product.Name</b>
+                                </MudText>
+                                <MudSpacer/>
+                                <MudIconButton Icon="@Icons.Delete" Color="Color.Dark" OnClick="@(async() => await DeleteFromBasketAsync(product))"/>
+                            </MudStack>
+                            <MudStack>
+                                <MudStack Row="false">
+                                    <MudStack Row>
+                                        <MudText Align="Align.Left">
+                                            <b>OPTION</b>
+                                        </MudText>
+                                        <MudText Align="Align.Left">@product.OptionText</MudText>
+                                    </MudStack>
+                                    <MudStack Row>
+                                        <MudNumericField T="int" @bind-Value="@product.ProductAmount" Step="1" DisableUnderLine Min="1"/>
+                                        <MudSpacer/>
+                                        <MudText>
+                                            <b>@product.TotalPrice</b>
+                                        </MudText>
+                                    </MudStack>
+                                </MudStack>
+                            </MudStack>
+                        </MudStack>
+                    </MudStack>
+                }
+            </MudStack>
+            <MudStack Class="fixed" Style="bottom: 0; width: 350px; background-color: #dcdcdc;" Row="false">
+                <MudExpansionPanels Elevation="0">
+                    <MudExpansionPanel Text="Informations" Style="background-color: #eeeeee;">
+                        <MudTextField T="string" @bind-Value="_comment" Class="mb-4" Lines="3" MaxLength="300" Variant="Variant.Outlined"
+                                      Placeholder="Ajouter une remarque pour le commerçant (optionnel)"/>
+                        <MudDivider Style="border-color: black!important;"/>
+                        <MudStack Class="my-2" Row>
+                            <MudText Align="Align.Left">Coût total</MudText>
+                            <MudSpacer/>
+                            <MudText Align="Align.Right">@GetTotal().ToString("C")</MudText>
+                        </MudStack>
+                        <MudDivider Style="border-color: black!important;"/>
+                        <MudStack Class="my-2" Row>
+                            <MudText Align="Align.Left">Livraison</MudText>
+                            <MudSpacer/>
+                            <MudText Align="Align.Right">calculé au paiement</MudText>
+                        </MudStack>
+                        <MudDivider Style="border-color: black!important;"/>
+                        <MudStack Class="mt-2" Row>
+                            <MudText Align="Align.Left">
+                                <b>Total</b>
+                            </MudText>
+                            <MudSpacer/>
+                            <MudText Align="Align.Right">
+                                <b>@GetTotalWithTva().ToString("C")</b>
+                            </MudText>
+                        </MudStack>
+                        <MudStack>
+                            <MudText Typo="Typo.body2" Align="Align.Left">dont TVA : @GetTotalTva().ToString("C")</MudText>
+                        </MudStack>
+                    </MudExpansionPanel>
+                </MudExpansionPanels>
+                <MudStack Class="px-6 pb-4" Row Justify="Justify.Center">
+                    <MudButton Color="Color.Dark" Variant="Variant.Filled" FullWidth>Payer @GetTotal().ToString("C")</MudButton>
+                </MudStack>
+            </MudStack>
+        }
+        else
+        {
+            <MudStack Style="height: 100%" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudText Align="Align.Center">Votre panier est vide...</MudText>
+                <MudLink OnClick="@RedirectToProducts" Underline="Underline.Hover">Découvrez nos produits</MudLink>
+            </MudStack>
+        }
+    </MudDrawerContainer>
+</MudDrawer>
+
+@code {
+    public UserSession? CurrentUser { get; set; }
+    private List<BasketProductModel> _basketProducts = new();
+ 
+    private bool _toggleDrawer;
+    
+    // Not bind for now, optional
+    private string _comment = string.Empty;
+
+    private async Task RefreshBasketAsync()
+    {
+        if (CurrentUser != null)
+        {
+            _basketProducts = await BasketService.GetBasketProductsAsync(CurrentUser);
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteFromBasketAsync(BasketProductModel product)
+    {
+        await BasketService.RemoveBasketProduct(product);
+        await RefreshBasketAsync();
+        StateHasChanged();
+    }
+
+    private async Task UpdateBasketProduct(BasketProductModel product)
+    {
+        await BasketService.UpdateBasketProduct(product);
+        await RefreshBasketAsync();
+        StateHasChanged();
+    }
+
+    private void RedirectToProducts()
+    {
+        _toggleDrawer = false;
+        StateHasChanged();
+        NavManager.NavigateTo("/");
+    }
+
+    public async Task ToggleDrawer(bool toggle)
+    {
+        _toggleDrawer = toggle;
+        if (toggle) await RefreshBasketAsync(); 
+    }
+    
+    private double GetTotal()
+    {
+        return _basketProducts.Sum(x => x.Product.Price * x.ProductAmount);
+    }
+
+    private double GetTotalWithTva()
+    {
+        return _basketProducts.Sum(x => x.Product.Price * (1 + x.Product.Tva) * x.ProductAmount);
+    }
+
+    private double GetTotalTva()
+    {
+        return _basketProducts.Sum(x => (1 + x.Product.Tva) * x.Product.Price * x.ProductAmount);
+    }
+}

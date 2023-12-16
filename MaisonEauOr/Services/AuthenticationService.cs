@@ -67,7 +67,7 @@ public class AuthenticationService : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
     }
 
-    public async Task<UserSession?> GetCurrentUser()
+    public async Task<UserSession?> GetCurrentUserAsync()
     {
         var res = await _sessionStorage.GetAsync<UserSession>("UserSession");
         return res.Success ? res.Value : null;
