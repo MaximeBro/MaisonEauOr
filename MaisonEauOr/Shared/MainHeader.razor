@@ -1,5 +1,7 @@
-﻿@inject NavigationManager NavManager
+﻿@using System.ComponentModel
+@inject NavigationManager NavManager
 @inject AuthenticationStateProvider AuthStateProvider
+@inject BasketService BasketService
 
 <header>
     <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="AlignItems.Center" Class="flex-wrap">
@@ -18,16 +20,7 @@
                 </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
                 <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="@CheckUserSession"/>
-                @if (_currentUser != null && _basketCount > 0)
-                {
-                    <MudBadge Overlap Color="Color.Primary" Content="@_basketCount">
-                        <MudIconButton OnClick="@(() => ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
-                    </MudBadge>
-                }
-                else
-                {
-                    <MudIconButton OnClick="@(() => ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
-                }
+                <MudIconButton OnClick="@(async() => await ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
             </MudToolBar>
         </div>
     </MudStack>
@@ -38,34 +31,15 @@
                 <i class="fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content @(_isOpen[0] ? "show" : "")">
-                <a Href="#">Le Bar à parfums</a>
-                <a Href="#">Les Evasions Gourmandes</a>
+                <a href="/catalog-perfumes">Le Bar à parfums</a>
+                <a href="/catalog-gourmets">Les Evasions Gourmandes</a>
             </div>
         </div>
-        <a Href="#">Maison</a>
-        <a Href="#">Muscs Tahara intime</a>
-        <a Href="#">Cosmétiques</a>
-        <div class="dropdown-div">
-            <button onclick="@(() => Open(1))" class="dropbtn">
-                Brumes
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content @(_isOpen[1] ? "show" : "")">
-                <a Href="#">Brumes RP</a>
-                <a Href="#">Brumes Gris Montaigne</a>
-            </div>
-        </div>
-        <div Class="dropdown-div">
-            <button onclick="@(() => Open(2))" class="dropbtn">
-                Produits Capillaire
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content @(_isOpen[2] ? "show" : "")">
-                <a Href="#">KeraQueens</a>
-                <a Href="#">Rose Baie</a>
-                <a Href="#">RedOne</a>
-            </div>
-        </div>
+        <a href="/catalog-homes">Maison</a>
+        <a href="/catalog-musks">Muscs Tahara intime</a>
+        <a href="/catalog-cosmetics">Cosmétiques</a>
+        <a href="/catalog-mists">Brumes</a>
+        <a href="/catalog-hairproducts">Produits capillaire</a>
     </nav>
     <BasketDrawer @ref="_drawer"/>
 </header>
@@ -74,7 +48,6 @@
 {
     private UserSession? _currentUser;
     private BasketDrawer _drawer = new();
-    private int _basketCount = 0;
 
     private bool[] _isOpen = new bool[3];
     private string _burger = Icons.Menu;
@@ -100,8 +73,6 @@
         }
     }
 
-    public void RefreshBasketCount(int count) => _basketCount = _currentUser != null ? count : 0;
-
     private void CheckUserSession()
     {
         if (_currentUser != null && _currentUser.Role != UserRole.Guest)
@@ -114,9 +85,9 @@
         }
     }
 
-    private void ToggleDrawer(bool toggle = true)
+    private async Task ToggleDrawer(bool toggle = true)
     {
-        _ = _drawer.ToggleDrawer(toggle);
+        await _drawer.ToggleDrawer(toggle);
     }
 
     private void Open(int num)

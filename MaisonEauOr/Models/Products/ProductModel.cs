@@ -40,5 +40,8 @@ public enum ProductCategory
     MuscTahara,
     
     [Description("Parfum")]
-    Perfume
+    Perfume,
+    
+    [Description("Parfum Évasion Gourmande")]
+    GourmetPerfurme
 }

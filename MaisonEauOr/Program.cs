@@ -20,7 +20,7 @@ builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction =>
 });
 builder.Services.AddSingleton<DoubleAuthService>();
 builder.Services.AddSingleton<MailerService>();
-builder.Services.AddScoped<BasketService>();
+builder.Services.AddSingleton<BasketService>();
 
 var app = builder.Build();
 

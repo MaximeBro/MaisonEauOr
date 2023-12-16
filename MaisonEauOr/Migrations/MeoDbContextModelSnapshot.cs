@@ -56,7 +56,14 @@ namespace MaisonEauOr.Migrations
                     b.Property<Guid>("ProductID")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProductID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("BasketProducts");
                 });
@@ -167,6 +174,23 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAccounts");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
+                {
+                    b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MaisonEauOr.Models.UserAccount", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

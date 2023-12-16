@@ -1,17 +1,18 @@
 ﻿@page "/catalog-cosmetics"
 
 @inject IDbContextFactory<MeoDbContext> Factory
+@inject BasketService BasketService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ISnackbar Snackbar
 
-<PageTitle>Maison eau d'or - Cosmétiques</PageTitle>
+<PageTitle>Maison eau d'or - Articles</PageTitle>
 
 <MudContainer Class="px-16" MaxWidth="MaxWidth.ExtraLarge">
     <MudGrid>
-        <MudItem xs="2">
+        <MudItem xs="6">
             <MudText Align="Align.Left" Typo="Typo.h4"><b>Cosmétiques</b></MudText>
         </MudItem>
-        <MudItem xs="8"></MudItem>
+        <MudItem xs="4"></MudItem>
         <MudItem xs="2">
             <MudSelect T="string" ValueChanged="@ToggleFilter" MultiSelection="false" Class="flex-grow-0" Style="max-width: 220px; min-width: 220px;" @bind-Text="_selectedFilter"
                        Variant="Variant.Outlined" Label="Filtrer" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
@@ -91,9 +92,12 @@
                         ProductAmount = 1,
                         Option = product.Options.FirstOrDefault()?.Name
                     };
-                    
-                    _context.BasketProducts.Add(basketProduct);
-                    await _context.SaveChangesAsync();
+
+                    var added = await BasketService.TryAddToBasketAsync(basketProduct, product);
+                    if (added > -1)
+                    {
+                        Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
+                    }
                 }
                 else
                 {
