@@ -3,7 +3,7 @@
 @inject BasketService BasketService
 @inject LocalizationService Lang
 
-<header>
+<header class="mb-16">
     <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="AlignItems.Center" Class="flex-wrap">
         <div class="d-flex justify-content-start flex-1">
             <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@Toggle" id="burger"/>
@@ -26,7 +26,9 @@
             <MudToolBar>
                 <AuthorizeView Roles="Admin">
                     <Authorized>
-                        <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4" Href="/admin-panel"/>
+                        <MudTooltip Class="ml-4" Text="Panel d'administration" Arrow>
+                            <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4" Href="/admin-panel"/>
+                        </MudTooltip>
                     </Authorized>
                 </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
