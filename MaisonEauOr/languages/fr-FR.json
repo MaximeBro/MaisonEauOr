@@ -1,0 +1,37 @@
+{
+  "firstname_label": "Pr�nom",
+  "lastname_label": "Nom",
+  "email_label": "Email",
+  "phone_label": "T�l�phone",
+  "birthdate_label": "Date de naissance",
+  "postalcode_label": "Code postal",
+  "town_label": "Ville",
+  "address_label": "Adresse",
+  "country_label": "Pays",
+  "password_label": "Mot de passe",
+  "confirm_password_label": "Confirmer",
+  "user_status_label": "Status de l'utilisateur",
+
+  "password_mismatch_error": "Les mots de passe ne correspondent pas !",
+  "existing_user_error": "Un utilisateur existe d�j� avec cet email !",
+
+  "create_user_button": "Cr�er un utilisateur",
+
+  "product_name_label": "Nom du produit",
+  "description_label": "Description",
+  "category_label": "Cat�gorie",
+  "quantity_label": "Quantit�",
+  "price_label": "Prix",
+  "option_name_label": "Nom de l'option",
+  "active_label": "Actif",
+  "upload_files_button": "Upload Files",
+  "validate_button": "Valider",
+
+  "welcome": "Welcome",
+  "enterYourName": "Enter your name",
+  "start": "Start",
+  "learnMore": "Learn more",
+  "madeBy": "Made by",
+  "viewSource": "View source",
+  "privacyAndPolicy": "Privacy and Policy"
+}
