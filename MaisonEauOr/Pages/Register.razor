@@ -10,13 +10,15 @@
 
 <EditForm Model="_model" OnValidSubmit="OnValidSubmitAsync">
     <DataAnnotationsValidator/>
-    <MudContainer Class="d-flex justify-center align-center" Style="height: 100vh; width: 100vw;" Fixed>
+    <MudContainer Class="d-flex justify-center align-center" Style="min-height: 100vh; width: 100vw;" Fixed>
         <MudCard Class="align-self-center rounded-3 mx-auto px-10" Elevation="0">
             <MudCardHeader>
                 <CardHeaderContent>
                     <MudStack Row="false">
-                        <MudStack Row>
-                            <MudImage Fluid Src="/images/logo.png" Width="300"/>
+                        <MudStack Row Justify="Justify.Center">
+                            <MudLink Href="/">
+                                <MudImage Fluid Src="/images/logo.png" Width="300"/>
+                            </MudLink>
                         </MudStack>
                     </MudStack>
                     <MudText Align="Align.Center" Typo="Typo.h3">S'inscrire</MudText>
@@ -42,9 +44,9 @@
                 </MudStack>
                 <MudStack Row Justify="Justify.SpaceBetween">
                     <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
-                                     For="@(() => _model.PostalCode)" Style="max-width: 150px;" Variant="Variant.Text"/>
+                                     For="@(() => _model.PostalCode)" Variant="Variant.Text"/>
                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
-                                  For="@(() => _model.Town)" Style="max-width: 260px;" Variant="Variant.Text"/>
+                                  For="@(() => _model.Town)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
@@ -63,9 +65,9 @@
                                   For="@(() => _model.Confirm)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
-                    <MudCheckBox @bind-Checked="_conditionsAccepted" Color="Color.Dark" Required />
+                    <MudCheckBox @bind-Checked="_conditionsAccepted" Color="Color.Dark" Required/>
                     <MudText>
-                        En envoyant un message, j'accepte les <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">Conditions générales</MudLink> et la 
+                        En envoyant un message, j'accepte les <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">Conditions générales</MudLink> et la
                         <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">Politique de confidentialité</MudLink>,
                         et j'autorise Maison Eau D'or à traiter mes données afin de répondre à mon message.
                     </MudText>
@@ -95,7 +97,7 @@
     private InputType _passwordFieldType = InputType.Password;
     private string _passwordFieldIcon = Icons.VisibilityOff;
     private bool _isPasswordShown;
- 
+
     private InputType _confirmFieldType = InputType.Password;
     private string _confirmFieldIcon = Icons.VisibilityOff;
     private bool _isConfirmShown;
@@ -109,13 +111,13 @@
 
     private void ShowPassword()
     {
-        if (_isPasswordShown) 
+        if (_isPasswordShown)
         {
             _isPasswordShown = false;
             _passwordFieldIcon = Icons.VisibilityOff;
             _passwordFieldType = InputType.Password;
         }
-        else 
+        else
         {
             _isPasswordShown = true;
             _passwordFieldIcon = Icons.Visibility;
@@ -123,16 +125,16 @@
         }
         StateHasChanged();
     }
-    
+
     private void ShowConfirm()
     {
-        if (_isConfirmShown) 
+        if (_isConfirmShown)
         {
             _isConfirmShown = false;
             _confirmFieldIcon = Icons.VisibilityOff;
             _confirmFieldType = InputType.Password;
         }
-        else 
+        else
         {
             _isConfirmShown = true;
             _confirmFieldIcon = Icons.Visibility;
@@ -154,7 +156,7 @@
             });
             return;
         }
-        
+
         if (!_conditionsAccepted)
         {
             Snackbar.Add("Veuillez accepter nos conditions générales et notre politique de confidentialité.", Severity.Error, options =>
@@ -165,7 +167,7 @@
             });
             return;
         }
-        
+
         if (users.All(x => x.Email != _model.Email))
         {
             var user = new UserAccount
@@ -174,7 +176,7 @@
                 Lastname = _model.Lastname,
                 Email = _model.Email,
                 PhoneNumber = _model.PhoneNumber,
-                BornAt = _model.BornAt?? default,
+                BornAt = _model.BornAt ?? default,
                 PostalCode = _model.PostalCode,
                 Town = _model.Town,
                 Address = _model.Address,
@@ -204,4 +206,5 @@
             });
         }
     }
+
 }

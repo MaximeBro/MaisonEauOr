@@ -5,38 +5,52 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject IHttpContextAccessor HttpContextAccessor
 @inject LocalizationService Lang
+@inject NavigationManager NavManager
 
 <PageTitle>Maison eau d'or</PageTitle>
 
-<MudContainer Class="px-0" MaxWidth="MaxWidth.ExtraExtraLarge">
+<MudContainer Class="px-0" Style="overflow-x: hidden;" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudStack Row>
         <MudImage Style="width: 100vw;" Src="images/home/bar.png"/>
     </MudStack>
     <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Nos meilleures ventes</MudText>
-    
-    <MudStack Class="mb-16" Row Justify="Justify.SpaceEvenly">
-        <MudStack Row="false" Justify="Justify.Center">
-            <MudImage Src="images/home/ahlam.png" Height="400"/>
-            <MudText Align="Align.Center" Typo="Typo.h6"><b>Ahlam</b></MudText>
-            <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
-            <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
-        </MudStack>
-        <MudStack Row="false" Justify="Justify.Center">
-            <MudImage Src="images/home/magic_aisha.png" Height="400"/>
-            <MudText Align="Align.Center" Typo="Typo.h6"><b>Magic Aïsha</b></MudText>
-            <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
-            <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
-        </MudStack>
-        <MudStack Row="false" Justify="Justify.Center">
-            <MudImage Src="images/home/supreme_flower.png" Height="400"/>
-            <MudText Align="Align.Center" Typo="Typo.h6"><b>Pure Evasion</b></MudText>
-            <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
-            <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
-        </MudStack>
-    </MudStack>
+    <MudGrid Class="mb-16" Style="max-width: 100%;" Justify="Justify.SpaceEvenly">
+        <MudItem xs="12" md="6" lg="3">
+            <MudStack Row="false" Justify="Justify.Center">
+                <div class="d-flex" style="height: 400px!important; width: auto; max-width: 100%;">
+                    <MudImage Src="images/home/ahlam.png" Fluid/>
+                </div>
+                <MudText Align="Align.Center" Typo="Typo.h6">
+                    <b>Ahlam</b>
+                </MudText>
+                <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
+                <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
+            </MudStack>
+        </MudItem>
+        <MudItem xs="12" md="6" lg="3">
+            <MudStack Row="false" Justify="Justify.Center">
+                <MudImage Src="images/home/magic_aisha.png" Height="400" Style="width: auto;" />
+                <MudText Align="Align.Center" Typo="Typo.h6">
+                    <b>Magic Aïsha</b>
+                </MudText>
+                <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
+                <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
+            </MudStack>
+        </MudItem>
+        <MudItem xs="12" md="6" lg="3">
+            <MudStack Row="false" Justify="Justify.Center">
+                <MudImage Src="images/home/supreme_flower.png" Height="400" Style="width: auto;" />
+                <MudText Align="Align.Center" Typo="Typo.h6">
+                    <b>Pure Evasion</b>
+                </MudText>
+                <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
+                <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
     
     <MudText Class="my-8" style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Découvrez nos produits</MudText>
-    
+
     @* Caroussel catégories (parfums, sprays intérieur, cosmétiques) *@
     <MudCarousel Class="px-16 py-4 mb-16 mud-full-width" Style="height: 520px; background-color: #F7E1C7;" ShowArrows ShowBullets="false" EnableSwipeGesture TData="object">
         <MudCarouselItem Transition="Transition.Slide">
@@ -72,18 +86,22 @@
             </MudStack>
         </MudCarouselItem>
     </MudCarousel>
-    
+
     @* Description boutique avec photo réduite bar à parfum *@
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
         <MudStack Class="py-8" Row>
             <MudStack Class="mr-8 px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
-                <MudText Typo="Typo.h5" Align="Align.Center"><b>Le Bar à parfum</b></MudText>
-                <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200" />
+                <MudText Typo="Typo.h5" Align="Align.Center">
+                    <b>Le Bar à parfum</b>
+                </MudText>
+                <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200"/>
                 <MudText Align="Align.Center">Bienvenue dans notre bar à parfum</MudText>
                 <MudText Align="Align.Center">Découvrez le concept original de maison eau d'or situé au 123 Avenue René Coté au Havre</MudText>
                 <MudText Align="Align.Center">Nous proposons des collections uniques de parfums et de sprays d'intérieur</MudText>
-                <MudSpacer />
-                <MudButton Class="rounded-lg mx-auto mb-8" Style="background-color: #F7E1C7; color: #916043;" EndIcon="@Icons.KeyboardArrowRight" Variant="Variant.Filled">Découvrir</MudButton>
+                <MudSpacer/>
+                <MudButton Class="rounded-lg mx-auto mb-8" Style="background-color: #F7E1C7; color: #916043;" OnClick="@(() => NavManager.NavigateTo("/about"))" EndIcon="@Icons.KeyboardArrowRight" Variant="Variant.Filled">
+                    Découvrir
+                </MudButton>
             </MudStack>
             <MudStack Class="flex-grow-1" Style="max-width: 1400px;">
                 <MudImage Src="images/home/bar.png" Style="width: 100%; height: auto;"/>
@@ -102,7 +120,7 @@
         var culture = HttpContextAccessor.HttpContext!.Request.Headers["Accept-Language"];
         var regex = new Regex(@"\b([a-z]{2}-[a-z]{2}|[a-z]{2}-[a-z]{2})\b", RegexOptions.IgnoreCase);
         var match = regex.Match(culture.ToString()); // Gets first accepted language (preferred)
-        
+
         if (match.Success)
         {
             await Lang.SetLanguage(match.Value);

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231218090359_AddsProductsToUser")]
-    partial class AddsProductsToUser
+    [Migration("20231218130414_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

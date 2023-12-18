@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MaisonEauOr.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCommit : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -88,7 +88,6 @@ namespace MaisonEauOr.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     ProductID = table.Column<Guid>(type: "TEXT", nullable: false),
                     ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    UserId = table.Column<Guid>(type: "TEXT", nullable: true),
                     ProductAmount = table.Column<int>(type: "INTEGER", nullable: false),
                     Option = table.Column<string>(type: "TEXT", nullable: true)
                 },
@@ -102,21 +101,22 @@ namespace MaisonEauOr.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BasketProducts_UserAccounts_UserId",
-                        column: x => x.UserId,
+                        name: "FK_BasketProducts_UserAccounts_ClientID",
+                        column: x => x.ClientID,
                         principalTable: "UserAccounts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BasketProducts_ClientID",
+                table: "BasketProducts",
+                column: "ClientID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BasketProducts_ProductID",
                 table: "BasketProducts",
                 column: "ProductID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BasketProducts_UserId",
-                table: "BasketProducts",
-                column: "UserId");
         }
 
         /// <inheritdoc />

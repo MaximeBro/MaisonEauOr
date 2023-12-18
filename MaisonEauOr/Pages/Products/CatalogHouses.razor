@@ -7,21 +7,25 @@
 
 <PageTitle>Maison eau d'or - Articles</PageTitle>
 
-<MudContainer Class="px-16" MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer Class="px-16" Style="height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
     <MudGrid>
-        <MudItem xs="6">
-            <MudText Align="Align.Left" Typo="Typo.h4"><b>Maison</b></MudText>
+        <MudItem xs="12" sm="6">
+            <MudText Align="Align.Left" Typo="Typo.h4">
+                <b>Maison</b>
+            </MudText>
         </MudItem>
-        <MudItem xs="4"></MudItem>
-        <MudItem xs="2">
-            <MudSelect T="string" ValueChanged="@ToggleFilter" MultiSelection="false" Class="flex-grow-0" Style="max-width: 220px; min-width: 220px;" @bind-Text="_selectedFilter"
-                       Variant="Variant.Outlined" Label="Filtrer" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
-                <MudSelectItem Value="@("all")">Tous</MudSelectItem>
-                <MudSelectItem Value="@("A-Z")">A-Z</MudSelectItem>
-                <MudSelectItem Value="@("Z-A")">Z-A</MudSelectItem>
-                <MudSelectItem Value="@("ascending")">Prix croissant</MudSelectItem>
-                <MudSelectItem Value="@("descending")">Prix décroissant</MudSelectItem>
-            </MudSelect>
+        <MudItem xs="12" sm="6">
+            <MudStack Row>
+                <MudSpacer/>
+                <MudSelect T="string" ValueChanged="@ToggleFilter" MultiSelection="false" Class="flex-grow-0" Style="max-width: 220px; min-width: 220px;" @bind-Text="_selectedFilter"
+                           Variant="Variant.Outlined" Label="Filtrer" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@("all")">Tous</MudSelectItem>
+                    <MudSelectItem Value="@("A-Z")">A-Z</MudSelectItem>
+                    <MudSelectItem Value="@("Z-A")">Z-A</MudSelectItem>
+                    <MudSelectItem Value="@("ascending")">Prix croissant</MudSelectItem>
+                    <MudSelectItem Value="@("descending")">Prix décroissant</MudSelectItem>
+                </MudSelect>
+            </MudStack>
         </MudItem>
     </MudGrid>
     <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center">
@@ -46,9 +50,10 @@
 </MudContainer>
 
 @code {
+
     [CascadingParameter(Name = "MainLayoutInstance")]
     public MainLayout MainLayout { get; set; } = null!;
-    
+
     private MeoDbContext _context = null!;
     private UserSession? _currentUser;
     private List<ProductModel> _homes = new();
@@ -129,4 +134,5 @@
             };
         StateHasChanged();
     }
+
 }
