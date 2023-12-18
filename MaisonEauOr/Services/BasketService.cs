@@ -28,24 +28,6 @@ public class BasketService
         return new List<BasketProductModel>();
     }
 
-    public async Task AddBasketProductAsync(BasketProductModel product)
-    {
-        var context = await _factory.CreateDbContextAsync();
-        var actualProduct = context.BasketProducts.AsSplitQuery().Include(x => x.Product)
-                                                  .FirstOrDefault(x => x.ClientID == product.ClientID && x.ProductID == product.ProductID);
-
-        if (actualProduct != null)
-        {
-            actualProduct.ProductAmount += product.ProductAmount;
-            context.BasketProducts.Update(actualProduct);
-        }
-        else
-        {
-            context.BasketProducts.Add(product);
-        }
-        await context.SaveChangesAsync();
-    }
-
     public async Task UpdateBasketProductAsync(BasketProductModel product)
     {
         var context = await _factory.CreateDbContextAsync();

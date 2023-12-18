@@ -1,0 +1,35 @@
+{
+  "firstname_lbl": "Firstname",
+  "lastname_lbl": "Lastname",
+  "email_lbl": "Email",
+  "phone_lbl": "Téléphone",
+  "birthdate_lbl": "Date de naissance",
+  "postalcode_lbl": "Code postal",
+  "town_lbl": "Ville",
+  "address_lbl": "Adresse",
+  "country_lbl": "Pays",
+  "password_lbl": "Mot de passe",
+  "confirm_password_lbl": "Confirmer",
+  "user_status_lbl": "Status de l'utilisateur",
+
+  "password_mismatch_error": "Les mots de passe ne correspondent pas !",
+  "existing_user_error": "Un utilisateur existe déjà avec cet email !",
+
+  "create_user_btn": "Créer un utilisateur",
+
+  "product_name_lbl": "Nom du produit",
+  "description_lbl": "Description",
+  "category_lbl": "Catégorie",
+  "quantity_lbl": "Quantité",
+  "price_lbl": "Prix",
+  "option_name_lbl": "Nom de l'option",
+  "active_lbl": "Actif",
+  "upload_files_btn": "Upload Files",
+  "validate_btn": "Valider",
+
+  "loading_text": "Chargement...",
+  "code_lbl": "Code",
+  "enter_code_message": "Veuillez renseigner le code envoyé à l'adresse",
+  "code_validity_message": "Le code fourni est valide pour une durée de 10 minutes !",
+  "2A_validate_btn": "Valider"
+}

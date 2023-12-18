@@ -127,8 +127,8 @@
         if (CurrentUser != null)
         {
             _basketProducts = await BasketService.GetBasketProductsAsync(CurrentUser);
-            StateHasChanged();
         }
+        StateHasChanged();
     }
 
     private async Task DeleteFromBasketAsync(BasketProductModel product)
@@ -143,7 +143,7 @@
         if (amount > product.Product!.AmountInStock)
         {
             product.ProductAmount = product.Product.AmountInStock;
-            Snackbar.Add($"il ne reste que {product.ProductAmount} {product.Product.Name} en stock.", Severity.Warning);
+            Snackbar.Add($"Il ne reste que {product.ProductAmount} {product.Product.Name} en stock.", Severity.Warning);
         }
         await BasketService.UpdateBasketProductAsync(product);
         await RefreshBasketAsync();

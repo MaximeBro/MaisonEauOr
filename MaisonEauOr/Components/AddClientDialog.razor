@@ -1,14 +1,16 @@
+@inject LocalizationService Lang
+
 <MudDialog>
     <DialogContent>
         <MudStack Row Justify="Justify.SpaceBetween">
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="Prénom" InputType="InputType.Text"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="@(Lang.Get("firstname_lbl"))" InputType="InputType.Text"
                           For="@(() => _model.Firstname)" Style="max-width: 220px;" Variant="Variant.Text"/>
 
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="Nom" InputType="InputType.Text"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="@(Lang.Get("lastname_lbl"))" InputType="InputType.Text"
                           For="@(() => _model.Lastname)" Style="max-width: 220px;" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="Email" InputType="InputType.Email"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="@(Lang.Get("email_lbl"))" InputType="InputType.Email"
                           For="@(() => _model.Email)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>

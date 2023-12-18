@@ -15,4 +15,5 @@ public class UserAccount
     public UserRole Role { get; set; }
     public string Password { get; set; }
     public bool DoubleAuth { get; set; } = true;
+    public ICollection<BasketProductModel>? BasketProducts { get; set; }
 }

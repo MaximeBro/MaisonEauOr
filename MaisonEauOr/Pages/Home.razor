@@ -1,7 +1,10 @@
 ﻿@page "/"
+@using System.Text.RegularExpressions
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject IHttpContextAccessor HttpContextAccessor
+@inject LocalizationService Lang
 
 <PageTitle>Maison eau d'or</PageTitle>
 
@@ -96,6 +99,14 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
+        var culture = HttpContextAccessor.HttpContext!.Request.Headers["Accept-Language"];
+        var regex = new Regex(@"\b([a-z]{2}-[a-z]{2}|[a-z]{2}-[a-z]{2})\b", RegexOptions.IgnoreCase);
+        var match = regex.Match(culture.ToString()); // Gets first accepted language (preferred)
+        
+        if (match.Success)
+        {
+            await Lang.SetLanguage(match.Value);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Languages\" />
     <Folder Include="wwwroot\images\upload\" />
 
   </ItemGroup>

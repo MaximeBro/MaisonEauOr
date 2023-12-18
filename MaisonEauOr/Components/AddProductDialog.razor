@@ -12,9 +12,9 @@
                 }
             </MudSelect>
             <MudStack Row>
-                <MudNumericField T="int" @bind-Value="_amountInStock" Min="0" Label="Quantité"/>
-                <MudNumericField T="double" @bind-Value="_price" Min="0" Label="Prix"/>
-                <MudNumericField T="double" @bind-Value="_tva" Min="0" Max="100" Label="TVA"/>
+                <MudNumericField T="int" @bind-Value="_amountInStock" Min="0" Label="Stock"/>
+                <MudNumericField T="double" @bind-Value="_price" Min="0" Label="Prix (€)"/>
+                <MudNumericField T="double" @bind-Value="_tva" Min="0" Max="100" Label="TVA (%)"/>
             </MudStack>
             <MudTable T="Option" Items="_options" Bordered Hover>
                 <HeaderContent>
@@ -25,7 +25,7 @@
                     <MudTd>@context.Name</MudTd>
                     <MudTd>
                         <MudTooltip Text="Supprimer">
-                            <MudIconButton Icon="@Icons.Delete" OnClick="() => DeleteOption(context)"/>
+                            <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteOption(context))"/>
                         </MudTooltip>
                     </MudTd>
                 </RowTemplate>
@@ -35,13 +35,13 @@
                     </MudTd>
                     <MudTd>
                         <MudTooltip Text="Valider" Arrow>
-                            <MudIconButton Icon="@Icons.CheckCircle" OnClick="AddOption"/>
+                            <MudIconButton Icon="@Icons.CheckCircle" OnClick="@AddOption"/>
                         </MudTooltip>
                     </MudTd>
                 </FooterContent>
             </MudTable>
             <MudCheckBox @bind-Checked="_isAvailable" Label="Actif"/>
-            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
+            <MudFileUpload T="IBrowserFile" FilesChanged="@UploadFile" AppendMultipleFiles="false" Accept=".png, .jpg, .jpeg">
                 <ButtonTemplate>
                     <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.CloudUpload" for="@context.Id">
                         Upload Files
@@ -50,7 +50,7 @@
                     {
                         <div class="d-flex">
                             <MudText Class="mx-4" Typo="Typo.h6">@_imageName</MudText>
-                            <MudIconButton Icon="@Icons.Delete" OnClick="DeleteUploadedFile"/>
+                            <MudIconButton Icon="@Icons.Delete" OnClick="@DeleteUploadedFile"/>
                         </div>
                     }
                 </ButtonTemplate>
@@ -58,7 +58,7 @@
         </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Valider</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">Valider</MudButton>
     </DialogActions>
 </MudDialog>
 

@@ -18,4 +18,19 @@ public class MeoDbContext : DbContext
     {
         optionsBuilder.UseSqlite("Data Source=../meo-data/meo.db");
     }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<BasketProductModel>()
+            .HasOne(x => x.Product)
+            .WithMany()
+            .HasForeignKey(x => x.ProductID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BasketProductModel>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.BasketProducts)
+            .HasForeignKey(x => x.ClientID)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
 }

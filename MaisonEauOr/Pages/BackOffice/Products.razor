@@ -9,7 +9,7 @@
 
 <MudText Class="ml-4" Typo="Typo.h3">Gestion des stocks</MudText>
 <MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddProductAsync">Ajouter un produit</MudButton>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">Ajouter un produit</MudButton>
     <MudSpacer/>
     <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
         Panel d'administration
@@ -23,11 +23,11 @@
         <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search" />
     </ToolBarContent>
     <Columns>
-        <PropertyColumn Title="Quantité" Property="x => x.AmountInStock"/>
+        <PropertyColumn Title="Stock" Property="x => x.AmountInStock"/>
         <PropertyColumn Title="Nom Produit" Property="x => x.Name"/>
         <PropertyColumn Title="Catégorie" Property="x => x.Category.Humanize()"/>
         <PropertyColumn Title="Prix" Property="x => x.Price" Format="C"/>
-        <PropertyColumn Title="Prix" Property="x => x.Tva" Format="P2"/>
+        <PropertyColumn Title="TVA" Property="x => x.Tva" Format="P2"/>
         <PropertyColumn Title="Actif" Property="x => x.IsAvailable"/>
         <PropertyColumn Title="Date d'ajout" Property="x => x.AddedAt" Format="dd-MM-yyyy"/>
         <TemplateColumn Filterable="false">

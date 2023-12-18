@@ -96,7 +96,11 @@
                     var added = await BasketService.TryAddToBasketAsync(basketProduct, product);
                     if (added > -1)
                     {
-                        Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
+                        Snackbar.Add($"Il ne reste que {added} {product.Name} en stock.", Severity.Warning);
+                    }
+                    else
+                    {
+                        Snackbar.Add("Produit ajouté au panier !", Severity.Success);
                     }
                 }
                 else

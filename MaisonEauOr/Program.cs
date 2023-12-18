@@ -18,12 +18,18 @@ builder.Services.AddDbContextFactory<MeoDbContext>(optionsAction =>
 {
     optionsAction.UseSqlite("Data Source=../meo-data/meo.db");
 });
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<DoubleAuthService>();
 builder.Services.AddSingleton<MailerService>();
 builder.Services.AddSingleton<BasketService>();
+builder.Services.AddSingleton<LocalizationService>();
 
 var app = builder.Build();
 
+if (!Directory.Exists("../meo-data"))
+{
+    Directory.CreateDirectory("../meo-data");
+}
 using (var serviceScope = app.Services.CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<MeoDbContext>();

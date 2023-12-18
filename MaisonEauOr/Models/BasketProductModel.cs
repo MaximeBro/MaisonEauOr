@@ -13,7 +13,7 @@ public class BasketProductModel
 	public string? Option { get; set; }
 
 	[NotMapped] 
-	public double TotalPrice => ProductAmount * (Product.Price * (Product.Tva+1));
+	public double TotalPrice => ProductAmount * (Product!.Price * (Product.Tva+1));
 	[NotMapped] 
 	public string OptionText => Option ?? "STANDARD";
 }
