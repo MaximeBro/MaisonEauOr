@@ -31,6 +31,7 @@ public class AuthenticationService : AuthenticationStateProvider
             {
                 new Claim(ClaimTypes.NameIdentifier, userSession.Identifier.ToString()),
                 new Claim(ClaimTypes.Name, userSession.UserName),
+                new Claim(ClaimTypes.Email, userSession.Email),
                 new Claim(ClaimTypes.Role, userSession.Role.ToString())
             }, "AuthorizedAuth"));
 
@@ -42,7 +43,7 @@ public class AuthenticationService : AuthenticationStateProvider
         }
     }
 
-    public async Task UpdateAuthentificationState(UserSession? userSession)
+    public async Task UpdateAuthenticationState(UserSession? userSession)
     {
         ClaimsPrincipal claimsPrincipal;
 
@@ -53,6 +54,7 @@ public class AuthenticationService : AuthenticationStateProvider
             {
                 new Claim(ClaimTypes.NameIdentifier, userSession.Identifier.ToString()),
                 new Claim(ClaimTypes.Name, userSession.UserName),
+                new Claim(ClaimTypes.Email, userSession.Email),
                 new Claim(ClaimTypes.Role, userSession.Role.ToString())
             }));
         }
@@ -65,7 +67,7 @@ public class AuthenticationService : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(claimsPrincipal)));
     }
 
-    public async Task<UserSession?> GetCurrentUser()
+    public async Task<UserSession?> GetCurrentUserAsync()
     {
         var res = await _sessionStorage.GetAsync<UserSession>("UserSession");
         return res.Success ? res.Value : null;

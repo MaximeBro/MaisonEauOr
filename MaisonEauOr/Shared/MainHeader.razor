@@ -1,73 +1,145 @@
-﻿<header>
+@inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthStateProvider
+@inject BasketService BasketService
+@inject LocalizationService Lang
+
+<header>
     <MudStack Justify="Justify.SpaceBetween" Row="true" AlignItems="AlignItems.Center" Class="flex-wrap">
         <div class="d-flex justify-content-start flex-1">
-            <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@toggle" id="burger"/>
+            <MudIconButton Icon="@_burger" Color="Color.Dark" Size="Size.Large" OnClick="@Toggle" id="burger"/>
+            <MudMenu Class="ml-8" Label="@SelectedLanguageText" AnchorOrigin="Origin.BottomLeft" DisableElevation DisableRipple
+                     Variant="Variant.Filled" PopoverClass="custom-popover">
+                @foreach (var lang in Enum.GetValues<Language>())
+                {
+                    @if (lang != SelectedLanguage)
+                    {
+                        <MudMenuItem Class="px-5" Style="padding-top: -4px!important; padding-bottom: -4px!important;" OnClick="@(() => RefreshLang(lang))">@lang.ToString()</MudMenuItem>
+                    }
+                }
+
+            </MudMenu>
         </div>
         <MudLink Href="/">
             <MudImage Src="images/logo.png" Alt="Maison Eau D'or" Class="logo"></MudImage>
         </MudLink>
         <div id="toolbar" class="d-flex justify-content-end flex-1">
             <MudToolBar>
-                <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4"/>
+                <AuthorizeView Roles="Admin">
+                    <Authorized>
+                        <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4" Href="/admin-panel"/>
+                    </Authorized>
+                </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
-                <MudIconButton Icon="@Icons.Person" Color="Color.Dark"/>
-                <MudIconButton Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="@CheckUserSession"/>
+                <MudIconButton OnClick="@(async () => await ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
             </MudToolBar>
         </div>
     </MudStack>
     <nav style="@_style" class="navbar">
         <div class="dropdown-div">
-            <button onclick="@(()=> open(0))" class="dropbtn">
+            <button onclick="@(() => Open(0))" class="dropbtn">
                 Parfums
-                <i class="fa fa-caret-down"></i>
+                <i class="ml-3 fa fa-caret-down"></i>
             </button>
-            <div class="dropdown-content @(isOpen[0]?"show":"")">
-                <a Href="#">Le Bar à parfums</a>
-                <a Href="#">Les Evasions Gourmandes</a>
+            <div class="dropdown-content @(_isOpen[0] ? "show" : "")">
+                <a href="/catalog-perfumes">Le Bar à parfums</a>
+                <a href="/catalog-gourmets">Les Evasions Gourmandes</a>
             </div>
         </div>
-        <a Href="#">Maison</a>
-        <a Href="#">Muscs Tahara intime</a>
-        <a Href="#">Cosmétiques</a>
-        <div class="dropdown-div">
-            <button onclick="@(()=> open(1))" class="dropbtn">
-                Brumes
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content @(isOpen[1]?"show":"")">
-                <a Href="#">Brumes RP</a>
-                <a Href="#">Brumes Gris Montaigne</a>
-            </div>
-        </div>
-        <div Class="dropdown-div">
-            <button onclick="@(()=> open(2))" class="dropbtn">
-                Produits Capillaire
-                <i class="fa fa-caret-down"></i>
-            </button>
-            <div class="dropdown-content @(isOpen[2]?"show":"")">
-                <a Href="#">KeraQueens</a>
-                <a Href="#">Rose Baie</a>
-                <a Href="#">RedOne</a>
-            </div>
-        </div>
+        <a href="/catalog-homes">Maison</a>
+        <a href="/catalog-musks">Muscs Tahara intime</a>
+        <a href="/catalog-cosmetics">Cosmétiques</a>
+        <a href="/catalog-mists">Brumes</a>
+        <a href="/catalog-hairproducts">Produits capillaire</a>
     </nav>
+    <BasketDrawer @ref="_drawer"/>
 </header>
 
 @code
 {
-    private bool[] isOpen = new bool[3];
+    private UserSession? _currentUser;
+    private BasketDrawer _drawer = new();
+    private Language SelectedLanguage { get; set; }
+    private string SelectedLanguageText { get; set; } = null!;
 
+    private bool[] _isOpen = new bool[3];
     private string _burger = Icons.Menu;
-    private string _style;
-    
-    private void open(int num) {
-        for (int i = 0; i < isOpen.Length; i++)
+    private string? _style;
+
+    protected override void OnInitialized()
+    {
+        LoadLanguage();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
         {
-            isOpen[i] = (i == num && !isOpen[i]);
+            var authService = (AuthenticationService)AuthStateProvider;
+            _currentUser = await authService.GetCurrentUserAsync();
+            _drawer.CurrentUser = _currentUser;
+            LoadLanguage();
         }
     }
 
-    private void toggle()
+    private void LoadLanguage()
+    {
+        SelectedLanguage = Lang.GetCurrentLanguage();
+        SelectedLanguageText = SelectedLanguage.ToString();
+    }
+
+    public async Task RefreshUserSession()
+    {
+        if (AuthStateProvider != null)
+        {
+            var authService = (AuthenticationService)AuthStateProvider;
+            _currentUser = await authService.GetCurrentUserAsync();
+            _drawer.CurrentUser = _currentUser;
+        }
+    }
+
+    private void CheckUserSession()
+    {
+        if (_currentUser != null && _currentUser.Role != UserRole.Guest)
+        {
+            NavManager.NavigateTo("/profile");
+        }
+        else
+        {
+            NavManager.NavigateTo("/signin");
+        }
+    }
+
+    private async Task ToggleDrawer(bool toggle = true)
+    {
+        await _drawer.ToggleDrawer(toggle);
+    }
+
+    private async Task RefreshLang(Language lang)
+    {
+        await Lang.SetLanguage(Lang.GetLanguageText(lang));
+        SelectedLanguage = lang;
+        SelectedLanguageText = lang.ToString();
+        StateHasChanged();
+    }
+
+    private async Task LangChanged(Language lang)
+    {
+        await Lang.SetLanguage(Lang.GetLanguageText(lang));
+        SelectedLanguage = Lang.GetCurrentLanguage();
+        SelectedLanguageText = SelectedLanguage.ToString();
+        StateHasChanged();
+    }
+
+    private void Open(int num)
+    {
+        for (int i = 0; i < _isOpen.Length; i++)
+        {
+            _isOpen[i] = (i == num && !_isOpen[i]);
+        }
+    }
+
+    private void Toggle()
     {
         if (_burger == Icons.Menu)
         {

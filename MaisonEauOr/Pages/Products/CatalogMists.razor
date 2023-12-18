@@ -1,0 +1,132 @@
+@page "/catalog-mists"
+
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject BasketService BasketService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ISnackbar Snackbar
+
+<PageTitle>Maison eau d'or - Articles</PageTitle>
+
+<MudContainer Class="px-16" MaxWidth="MaxWidth.ExtraLarge">
+    <MudGrid>
+        <MudItem xs="6">
+            <MudText Align="Align.Left" Typo="Typo.h4"><b>Brumes Corps & Cheveux</b></MudText>
+        </MudItem>
+        <MudItem xs="4"></MudItem>
+        <MudItem xs="2">
+            <MudSelect T="string" ValueChanged="@ToggleFilter" MultiSelection="false" Class="flex-grow-0" Style="max-width: 220px; min-width: 220px;" @bind-Text="_selectedFilter"
+                       Variant="Variant.Outlined" Label="Filtrer" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
+                <MudSelectItem Value="@("all")">Tous</MudSelectItem>
+                <MudSelectItem Value="@("A-Z")">A-Z</MudSelectItem>
+                <MudSelectItem Value="@("Z-A")">Z-A</MudSelectItem>
+                <MudSelectItem Value="@("ascending")">Prix croissant</MudSelectItem>
+                <MudSelectItem Value="@("descending")">Prix décroissant</MudSelectItem>
+            </MudSelect>
+        </MudItem>
+    </MudGrid>
+    <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center">
+        @foreach (var mist in _filteredProducts)
+        {
+            <MudItem Class="mt-5" xs="12" sm="6" md="4" lg="3">
+                <MudCard Outlined Elevation="1">
+                    <MudImage Style="width: 100%!important;" ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Src="@mist.ImagePath" Alt="@mist.Name"/>
+                    <MudCardContent>
+                        <MudText Align="Align.Center" Typo="Typo.h5">
+                            <b>@mist.Name</b>
+                        </MudText>
+                        <MudText Align="Align.Center" Typo="Typo.body2">@mist.Price.ToString("C")</MudText>
+                        <MudStack Row Justify="Justify.Center">
+                            <MudButton Class="my-2" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(() => AddToBasket(mist))">Ajouter au panier</MudButton>
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+</MudContainer>
+
+@code {
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout MainLayout { get; set; } = null!;
+    
+    private MeoDbContext _context = null!;
+    private UserSession? _currentUser;
+    private List<ProductModel> _mists = new();
+    private List<ProductModel> _filteredProducts = new();
+
+    private string _selectedFilter = "Tous";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+        _mists = _context.Products.Where(x => x.Category == ProductCategory.Mist && x.IsAvailable).ToList();
+        foreach (var product in _mists)
+        {
+            product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
+        }
+        _filteredProducts = _mists.ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var authService = (AuthenticationService)AuthStateProvider;
+            _currentUser = await authService.GetCurrentUserAsync();
+        }
+    }
+
+    private async Task AddToBasket(ProductModel product)
+    {
+        if (_currentUser != null && _currentUser.Role != UserRole.Guest)
+        {
+            var user = _context.UserAccounts.FirstOrDefault(x => x.Email == _currentUser.Email);
+            if (user != null)
+            {
+                if (product.AmountInStock > 0)
+                {
+                    var basketProduct = new BasketProductModel
+                    {
+                        ProductID = product.Id,
+                        ClientID = user.Id,
+                        ProductAmount = 1,
+                        Option = product.Options.FirstOrDefault()?.Name
+                    };
+
+                    var added = await BasketService.TryAddToBasketAsync(basketProduct, product);
+                    if (added > -1)
+                    {
+                        Snackbar.Add($"Il ne reste que {added} {product.Name} en stock.", Severity.Warning);
+                    }
+                    else
+                    {
+                        Snackbar.Add("Produit ajouté au panier !", Severity.Success);
+                    }
+                }
+                else
+                {
+                    Snackbar.Add("Ce produit est actuellement hors stock...\nNe vous en faites pas, il revient très vite !", Severity.Warning);
+                }
+            }
+        }
+        else
+        {
+            Snackbar.Add("Vous devez vous connecter pour effectuer un achat !", Severity.Error);
+        }
+    }
+
+    private void ToggleFilter(string value)
+    {
+        _selectedFilter = value;
+        _filteredProducts = value switch
+        {
+            "all" => _mists.ToList(),
+            "A-Z" => _mists.OrderBy(x => x.Name).ToList(),
+            "Z-A" => _mists.OrderByDescending(x => x.Name).ToList(),
+            "ascending" => _mists.OrderBy(x => x.Price).ToList(),
+            "descending" => _mists.OrderByDescending(x => x.Price).ToList(),
+            _ => _filteredProducts
+            };
+        StateHasChanged();
+    }
+}

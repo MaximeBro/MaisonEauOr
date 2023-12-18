@@ -5,6 +5,9 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+@inject MailerService MailerService
+@inject DoubleAuthService DoubleAuthService
 
 <PageTitle>Maison eau d'or - Connexion</PageTitle>
 
@@ -42,7 +45,7 @@
                         <MudText Align="Align.Center">Nouveau client ?</MudText>
                         <MudDivider Style="border-color: black!important;"/>
                     </MudStack>
-                    <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Variant="Variant.Filled" Color="Color.Dark">S'inscrire</MudButton>
+                    <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Href="/signup" Variant="Variant.Filled" Color="Color.Dark">S'inscrire</MudButton>
                 </MudStack>
             </MudCardActions>
         </MudCard>
@@ -56,7 +59,14 @@
 
     private InputType _passwordFieldType = InputType.Password;
     private string _passwordFieldIcon = Icons.VisibilityOff;
-    private bool _isPasswordShown = false;
+    private bool _isPasswordShown;
+
+    private DialogOptions _dialogOptions = new DialogOptions
+    {
+        CloseButton = true,
+        CloseOnEscapeKey = true,
+        DisableBackdropClick = false
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,18 +97,52 @@
 
         if (user != null)
         {
-            var authService = (AuthenticationService)AuthStateProvider;
-            await authService.UpdateAuthentificationState(new UserSession
+            if (!user.DoubleAuth)
             {
-                Identifier = user.Id,
-                UserName = $"{user.Firstname} {user.Lastname}",
-                Role = user.Role
-            });
-            NavManager.NavigateTo("/admin-products");
+                await ValidateUser(user);
+                return;
+            }
+            
+            var canReceiveNewCode = await DoubleAuthService.Check2ATokens(user);
+            if (canReceiveNewCode)
+            {
+                var code = new Random().Next(0, 1000000).ToString("D6"); // 6 digits 2A code
+                var body = $"Voici le code nécessaire pour valider votre connexion sur notre site : {code}\nAttention, ce code n'est valide que pour une durée de 10 minutes !";
+                var delivered = await MailerService.SendEmailAsync(user.Email, "Maison Eau D'or : double authentificaiton", body);
+                _context.AuthTokens.Add(new AuthTokenModel { ClientID = user.Id, Code = code });
+                await _context.SaveChangesAsync();
+
+                if (delivered)
+                {
+                    var parameters = new DialogParameters<DoubleAuthDialog> { { x => x.CurrentUser, user } };
+                    var dialog = await DialogService.ShowAsync<DoubleAuthDialog>("Authentification à deux facteurs", parameters, _dialogOptions);
+                    var result = await dialog.Result;
+
+                    if (result.Data is true)
+                    {
+                        await ValidateUser(user);
+                    }
+                }
+                else
+                {
+                    Snackbar.Add("Une erreur est survenue pendant l'envoi de l'email ! Veuillez réessayer.", Severity.Warning);
+                }
+            }
+            else
+            {
+                var parameters = new DialogParameters<DoubleAuthDialog> { { x => x.CurrentUser, user } };
+                var dialog = await DialogService.ShowAsync<DoubleAuthDialog>("Authentification à deux facteurs", parameters, _dialogOptions);
+                var result = await dialog.Result;
+
+                if (result.Data is true)
+                {
+                    await ValidateUser(user);
+                }
+            }
         }
         else
         {
-            Snackbar.Add("Cet utilisateur n'existe pas !", Severity.Error, options =>
+            Snackbar.Add("Mauvais couple d'identifiants !", Severity.Error, options =>
             {
                 options.VisibleStateDuration = 2500;
                 options.ShowCloseIcon = false;
@@ -107,10 +151,28 @@
         }
     }
 
+    private async Task ValidateUser(UserAccount user)
+    {
+        var authService = (AuthenticationService)AuthStateProvider;
+        var userSession = new UserSession
+        {
+            Identifier = user.Id,
+            UserName = user.Firstname!,
+            Email = user.Email,
+            Role = user.Role
+        };
+        await authService.UpdateAuthenticationState(userSession);
+        var oldTokens = _context.AuthTokens.Where(x => x.ClientID == user.Id).ToList();
+        _context.AuthTokens.RemoveRange(oldTokens);
+        await _context.SaveChangesAsync();
+        Snackbar.Clear();
+        NavManager.NavigateTo("/");
+    }
+    
     private sealed class LoginModel
     {
-        public string Email { get; set; }
-        public string Password { get; set; }
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 
 }

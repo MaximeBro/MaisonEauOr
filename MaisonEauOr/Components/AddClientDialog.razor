@@ -1,0 +1,131 @@
+@inject LocalizationService Lang
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Row Justify="Justify.SpaceBetween">
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="@(Lang.Get("firstname_lbl"))" InputType="InputType.Text"
+                          For="@(() => _model.Firstname)" Style="max-width: 220px;" Variant="Variant.Text"/>
+
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="@(Lang.Get("lastname_lbl"))" InputType="InputType.Text"
+                          For="@(() => _model.Lastname)" Style="max-width: 220px;" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="@(Lang.Get("email_lbl"))" InputType="InputType.Email"
+                          For="@(() => _model.Email)" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
+                          For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
+            <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
+                            Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
+        </MudStack>
+        <MudStack Row Justify="Justify.SpaceBetween">
+            <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
+                             For="@(() => _model.PostalCode)" Style="max-width: 150px;" Variant="Variant.Text"/>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
+                          For="@(() => _model.Town)" Style="max-width: 260px;" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
+                          For="@(() => _model.Address)" Variant="Variant.Text"/>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+                          For="@(() => _model.Country)" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+                          AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
+                          For="@(() => _model.Password)" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row>
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Confirm" Label="Confirmer" InputType="@_confirmFieldType"
+                          AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
+                          For="@(() => _model.Confirm)" Variant="Variant.Text"/>
+        </MudStack>
+        <MudStack Row Justify="Justify.Center">
+            <MudSelect T="UserRole" @bind-Value="_selectedRole" Label="Status de l'utilisateur">
+                @foreach (var role in Enum.GetValues<UserRole>())
+                {
+                    @if (role != UserRole.Guest)
+                    {
+                        <MudSelectItem Value="role">@role.Humanize()</MudSelectItem>
+                    }
+                }
+            </MudSelect>
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudStack Row="false">
+            @if (!string.IsNullOrWhiteSpace(_errorMessage))
+            {
+                <MudAlert Severity="Severity.Error"></MudAlert>
+            }
+            <MudButton OnClick="@Submit" Variant="Variant.Filled" Color="Color.Success">Créer un utilisateur</MudButton>
+        </MudStack>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public List<UserAccount> RegisteredUsers { get; set; } = null!;
+
+    private RegisterModel _model = new();
+    private InputType _passwordFieldType = InputType.Password;
+    private string _passwordFieldIcon = Icons.VisibilityOff;
+    private bool _isPasswordShown;
+ 
+    private InputType _confirmFieldType = InputType.Password;
+    private string _confirmFieldIcon = Icons.VisibilityOff;
+    private bool _isConfirmShown;
+
+    private UserRole _selectedRole = UserRole.Client;
+    private string _errorMessage = string.Empty;
+    
+    private void ShowPassword()
+    {
+        _isPasswordShown = !_isPasswordShown;
+        _passwordFieldIcon = _passwordFieldIcon == Icons.Visibility ? Icons.VisibilityOff : Icons.Visibility;
+        _passwordFieldType = _passwordFieldType == InputType.Text ? InputType.Password : InputType.Text;
+    }
+    
+    private void ShowConfirm()
+    {
+        _isConfirmShown = !_isConfirmShown;
+        _confirmFieldIcon = _confirmFieldIcon == Icons.Visibility ? Icons.VisibilityOff : Icons.Visibility;
+        _confirmFieldType = _confirmFieldType == InputType.Text ? InputType.Password : InputType.Text;
+    }
+
+    private async Task Submit()
+    {
+        if (_model.Password != _model.Confirm)
+        {
+            _errorMessage = "Les mots de passe ne correspondent pas !";
+            return;
+        }
+        if (string.IsNullOrWhiteSpace(_model.Email) || RegisteredUsers.All(x => x.Email != _model.Email))
+        {
+            var user = new UserAccount
+            {
+                Firstname = _model.Firstname,
+                Lastname = _model.Lastname,
+                Email = _model.Email,
+                PhoneNumber = _model.PhoneNumber,
+                BornAt = _model.BornAt ?? default,
+                PostalCode = _model.PostalCode,
+                Town = _model.Town,
+                Address = _model.Address,
+                Country = _model.Country,
+                Password = BC.HashPassword(_model.Password),
+                Role = _selectedRole
+            };
+            
+            MudDialog.Close(user);
+        }
+        else
+        {
+            _errorMessage = "Un utilisateur existe déjà avec cet email !";
+        }
+    }
+}

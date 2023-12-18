@@ -1,0 +1,124 @@
+@page "/admin-clients"
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject IDialogService DialogService
+@inject NavigationManager NavManager
+
+<PageTitle>Administration - Clients</PageTitle>
+
+<MudText Class="ml-4" Typo="Typo.h3">Gestion des utilisateurs</MudText>
+<MudStack Row>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddClientAsync">Ajouter un client</MudButton>
+    <MudSpacer/>
+    <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
+        Panel d'administration
+    </MudButton>
+</MudStack>
+
+<MudDataGrid T="UserAccount" Class="mx-8" Items="@_userAccounts" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Table des produits</MudText>
+        <MudSpacer/>
+        <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search" />
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Title="Nom" Property="x => x.Lastname"/>
+        <PropertyColumn Title="Prénom" Property="x => x.Firstname"/>
+        <PropertyColumn Title="Email" Property="x => x.Email"/>
+        <PropertyColumn Title="Téléphone" Property="x => x.PhoneNumber"/>
+        <PropertyColumn Title="Code postal" Property="x => x.PostalCode"/>
+        <PropertyColumn Title="Ville" Property="x => x.Town"/>
+        <PropertyColumn Title="Adresse" Property="x => x.Address"/>
+        <PropertyColumn Title="Pays" Property="x => x.Country"/>
+        <PropertyColumn Title="Status" Property="x => x.Role.Humanize()"/>
+        <PropertyColumn Title="Date de naissance" Property="x => x.BornAt" Format="dd-MM-yyyy"/>
+        <TemplateColumn Filterable="false">
+            <CellTemplate>
+                <MudStack Row Justify="Justify.SpaceEvenly">
+                    <MudIconButton Icon="@Icons.Edit" OnClick="@(() => EditClientAsync(context.Item))" />
+                    <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteClientAsync(context.Item))" />
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private MeoDbContext _context = null!;
+    private List<UserAccount> _userAccounts = new();
+    private string _searchString = string.Empty;
+
+    private Func<UserAccount, bool> QuickFilter => x =>
+    {
+        if (!string.IsNullOrWhiteSpace(x.Firstname) && x.Firstname.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!string.IsNullOrWhiteSpace(x.Lastname) && x.Lastname.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.Email.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!string.IsNullOrWhiteSpace(x.PhoneNumber) && x.PhoneNumber.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.Role.Humanize().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!string.IsNullOrWhiteSpace(x.Country) && x.Country.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (!string.IsNullOrWhiteSpace(x.Address) && x.Address.Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.PostalCode.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        
+        return false;
+    };
+    
+    private DialogOptions _dialogOptions = new DialogOptions
+    {
+        CloseButton = true,
+        DisableBackdropClick = false,
+        CloseOnEscapeKey = true
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+        await RefreshAsync();
+    }
+
+    private async Task AddClientAsync()
+    {
+        var parameters = new DialogParameters<AddClientDialog>{ { x => x.RegisteredUsers, _userAccounts } };
+        var dialog = await DialogService.ShowAsync<AddClientDialog>("Ajout d'un utilisateur", parameters, _dialogOptions);
+        var result = await dialog.Result;
+
+        if (result is { Data: UserAccount user })
+        {
+            _userAccounts.Add(user);
+            _context.UserAccounts.Add(user);
+            await _context.SaveChangesAsync();
+            await RefreshAsync();
+        }
+    }
+
+    private async Task EditClientAsync(UserAccount user)
+    {
+        var parameters = new DialogParameters<EditClientDialog>{ { x => x.RegisteredUsers, _userAccounts }, { x => x.CurrentUser, user } };
+        var dialog = await DialogService.ShowAsync<EditClientDialog>("Modification d'un utilisateur", parameters, _dialogOptions);
+        var result = await dialog.Result;
+
+        if (result is { Data: UserAccount newUser })
+        {
+            _userAccounts.Remove(user);
+            _context.UserAccounts.Remove(user);
+            
+            _userAccounts.Add(newUser);
+            _context.UserAccounts.Add(newUser);
+            await _context.SaveChangesAsync();
+            await RefreshAsync();
+        }
+    }
+
+    private async Task DeleteClientAsync(UserAccount user)
+    {
+        _userAccounts.Remove(user);
+        _context.UserAccounts.Remove(user);
+        await _context.SaveChangesAsync();
+        await RefreshAsync();
+    }
+
+    private async Task RefreshAsync()
+    {
+        _userAccounts = await _context.UserAccounts.ToListAsync();
+    }
+}

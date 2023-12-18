@@ -11,14 +11,62 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231214083129_InitialCommit")]
-    partial class InitialCommit
+    [Migration("20231218090359_AddsProductsToUser")]
+    partial class AddsProductsToUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
+
+            modelBuilder.Entity("MaisonEauOr.Models.AuthTokenModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClientID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuthTokens");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClientID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Option")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProductAmount")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ProductID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("BasketProducts");
+                });
 
             modelBuilder.Entity("MaisonEauOr.Models.Option", b =>
                 {
@@ -71,6 +119,9 @@ namespace MaisonEauOr.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
 
+                    b.Property<double>("Tva")
+                        .HasColumnType("REAL");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -87,6 +138,12 @@ namespace MaisonEauOr.Migrations
 
                     b.Property<DateTime>("BornAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("DoubleAuth")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -117,6 +174,30 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserAccounts");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
+                {
+                    b.HasOne("MaisonEauOr.Models.UserAccount", "User")
+                        .WithMany("BasketProducts")
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>
+                {
+                    b.Navigation("BasketProducts");
                 });
 #pragma warning restore 612, 618
         }

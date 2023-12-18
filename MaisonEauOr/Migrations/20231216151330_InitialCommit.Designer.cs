@@ -3,6 +3,7 @@ using System;
 using MaisonEauOr.Databases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    partial class MeoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231216151330_InitialCommit")]
+    partial class InitialCommit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -56,11 +59,14 @@ namespace MaisonEauOr.Migrations
                     b.Property<Guid>("ProductID")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientID");
-
                     b.HasIndex("ProductID");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("BasketProducts");
                 });
@@ -175,26 +181,19 @@ namespace MaisonEauOr.Migrations
 
             modelBuilder.Entity("MaisonEauOr.Models.BasketProductModel", b =>
                 {
-                    b.HasOne("MaisonEauOr.Models.UserAccount", "User")
-                        .WithMany("BasketProducts")
-                        .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MaisonEauOr.Models.UserAccount", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Product");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>
-                {
-                    b.Navigation("BasketProducts");
                 });
 #pragma warning restore 612, 618
         }
