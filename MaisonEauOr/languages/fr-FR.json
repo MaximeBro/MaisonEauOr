@@ -1,8 +1,8 @@
 {
-  "firstname_label": "Pr�nom",
+  "firstname_label": "Prénom",
   "lastname_label": "Nom",
   "email_label": "Email",
-  "phone_label": "T�l�phone",
+  "phone_label": "Téléphone",
   "birthdate_label": "Date de naissance",
   "postalcode_label": "Code postal",
   "town_label": "Ville",
@@ -13,25 +13,23 @@
   "user_status_label": "Status de l'utilisateur",
 
   "password_mismatch_error": "Les mots de passe ne correspondent pas !",
-  "existing_user_error": "Un utilisateur existe d�j� avec cet email !",
+  "existing_user_error": "Un utilisateur existe déjà avec cet email !",
 
-  "create_user_button": "Cr�er un utilisateur",
+  "create_user_button": "Créer un utilisateur",
 
   "product_name_label": "Nom du produit",
   "description_label": "Description",
-  "category_label": "Cat�gorie",
-  "quantity_label": "Quantit�",
+  "category_label": "Catégorie",
+  "quantity_label": "Quantité",
   "price_label": "Prix",
   "option_name_label": "Nom de l'option",
   "active_label": "Actif",
   "upload_files_button": "Upload Files",
   "validate_button": "Valider",
 
-  "welcome": "Welcome",
-  "enterYourName": "Enter your name",
-  "start": "Start",
-  "learnMore": "Learn more",
-  "madeBy": "Made by",
-  "viewSource": "View source",
-  "privacyAndPolicy": "Privacy and Policy"
+  "loading_text": "Chargement...",
+  "code_label": "Code",
+  "enter_code_message": "Veuillez renseigner le code envoyé à l'adresse",
+  "code_validity_message": "Le code fourni est valide pour une durée de 10 minutes !",
+  "double_authorization_validate_button": "Valider"
 }
