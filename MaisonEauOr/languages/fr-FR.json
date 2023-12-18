@@ -1,8 +1,8 @@
 {
-  "firstname_label": "Prénom",
+  "firstname_label": "Prï¿½nom",
   "lastname_label": "Nom",
   "email_label": "Email",
-  "phone_label": "Téléphone",
+  "phone_label": "Tï¿½lï¿½phone",
   "birthdate_label": "Date de naissance",
   "postalcode_label": "Code postal",
   "town_label": "Ville",
@@ -13,17 +13,25 @@
   "user_status_label": "Status de l'utilisateur",
 
   "password_mismatch_error": "Les mots de passe ne correspondent pas !",
-  "existing_user_error": "Un utilisateur existe déjà avec cet email !",
+  "existing_user_error": "Un utilisateur existe dï¿½jï¿½ avec cet email !",
 
-  "create_user_button": "Créer un utilisateur"
+  "create_user_button": "Crï¿½er un utilisateur",
 
   "product_name_label": "Nom du produit",
   "description_label": "Description",
-  "category_label": "Catégorie",
-  "quantity_label": "Quantité",
+  "category_label": "Catï¿½gorie",
+  "quantity_label": "Quantitï¿½",
   "price_label": "Prix",
   "option_name_label": "Nom de l'option",
   "active_label": "Actif",
   "upload_files_button": "Upload Files",
-  "validate_button": "Valider"
+  "validate_button": "Valider",
+
+  "welcome": "Welcome",
+  "enterYourName": "Enter your name",
+  "start": "Start",
+  "learnMore": "Learn more",
+  "madeBy": "Made by",
+  "viewSource": "View source",
+  "privacyAndPolicy": "Privacy and Policy"
 }
