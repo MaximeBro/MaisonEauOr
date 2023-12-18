@@ -65,12 +65,12 @@ public class BasketService
             return model.AmountInStock;
         }
 
-        if (actualProduct.ProductAmount + 1 > model.AmountInStock)
+        if (actualProduct.ProductAmount + product.ProductAmount > model.AmountInStock)
         {
             return model.AmountInStock;
         }
 
-        actualProduct.ProductAmount++;
+        actualProduct.ProductAmount += product.ProductAmount;
         context.BasketProducts.Update(actualProduct);
         await context.SaveChangesAsync();
         return -1;

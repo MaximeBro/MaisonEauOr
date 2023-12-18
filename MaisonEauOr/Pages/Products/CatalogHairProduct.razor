@@ -7,11 +7,11 @@
 
 <PageTitle>Maison eau d'or - Articles</PageTitle>
 
-<MudContainer Class="px-16" Style="height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer Class="px-16" Style="min-height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
     <MudGrid>
         <MudItem xs="12" sm="6">
             <MudText Align="Align.Left" Typo="Typo.h4">
-                <b>Produits capillaire</b>
+                <b>Produits Capillaire</b>
             </MudText>
         </MudItem>
         <MudItem xs="12" sm="6">
@@ -32,15 +32,21 @@
         @foreach (var hairproduct in _filteredProducts)
         {
             <MudItem Class="mt-5" xs="12" sm="6" md="4" lg="3">
-                <MudCard Outlined Elevation="1">
-                    <MudImage Style="width: 100%!important;" ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Src="@hairproduct.ImagePath" Alt="@hairproduct.Name"/>
+                <MudCard Elevation="0">
                     <MudCardContent>
-                        <MudText Align="Align.Center" Typo="Typo.h5">
-                            <b>@hairproduct.Name</b>
-                        </MudText>
-                        <MudText Align="Align.Center" Typo="Typo.body2">@hairproduct.Price.ToString("C")</MudText>
+                        <MudStack Row="false" Justify="Justify.Center">
+                            <MudLink Href="@($"/product/{hairproduct.Id}")">
+                                <div class="mx-auto d-block" style="height: 282px; width: 282px; position: relative; overflow: hidden;">
+                                    <img class="highlights mx-auto" src="@hairproduct.ImagePath" alt="@hairproduct.Name"/>
+                                </div>
+                            </MudLink>
+                        </MudStack>
+                        <MudText Class="mt-2" Align="Align.Center" Typo="Typo.h4"><b>@hairproduct.Name</b></MudText>
+                        <MudText Align="Align.Center" Typo="Typo.body1">@hairproduct.Price.ToString("C")</MudText>
                         <MudStack Row Justify="Justify.Center">
-                            <MudButton Class="my-2" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(() => AddToBasket(hairproduct))">Ajouter au panier</MudButton>
+                            <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(hairproduct))">
+                                Ajouter au panier
+                            </MudButton>
                         </MudStack>
                     </MudCardContent>
                 </MudCard>
@@ -101,11 +107,7 @@
                     var added = await BasketService.TryAddToBasketAsync(basketProduct, product);
                     if (added > -1)
                     {
-                        Snackbar.Add($"Il ne reste que {added} {product.Name} en stock.", Severity.Warning);
-                    }
-                    else
-                    {
-                        Snackbar.Add("Produit ajouté au panier !", Severity.Success);
+                        Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
                     }
                 }
                 else
@@ -134,5 +136,4 @@
             };
         StateHasChanged();
     }
-
 }

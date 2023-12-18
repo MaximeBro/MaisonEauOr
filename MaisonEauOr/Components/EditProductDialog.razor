@@ -4,7 +4,7 @@
     <DialogContent>
         <MudStack Row="false">
             <MudTextField T="string" @bind-Value="_productName" Label="Nom du produit"/>
-            <MudTextField T="string" @bind-Value="_description" Label="Description"/>
+            <MudTextField T="string" @bind-Value="_description" Label="Description" Lines="2"/>
             <MudSelect T="ProductCategory" @bind-Value="_selectedCategory" Variant="Variant.Text" Label="Catégorie" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var categ in Enum.GetValues<ProductCategory>())
                 {

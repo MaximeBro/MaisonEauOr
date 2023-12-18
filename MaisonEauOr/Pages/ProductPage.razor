@@ -1,70 +1,162 @@
-@page "/ProductPage"
+@page "/product/{ProductId:guid}"
+@using MaisonEauOr.Extensions
 
-<PageTitle>Maison eau d'or - Page de produit</PageTitle>
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject AuthenticationStateProvider AuthStateProvider
+@inject BasketService BasketService
+@inject NavigationManager NavManager
+@inject ISnackbar Snackbar
 
-<MudContainer> 
-
-    <MudStack Row Class="d-flex justify-content-between mt-16 pa-4">
-
-        <MudStack>
-             <MudPaper Class="mr-10 mud-elevation-0">
-                 <MudText Class="" Typo="Typo.body1">Accueil/Parfums/Bar à parfum/Suprême Flower</MudText>
-                 <MudImage Src="images/logo.png" Alt="Mony the dog" Heigth="500" Width="500" />
-             </MudPaper>
-        </MudStack>
-
-        <MudStack>
-             <MudPaper Class="pa-10" Height="500" Width="100%">
-                 <MudText Class="" Typo="Typo.h3">Suprême Flower</MudText>
-                 <MudStack Row Class="d-flex ">
-                     <MudText Class="" Typo="Typo.body1">26.99€</MudText>
-                     <MudText Typo=" Typo.body2" Style="@($"color:{Colors.Grey.Default};")">26.99€</MudText>
-                 </MudStack>
-                 <MudStack>
-                     <MudText Class="mb-n4 mt-3" Typo="Typo.body1">Format</MudText>
-                     <MudSelect T="Format" @bind-Value="@format" ToStringFunc="@converter" Label="Format" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" Clearable>
-                        <MudSelectItem Value="@(new Format() { Name="50ml"})" />
-                        <MudSelectItem Value="@(new Format() { Name="100ml"})" />
-                        <MudSelectItem Value="@(new Format() { Name="500ml"})" />
-                        <MudSelectItem Value="@(new Format() { Name="1l"})" />
-                    </MudSelect>
-                </MudStack>
-                <MudStack Class="mb-3">
-                    <MudText Class="mb-n4 mt-3" Typo="Typo.body1">Quantité</MudText>
-                    <MudNumericField @bind-Value="Quantite"  Variant="Variant.Outlined" Min="0.0" />
-                </MudStack>
-                <MudButton Variant="Variant.Filled" Color="Color.Dark">Acheter</MudButton>
-                <MudButton Variant="Variant.Outlined">Ajouter au panier </MudButton>
-                <MudText Class="mt-3 " Typo="Typo.body1">Description du produit : </MudText>
-                <MudText Class="" Typo="Typo.body1">"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</MudText>
-            </MudPaper>
-        </MudStack>
-       
-
+@if (_product is null)
+{
+    <MudStack Row Justify="Justify.Center">
+        <MudProgressCircular Color="Color.Primary" Indeterminate/>
     </MudStack>
+    return;
+}
+
+<PageTitle>@_productName | Maison eau d'or</PageTitle>
+
+<MudContainer Class="mb-16" MaxWidth="MaxWidth.Large">
+    <MudBreadcrumbs Class="ml-4" Items="@_breadCrumbs"/>
+
+    <MudGrid Class="px-6">
+        <MudItem xs="12" md="6">
+            <MudImage Fluid Src="@_product.ImagePath"/>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudStack Style="max-width: 950px;" Row="false">
+                <MudText Typo="Typo.h3" Align="Align.Left" Class="mb-4">
+                    <b>@_productName</b>
+                </MudText>
+                <MudText Typo="Typo.h3" Align="Align.Left" GutterBottom>
+                    <b>@_product.Price.ToString("C")</b>
+                </MudText>
+                <MudStack Class="mb-4" Row>
+                    @if (_product.Options.Any())
+                    {
+                        <MudSelect T="Option?" @bind-Value="_selectedOption" Label="OPTION" Style="border-radius: 0!important;" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var option in _product.Options)
+                            {
+                                <MudSelectItem Value="@option">@option.Name</MudSelectItem>
+                            }
+                        </MudSelect>
+                    }
+                    else
+                    {
+                        <MudSelect T="string" Text="--" Variant="Variant.Outlined" Style="border-radius: 0!important;" Label="OPTION" Disabled/>
+                    }
+                    <MudNumericField T="int" Class="flex-grow-0" @bind-Value="_selectedAmount" Min="1" Step="1" Label="QUANTITÉ" Variant="Variant.Outlined" Style="border-radius: 0!important;"/>
+                </MudStack>
+                <MudButton Class="rounded-0 my-2" Style="@($"background-color: {Colors.Grey.Darken4}; color: #fff;")" FullWidth Variant="Variant.Filled">Acheter</MudButton>
+                <MudButton Variant="Variant.Outlined" FullWidth Style="border-radius: 0!important;" OnClick="@(async() => await AddToBasket())">
+                    Ajouter au panier
+                    <MudIcon Class="my-auto ml-3" Icon="@Icons.ShoppingCart"/>
+                </MudButton>
+                <MudText Class="mt-4 mb-n2">PARTAGER</MudText>
+                <MudStack Row Justify="Justify.FlexStart">
+                    <MudIconButton Color="Color.Dark" Icon="@IconsC.Brands.Facebook"/>
+                    <MudIconButton Color="Color.Dark" Icon="@IconsC.Brands.Twitter"/>
+                    <MudIconButton Color="Color.Dark" Icon="@IconsC.Brands.Pinterest"/>
+                    <MudIconButton Color="Color.Dark" Icon="@Icons.Share"/>
+                </MudStack>
+                <div>
+                    @foreach (var line in _product.Description.Split("\n", StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <MudText GutterBottom="false">@line</MudText>
+                    }
+                </div>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
- @code {
+@code {
 
-    public double Quantite { get; set; }
+    [Parameter]
+    public Guid ProductId { get; set; }
 
-    Format format = new Format { Name = "50ml" };
+    private MeoDbContext _context = null!;
+    private UserSession? _currentUser;
 
-    public class Format
+    private ProductModel? _product;
+    private string _productName = "Produit";
+
+    private List<BreadcrumbItem> _breadCrumbs = new();
+
+    private Option? _selectedOption;
+    private int _selectedAmount = 1;
+
+    protected override async Task OnInitializedAsync()
     {
-        public string Name { get; set; }
-
-        // Note: this is important so the select can compare pizzas
-        public override bool Equals(object o)
+        _context = await Factory.CreateDbContextAsync();
+        _product = _context.Products.FirstOrDefault(x => x.Id == ProductId);
+        if (_product is null)
         {
-            var other = o as Format;
-            return other?.Name == Name;
+            Snackbar.Add("Une erreur est survenue, redirection en cours...", Severity.Error);
+            NavManager.NavigateTo("/");
+            StateHasChanged();
         }
-
-        // Note: this is important so the select can compare pizzas
-        public override int GetHashCode() => Name.GetHashCode();
+        else
+        {
+            _product.Options = _context.Options.Where(x => x.ProductID == ProductId).ToList();
+            _productName = _product.Name;
+            _selectedOption = _product.Options.FirstOrDefault();
+            _breadCrumbs = new()
+            {
+                new("Accueil", href: "/"),
+                new($"{_product.Category.Humanize()}", href: $"{_product.Category.ToBreadString()}"),
+                new(_productName, href: null, disabled: true)
+            };
+        }
     }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var authService = (AuthenticationService)AuthStateProvider;
+            _currentUser = await authService.GetCurrentUserAsync();
+        }
+    }
+    
+    private async Task AddToBasket()
+    {
+        if (_product != null)
+        {
+            if (_currentUser != null && _currentUser.Role != UserRole.Guest)
+            {
+                var user = _context.UserAccounts.FirstOrDefault(x => x.Email == _currentUser.Email);
+                if (user != null)
+                {
+                    if (_product.AmountInStock > 0)
+                    {
+                        var basketProduct = new BasketProductModel
+                        {
+                            ProductID = ProductId,
+                            ClientID = user.Id,
+                            ProductAmount = _selectedAmount,
+                            Option = _selectedOption?.Name
+                        };
 
-    Func<Format, string> converter = p => p?.Name;
-}
+                        var added = await BasketService.TryAddToBasketAsync(basketProduct, _product);
+                        if (added > -1)
+                        {
+                            Snackbar.Add($"il ne reste que {added} {_productName} en stock.", Severity.Warning);
+                        }
+
+                        _selectedAmount = 1;
+                    }
+                    else
+                    {
+                        Snackbar.Add("Ce produit est actuellement hors stock...\nNe vous en faites pas, il revient très vite !", Severity.Warning);
+                    }
+                }
+            }
+            else
+            {
+                Snackbar.Add("Vous devez vous connecter pour effectuer un achat !", Severity.Error);
+            }
+        }
+    }
 }

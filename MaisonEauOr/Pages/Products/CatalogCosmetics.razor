@@ -7,7 +7,7 @@
 
 <PageTitle>Maison eau d'or - Articles</PageTitle>
 
-<MudContainer Class="px-16" Style="height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer Class="px-16" Style="min-height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
     <MudGrid>
         <MudItem xs="12" sm="6">
             <MudText Align="Align.Left" Typo="Typo.h4">
@@ -32,15 +32,21 @@
         @foreach (var cosmetic in _filteredProducts)
         {
             <MudItem Class="mt-5" xs="12" sm="6" md="4" lg="3">
-                <MudCard Outlined Elevation="1">
-                    <MudImage Style="width: 100%!important;" ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Src="@cosmetic.ImagePath" Alt="@cosmetic.Name"/>
+                <MudCard Elevation="0">
                     <MudCardContent>
-                        <MudText Align="Align.Center" Typo="Typo.h5">
-                            <b>@cosmetic.Name</b>
-                        </MudText>
-                        <MudText Align="Align.Center" Typo="Typo.body2">@cosmetic.Price.ToString("C")</MudText>
+                        <MudStack Row="false" Justify="Justify.Center">
+                            <MudLink Href="@($"/product/{cosmetic.Id}")">
+                                <div class="mx-auto d-block" style="height: 282px; width: 282px; position: relative; overflow: hidden;">
+                                    <img class="highlights mx-auto" src="@cosmetic.ImagePath" alt="@cosmetic.Name"/>
+                                </div>
+                            </MudLink>
+                        </MudStack>
+                        <MudText Class="mt-2" Align="Align.Center" Typo="Typo.h4"><b>@cosmetic.Name</b></MudText>
+                        <MudText Align="Align.Center" Typo="Typo.body1">@cosmetic.Price.ToString("C")</MudText>
                         <MudStack Row Justify="Justify.Center">
-                            <MudButton Class="my-2" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(() => AddToBasket(cosmetic))">Ajouter au panier</MudButton>
+                            <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(cosmetic))">
+                                Ajouter au panier
+                            </MudButton>
                         </MudStack>
                     </MudCardContent>
                 </MudCard>
@@ -56,7 +62,7 @@
 
     private MeoDbContext _context = null!;
     private UserSession? _currentUser;
-    private List<ProductModel> _cosmestics = new();
+    private List<ProductModel> _cosmetics = new();
     private List<ProductModel> _filteredProducts = new();
 
     private string _selectedFilter = "Tous";
@@ -64,12 +70,12 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
-        _cosmestics = _context.Products.Where(x => x.Category == ProductCategory.Cosmetic && x.IsAvailable).ToList();
-        foreach (var product in _cosmestics)
+        _cosmetics = _context.Products.Where(x => x.Category == ProductCategory.Cosmetic && x.IsAvailable).ToList();
+        foreach (var product in _cosmetics)
         {
             product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
         }
-        _filteredProducts = _cosmestics.ToList();
+        _filteredProducts = _cosmetics.ToList();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -101,11 +107,7 @@
                     var added = await BasketService.TryAddToBasketAsync(basketProduct, product);
                     if (added > -1)
                     {
-                        Snackbar.Add($"Il ne reste que {added} {product.Name} en stock.", Severity.Warning);
-                    }
-                    else
-                    {
-                        Snackbar.Add("Produit ajouté au panier !", Severity.Success);
+                        Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
                     }
                 }
                 else
@@ -125,14 +127,13 @@
         _selectedFilter = value;
         _filteredProducts = value switch
         {
-            "all" => _cosmestics.ToList(),
-            "A-Z" => _cosmestics.OrderBy(x => x.Name).ToList(),
-            "Z-A" => _cosmestics.OrderByDescending(x => x.Name).ToList(),
-            "ascending" => _cosmestics.OrderBy(x => x.Price).ToList(),
-            "descending" => _cosmestics.OrderByDescending(x => x.Price).ToList(),
+            "all" => _cosmetics.ToList(),
+            "A-Z" => _cosmetics.OrderBy(x => x.Name).ToList(),
+            "Z-A" => _cosmetics.OrderByDescending(x => x.Name).ToList(),
+            "ascending" => _cosmetics.OrderBy(x => x.Price).ToList(),
+            "descending" => _cosmetics.OrderByDescending(x => x.Price).ToList(),
             _ => _filteredProducts
             };
         StateHasChanged();
     }
-
 }
