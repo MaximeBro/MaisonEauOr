@@ -3,6 +3,7 @@ using System;
 using MaisonEauOr.Databases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    partial class MeoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231219142456_UpdateOrderModel")]
+    partial class UpdateOrderModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -126,6 +129,7 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ShippingAddress")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ShippingPostalCode")
@@ -135,6 +139,7 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("ShippingTown")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Total")

@@ -11,6 +11,7 @@ public class MeoDbContext : DbContext
     public DbSet<ProductModel> Products { get; set; }
     public DbSet<Option> Options { get; set; }
     public DbSet<DisplayModel> DisplayedProducts { get; set; }
+    public DbSet<OrderModel> Orders { get; set; }
     
     public MeoDbContext(DbContextOptions<MeoDbContext> options) : base(options)
     { }

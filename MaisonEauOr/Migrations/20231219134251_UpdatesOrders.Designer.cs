@@ -3,6 +3,7 @@ using System;
 using MaisonEauOr.Databases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    partial class MeoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231219134251_UpdatesOrders")]
+    partial class UpdatesOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -119,13 +122,14 @@ namespace MaisonEauOr.Migrations
                     b.Property<Guid>("ClientID")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("OrderedAt")
+                    b.Property<DateTime>("OrderedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Payed")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ShippingAddress")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ShippingPostalCode")
@@ -135,6 +139,7 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("ShippingTown")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Total")
@@ -246,7 +251,7 @@ namespace MaisonEauOr.Migrations
                         .IsRequired();
 
                     b.HasOne("MaisonEauOr.Models.OrderModel", null)
-                        .WithMany("Products")
+                        .WithMany("ProductIDs")
                         .HasForeignKey("OrderModelId");
 
                     b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
@@ -284,7 +289,7 @@ namespace MaisonEauOr.Migrations
 
             modelBuilder.Entity("MaisonEauOr.Models.OrderModel", b =>
                 {
-                    b.Navigation("Products");
+                    b.Navigation("ProductIDs");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>
