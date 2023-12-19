@@ -1,6 +1,7 @@
 using MaisonEauOr.Databases;
 using MaisonEauOr.Models;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 
 namespace MaisonEauOr.Services;
 
@@ -16,12 +17,12 @@ public class BasketService
     public async Task<List<BasketProductModel>> GetBasketProductsAsync(UserSession session)
     {
         var context = await _factory.CreateDbContextAsync();
-        var user = context.UserAccounts.FirstOrDefault(x => x.Email == session.Email);
+        var user = context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == session.Email);
         if (user is not null)
         {
             return await context.BasketProducts.AsSplitQuery()
                 .Include(x => x.Product)
-                .Where(x => x.ClientID == user.Id).ToListAsync();
+                .Where(x => x.ClientID == user.Id && x.OrderID == Guid.Empty).ToListAsync();
         }
         
 
@@ -32,7 +33,7 @@ public class BasketService
     {
         var context = await _factory.CreateDbContextAsync();
         var actualProduct = context.BasketProducts.AsSplitQuery().Include(x => x.Product)
-                                                  .FirstOrDefault(x => x.ClientID == product.ClientID && x.ProductID == product.ProductID);
+                                                  .FirstOrDefault(x => x.ClientID == product.ClientID && x.ProductID == product.ProductID && x.OrderID == Guid.Empty);
         if (actualProduct != null)
         {
             actualProduct.ProductAmount = product.ProductAmount;
@@ -52,7 +53,7 @@ public class BasketService
     {
         var context = await _factory.CreateDbContextAsync();
         var actualProduct = context.BasketProducts.AsSplitQuery().Include(x => x.Product)
-                                                  .FirstOrDefault(x => x.ClientID == product.ClientID && x.ProductID == product.ProductID);
+                                                  .FirstOrDefault(x => x.ClientID == product.ClientID && x.ProductID == product.ProductID && x.OrderID == Guid.Empty);
         if (actualProduct is null)
         {
             if (product.ProductAmount <= model.AmountInStock)
@@ -79,10 +80,10 @@ public class BasketService
     public async Task<int> GetBasketCountAsync(UserSession session)
     {
         var context = await _factory.CreateDbContextAsync();
-        var user = context.UserAccounts.FirstOrDefault(x => x.Email == session.Email);
+        var user = context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == session.Email);
         if (user != null)
         {
-            return context.BasketProducts.Where(x => x.ClientID == user.Id).Sum(x => x.ProductAmount);
+            return context.BasketProducts.Where(x => x.ClientID == user.Id && x.OrderID == Guid.Empty).Sum(x => x.ProductAmount);
         }
 
         return 0;

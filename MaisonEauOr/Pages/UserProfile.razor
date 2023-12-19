@@ -3,86 +3,177 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject IDialogService DialogService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
 
 <PageTitle>Maison eau d'or - Profil</PageTitle>
-<MudText Align="Align.Center" Typo="Typo.h4">Vos informations personnelles</MudText>
+<MudTabs Class="mt-8 mx-16 mb-16" Style="min-height: 50vh;" Position="Position.Top" Outlined Rounded>
+    <MudTabPanel Icon="@Icons.AccountCircle" Text="Informations personnelles">
+        <MudText Class="my-4" Align="Align.Center" Typo="Typo.h4">Vos informations personnelles</MudText>
+        <MudStack Row Justify="Justify.Center">
+            <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
+                <MudText Class="my-3 ml-3" Typo="Typo.h6" Align="Align.Center">Changement des informations générales</MudText>
+                <MudStack Row Justify="Justify.SpaceBetween">
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="Prénom" InputType="InputType.Text"
+                                  For="@(() => _model.Firstname)" Style="max-width: 220px;" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre prénom"/>
 
-<MudStack Class="mt-8 mx-16" Row Justify="Justify.Center">
-    <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
-        <MudText Class="my-3 ml-3" Typo="Typo.h6">Changement des informations générales</MudText>
-        <MudStack Row Justify="Justify.SpaceBetween">
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="Prénom" InputType="InputType.Text"
-                          For="@(() => _model.Firstname)" Style="max-width: 220px;" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre prénom"/>
-
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="Nom" InputType="InputType.Text"
-                          For="@(() => _model.Lastname)" Style="max-width: 220px;" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre nom"/>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="Nom" InputType="InputType.Text"
+                                  For="@(() => _model.Lastname)" Style="max-width: 220px;" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre nom"/>
+                </MudStack>
+                <MudStack Row>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="Email" InputType="InputType.Email"
+                                  For="@(() => _model.Email)" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre email"/>
+                </MudStack>
+                <MudStack Row>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
+                                  For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
+                    <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd-MM-yyyy"
+                                   Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
+                </MudStack>
+                <MudStack Row Justify="Justify.SpaceBetween">
+                    <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
+                                     For="@(() => _model.PostalCode)" Style="max-width: 150px;" Variant="Variant.Text"/>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
+                                  For="@(() => _model.Town)" Style="max-width: 260px;" Variant="Variant.Text"/>
+                </MudStack>
+                <MudStack Row>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
+                                  For="@(() => _model.Address)" Variant="Variant.Text"/>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+                                  For="@(() => _model.Country)" Variant="Variant.Text"/>
+                </MudStack>
+                <MudStack Class="mt-6" Row Justify="Justify.Center">
+                    <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveProfile">Enregistrer</MudButton>
+                </MudStack>
+            </MudPaper>
+            <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
+                <MudText Class="my-3 ml-3" Align="Align.Center" Typo="Typo.h6">Changement du mot de passe</MudText>
+                <MudStack Row>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_passwordModel.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+                                  AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
+                                  For="@(() => _passwordModel.Password)" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre mot de passe"/>
+                </MudStack>
+                <MudStack Row>
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_passwordModel.Confirm" Label="Confirmer" InputType="@_confirmFieldType"
+                                  AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
+                                  For="@(() => _passwordModel.Confirm)" Variant="Variant.Text" Required RequiredError="Veuillez confirmer votre mot de passe"/>
+                </MudStack>
+                <MudStack Class="mt-6" Row Justify="Justify.Center">
+                    <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SavePassword">Enregistrer</MudButton>
+                </MudStack>
+            </MudPaper>
+            <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
+                <MudText Class="my-3 ml-3" Typo="Typo.h6" Align="Align.Center">Double authentification</MudText>
+                <MudStack Row>
+                    <MudCheckBox @bind-Checked="_doubleAuth" Label="@DoubleAuthText" Color="Color.Tertiary"/>
+                </MudStack>
+                <MudStack Class="mt-6" Row Justify="Justify.Center">
+                    <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveDoubleAuth">Enregistrer</MudButton>
+                </MudStack>
+            </MudPaper>
         </MudStack>
-        <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="Email" InputType="InputType.Email"
-                          For="@(() => _model.Email)" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre email"/>
+        <MudStack Class="mt-6 mb-8" Row Justify="Justify.Center">
+            <MudPaper Class="py-2 px-12" Elevation="1" Outlined>
+                <MudButton Color="Color.Info" OnClick="@LogoutUserAsync">Déconnexion</MudButton>
+            </MudPaper>
         </MudStack>
-        <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
-                          For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
-            <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd-MM-yyyy"
-                           Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
-        </MudStack>
-        <MudStack Row Justify="Justify.SpaceBetween">
-            <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
-                             For="@(() => _model.PostalCode)" Style="max-width: 150px;" Variant="Variant.Text"/>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
-                          For="@(() => _model.Town)" Style="max-width: 260px;" Variant="Variant.Text"/>
-        </MudStack>
-        <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
-                          For="@(() => _model.Address)" Variant="Variant.Text"/>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
-                          For="@(() => _model.Country)" Variant="Variant.Text"/>
-        </MudStack>
-        <MudStack Class="mt-6" Row Justify="Justify.Center">
-            <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveProfile">Enregistrer</MudButton>
-        </MudStack>
-    </MudPaper>
-    <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
-        <MudText Class="my-3 ml-3" Typo="Typo.h6">Changement du mot de passe</MudText>
-        <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_passwordModel.Password" Label="Mot de passe" InputType="@_passwordFieldType"
-                          AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
-                          For="@(() => _passwordModel.Password)" Variant="Variant.Text" Required RequiredError="Veuillez renseigner votre mot de passe"/>
-        </MudStack>
-        <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_passwordModel.Confirm" Label="Confirmer" InputType="@_confirmFieldType"
-                          AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
-                          For="@(() => _passwordModel.Confirm)" Variant="Variant.Text" Required RequiredError="Veuillez confirmer votre mot de passe"/>
-        </MudStack>
-        <MudStack Class="mt-6" Row Justify="Justify.Center">
-            <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SavePassword">Enregistrer</MudButton>
-        </MudStack>
-    </MudPaper>
-    <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
-        <MudText Class="my-3 ml-3" Typo="Typo.h6">Double authentification</MudText>
-        <MudStack Row>
-            <MudCheckBox @bind-Checked="_doubleAuth" Label="@DoubleAuthText" Color="Color.Tertiary"/>
-        </MudStack>
-        <MudStack Class="mt-6" Row Justify="Justify.Center">
-            <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveDoubleAuth">Enregistrer</MudButton>
-        </MudStack>
-    </MudPaper>
-</MudStack>
-<MudStack Class="mt-6 mb-8" Row Justify="Justify.Center">
-    <MudPaper Class="py-2 px-12" Elevation="1" Outlined>
-        <MudButton Color="Color.Info" OnClick="@LogoutUserAsync">Déconnexion</MudButton>
-    </MudPaper>
-</MudStack>
+    </MudTabPanel>
+    <MudTabPanel Icon="@Icons.ShoppingBasket" Text="Vos commandes">
+        <MudText Class="my-4" Align="Align.Center" Typo="Typo.h4">Vos commandes</MudText>
+        @if (_orders.Any())
+        {
+            foreach (var order in _orders)
+            {
+                <MudPaper Class="mb-6" Outlined Elevation="0" Style="overflow-x: scroll;">
+                    <MudStack Class="pa-6" Row>
+                        <MudText Class="mr-2">COMMANDE PASSÉE LE<br/>@(order.OrderedAt.HasValue ? order.OrderedAt.Value.ToString("dd-MM-yyyy") : string.Empty)</MudText>
+                        <MudText Class="mr-2">TOTAL<br/><b>@order.Total.ToString("C")</b></MudText>
+                        <MudText>LIVRAISON À<br/>@order.ShippingTown</MudText>
+                        @if (!order.Payed)
+                        {
+                            <MudText>STATUS<br/><b>En attente</b></MudText>
+                        }
+                        else
+                        {
+                            <MudText>STATUS<br/><b>Payée</b></MudText>
+                        }
+                        <MudSpacer/>
+                        <MudText>N° DE COMMANDE<br/><MudText Typo="Typo.subtitle2">@order.Id.ToString()</MudText></MudText>
+                    </MudStack>
+                    <MudDivider Style="border-color: #757575!important;"/>
+                    <MudExpansionPanel Text="Récapitulatif">
+                        @foreach (var product in order.Products!)
+                        {
+                            <MudStack Class="px-2" Row>
+                            <MudStack Row="false">
+                                <MudImage Src="@product.Product!.ImagePath" Alt="@product.Product!.Name" Width="90" Height="90"/>
+                            </MudStack>
+                            <MudStack Class="flex-grow-1" Row="false">
+                                <MudStack Class="mt-n2" Row AlignItems="AlignItems.Center">
+                                    <MudText Align="Align.Left" Typo="Typo.h6">
+                                        <b>@product.Product!.Name</b>
+                                    </MudText>
+                                    <MudSpacer/>
+                                    <MudText>x @product.ProductAmount</MudText>
+                                </MudStack>
+                                <MudStack Class="mt-n2" Row="false">
+                                    <MudStack Row AlignItems="AlignItems.Center">
+                                        <MudText Typo="Typo.caption" Align="Align.Left">
+                                            <b>OPTION:</b>
+                                        </MudText>
+                                        <MudText Typo="Typo.caption" Align="Align.Left">@product.OptionText</MudText>
+                                        <MudSpacer/>
+                                        <MudText>
+                                            <b>@product.TotalPrice.ToString("C")</b>
+                                        </MudText>
+                                    </MudStack>
+                                </MudStack>
+                            </MudStack>
+                        </MudStack>
+                            @if (order.Products.Last() != product)
+                            {
+                                <MudStack Class="px-16" Row Justify="Justify.Center">
+                                    <MudDivider Class="my-6 px-16 align-self-center" Style="border-color: black!important;"/>
+                                </MudStack>
+                            }
+                        }
+                    </MudExpansionPanel>
+                    <MudStack Class="py-4" Row>
+                        @if (!order.Payed)
+                        {
+                            <MudButton Class="ml-6 px-16 rounded-0" Variant="Variant.Filled" Color="Color.Secondary" OnClick="@(() => NavManager.NavigateTo($"/order/{order.Id}"))">
+                                Payer la commande
+                            </MudButton>
+                        }
+                        <MudSpacer/>
+                        <MudButton Class="px-12 rounded-0 mr-6" Color="Color.Dark" Variant="Variant.Filled" OnClick="@(async () => await CancelOrderAsync(order))">Annuler</MudButton>
+                        <MudButton Class="px-16 rounded-0 mr-6" Color="Color.Warning" Variant="Variant.Filled">Suivre votre colis</MudButton>
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+        else
+        {
+            <MudStack Row Justify="Justify.Center">
+                <MudText Align="Align.Center">
+                    Vous n'avez pas encore de commande...<br/>
+                    <MudLink Underline="Underline.Hover" Href="/catalog-perfumes">Découvrez nos produits</MudLink>
+                </MudText>
+            </MudStack>
+        }
+    </MudTabPanel>
+</MudTabs>
 
 @code {
+
     [CascadingParameter(Name = "MainLayoutInstance")]
     public MainLayout Layout { get; set; } = null!;
-    
+
     private MeoDbContext _context = null!;
     private UserAccount? _currentUser;
+
+    private List<OrderModel> _orders = new();
 
     private GeneralModel _model = new();
     private PasswordModel _passwordModel = new();
@@ -107,6 +198,7 @@
         if (firstRender)
         {
             await RefreshModel();
+            await RefreshOrdersAsync();
         }
     }
 
@@ -156,7 +248,7 @@
             await _context.SaveChangesAsync();
             await RefreshAsync();
             await RefreshModel();
-            Snackbar.Add("Modifications enregistrées", Severity.Success);   
+            Snackbar.Add("Modifications enregistrées", Severity.Success);
         }
         else
         {
@@ -260,7 +352,7 @@
         var user = await authService.GetCurrentUserAsync();
         if (user != null)
         {
-            _currentUser = _context.UserAccounts.FirstOrDefault(x => x.Email == user.Email);
+            _currentUser = _context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == user.Email);
             if (_currentUser != null)
             {
                 _model.Firstname = _currentUser.Firstname ?? string.Empty;
@@ -269,7 +361,7 @@
                 _model.BornAt = _currentUser.BornAt;
                 _model.Address = _currentUser.Address ?? string.Empty;
                 _model.Town = _currentUser.Town ?? string.Empty;
-                _model.Country = _currentUser.Country ?? string.Empty; 
+                _model.Country = _currentUser.Country ?? string.Empty;
                 _model.PostalCode = _currentUser.PostalCode;
                 _model.PhoneNumber = _currentUser.PhoneNumber ?? string.Empty;
                 _doubleAuth = _currentUser.DoubleAuth;
@@ -283,6 +375,51 @@
         else
         {
             await RedirectHomeAsync();
+        }
+    }
+
+    private async Task RefreshOrdersAsync()
+    {
+        var authService = (AuthenticationService)AuthStateProvider;
+        var user = await authService.GetCurrentUserAsync();
+        if (user != null)
+        {
+            _currentUser = _context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == user.Email);
+            if (_currentUser != null)
+            {
+                _orders = _context.Orders.AsNoTracking().Where(x => x.ClientID == _currentUser.Id).ToList();
+                foreach (var order in _orders)
+                {
+                    order.Products = _context.BasketProducts.AsNoTracking().Include(x => x.Product).Where(x => x.OrderID == order.Id).ToList();
+                }
+                StateHasChanged();
+            }
+            else
+            {
+                await RedirectHomeAsync();
+            }
+        }
+        else
+        {
+            await RedirectHomeAsync();
+        }
+    }
+
+    private async Task CancelOrderAsync(OrderModel order)
+    {
+        var parameters = new DialogParameters<ConfirmDialog> { { x => x.Text, "Êtes-vous sûr(e) de vouloir annuler votre commande ? Le remboursement de votre commande sera traité par nos équipes (3 à 5 jours ouvrés)." } };
+        var dialog = await DialogService.ShowAsync<ConfirmDialog>("Annulation de commande", parameters);
+        var result = await dialog.Result;
+        if (result.Data is true)
+        {
+            _orders.Remove(order);
+            var old = _context.Orders.AsNoTracking().FirstOrDefault(x => x.Id == order.Id);
+            if (old != null)
+            {
+                _context.Orders.Remove(old);
+                await _context.SaveChangesAsync();
+                StateHasChanged();
+            }
         }
     }
 

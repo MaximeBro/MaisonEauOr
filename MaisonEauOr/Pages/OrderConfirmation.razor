@@ -2,6 +2,7 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject BasketService BasketService
 @inject MailerService MailerService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
@@ -16,33 +17,36 @@
 
 <PageTitle>Maison eau d'or - Page de paiement</PageTitle>
 
-<MudContainer Class="mb-16">
+@if (_sending)
+{
+    <MudOverlay Absolute Visible ZIndex="1450" AutoClose="false" DarkBackground>
+        <MudProgressCircular Indeterminate Color="Color.Success"/>
+    </MudOverlay>
+}
+
+<MudContainer Class="mb-16" MaxWidth="MaxWidth.ExtraLarge">
     <MudText Typo="Typo.h3">Confirmation de commande</MudText>
-    <MudStack Class="d-flex justify-content-between">
-        <MudStack>
-            <MudExpansionPanel Text="1. Contact">
+    <MudGrid Justify="Justify.Center">
+        
+        <MudItem Class="px-6" xs="12" sm="12" md="8">
+            <MudExpansionPanel Text="1. Contact" @bind-IsExpanded="_firstExpand">
                 <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Default};")">Uniquement à des fin de facturation et de commande</MudText>
                 <MudTextField T="string" InputType="InputType.Text" Label=" Nom complet" Variant="Variant.Outlined"></MudTextField>
                 <MudTextField T="string" InputType="InputType.Email" Label="E-mail" Variant="Variant.Outlined"></MudTextField>
                 <MudTextField T="string" InputType="InputType.Telephone" Label="Numéro de téléphone" Variant="Variant.Outlined"></MudTextField>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark">Continuer</MudButton>
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandSecond">Continuer</MudButton>
             </MudExpansionPanel>
 
-            <MudExpansionPanel Text="2. Mode de livraison">
-                <MudTextField T="string" Label="Nom complet" Variant="Variant.Outlined"></MudTextField>
-                <MudStack>
-                    <MudTextField T="string" Label="Rue" Variant="Variant.Outlined"></MudTextField>
-                    <MudTextField T="string" Label="Numéro" Variant="Variant.Outlined"></MudTextField>
-                </MudStack>
-                <MudStack>
-                    <MudTextField T="string" Label="Ville" Variant="Variant.Outlined"></MudTextField>
-                    <MudTextField T="string" Label="Code postal" Variant="Variant.Outlined"></MudTextField>
-                </MudStack>
-                <MudTextField T="string" Label="Pays" Variant="Variant.Outlined"></MudTextField>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark">Continuer</MudButton>
+            <MudExpansionPanel Text="2. Mode de livraison" @bind-IsExpanded="_secondExpand">
+                <MudTextField T="string" Label="Nom complet" Variant="Variant.Outlined"/>
+                <MudTextField T="string" @bind-Value="_address" Label="Adresse" Variant="Variant.Outlined"/>
+                <MudTextField T="string" @bind-Value="_town" Label="Ville" Variant="Variant.Outlined"/>
+                <MudTextField T="string" @bind-Value="_postaleCode" Mask="@(new PatternMask("00000"))" Label="Code postal" Variant="Variant.Outlined"/>
+                <MudTextField T="string" Label="Pays" Variant="Variant.Outlined"/>
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandThird">Continuer</MudButton>
             </MudExpansionPanel>
 
-            <MudExpansionPanel Text="3. Moyen de paiement">
+            <MudExpansionPanel Text="3. Moyen de paiement" @bind-IsExpanded="_thirdExpand">
                 <MudRadioGroup @bind-SelectedOption="@_selectedOption">
                     <MudRadio Option="@("CB")" Color="Color.Dark"><MudIcon Icon="@Icons.CreditCard"/> CB</MudRadio>
                     <MudRadio Class="mx-4" Option="@("PAYPAL")" Color="Color.Dark"><MudIcon Icon="fab fa-paypal"/> Paypal</MudRadio>
@@ -95,20 +99,66 @@
                     }
                 }
             </MudExpansionPanel>
-            <MudText Typo="Typo.body1">
+            <MudText Class="mt-2" Typo="Typo.body1">
                 En continuant vous accepter nos
                 <MudLink Color="Color.Dark" Underline="Underline.Always" Href="/terms-and-conditions">conditions générales de vente.</MudLink>
             </MudText>
             <MudCheckBox T="bool" Label="J'accepte le traitement de mes données par Maison d'eau D'or à des fins marketing."></MudCheckBox>
-            <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(async () => await SetOrderStatus())">
-                Payer @_order.Total.ToString("C")
-            </MudButton>
-        </MudStack>
-    </MudStack>
+            <MudStack Class="px-16" Row Justify="Justify.Center">
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(async () => await SetOrderStatus())" FullWidth>
+                    Payer @_products.TotalWithTva().ToString("C")
+                </MudButton>
+            </MudStack>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="4">
+            <MudPaper Class="py-6" Elevation="0" Outlined Style="overflow-y: scroll; max-height: 350px;">
+                <MudStack Row="false">
+                    @foreach (var product in _products)
+                    {
+                        <MudStack Class="px-2" Row>
+                            <MudStack Row="false">
+                                <MudImage Src="@product.Product!.ImagePath" Alt="@product.Product!.Name" Width="90" Height="90"/>
+                            </MudStack>
+                            <MudStack Class="flex-grow-1" Row="false">
+                                <MudStack Class="mt-n2" Row AlignItems="AlignItems.Center">
+                                    <MudText Align="Align.Left" Typo="Typo.h6">
+                                        <b>@product.Product!.Name</b>
+                                    </MudText>
+                                    <MudSpacer/>
+                                    <MudText>x @product.ProductAmount</MudText>
+                                </MudStack>
+                                <MudStack Class="mt-n2" Row="false">
+                                    <MudStack Row AlignItems="AlignItems.Center">
+                                        <MudText Typo="Typo.caption" Align="Align.Left">
+                                            <b>OPTION:</b>
+                                        </MudText>
+                                        <MudText Typo="Typo.caption" Align="Align.Left">@product.OptionText</MudText>
+                                        <MudSpacer/>
+                                        <MudText>
+                                            <b>@product.TotalPrice.ToString("C")</b>
+                                        </MudText>
+                                    </MudStack>
+                                </MudStack>
+                            </MudStack>
+                        </MudStack>
+                        @if (_products.Last() != product)
+                        {
+                            <MudStack Class="px-10" Row Justify="Justify.Center">
+                                <MudDivider Class="my-2 align-self-center" Style="border-color: black!important;"/>
+                            </MudStack>
+                        }
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
 
 @code {
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout MainLayout { get; set; } = null!;
+    
     [Parameter]
     public Guid OrderId { get; set; }
 
@@ -117,8 +167,16 @@
     private OrderModel? _order;
     private List<BasketProductModel> _products = new();
 
-    private bool _sending;
+    private string _town = string.Empty;
+    private string _address = string.Empty;
+    private string _postaleCode = string.Empty;
+
+    private bool _firstExpand;
+    private bool _secondExpand;
+    private bool _thirdExpand;
     
+    private bool _sending = false;
+
     private string _selectedOption = "CB";
     private string _email = "maimemail.brochard.com@gmail.com";
 
@@ -134,10 +192,18 @@
         }
         else
         {
-            _products = _context.BasketProducts.Include(x => x.Product).Where(x => x.OrderID == _order.Id).ToList();
+            if (_order.Payed)
+            {
+                Snackbar.Add("Votre commande a déjà été payée !", Severity.Info);
+                NavManager.NavigateTo("/profile");
+            }
+            else
+            {
+                _products = _context.BasketProducts.Include(x => x.Product).Where(x => x.OrderID == _order.Id).ToList();
+            }
         }
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -145,6 +211,18 @@
             var authService = (AuthenticationService)AuthStateProvider;
             _currentUser = await authService.GetCurrentUserAsync();
         }
+    }
+
+    private void ExpandSecond()
+    {
+        _firstExpand = false;
+        _secondExpand = true;
+    }
+
+    private void ExpandThird()
+    {
+        _secondExpand = false;
+        _thirdExpand = true;
     }
 
     private async Task SetOrderStatus()
@@ -160,26 +238,34 @@
             if (_order.Payed)
             {
                 Snackbar.Add("Votre commande a déjà été validée !", Severity.Info);
-                NavManager.NavigateTo("/user-profile");
+                NavManager.NavigateTo("/profile");
                 return;
             }
             Snackbar.Add("Validation de la commande en cours...", Severity.Success);
+            _sending = true;
             _order.Payed = true;
+            _order.ShippingTown = _town;
+            _order.ShippingAddress = _address;
+            int.TryParse(_postaleCode, out int val);
+            _order.ShippingPostalCode = val;
             _context.Orders.Update(_order);
             await _context.SaveChangesAsync();
-            
-            var recipient = _currentUser?.Email ?? _email;
-            var mailBody = $"Bonjour,\nVote commande #{_order.Id} d'un montant de {_order.Total.ToString("C")} vient d'être validée et sera prise en compte d'ici peu par nos équipes.\nNous vous remercions pour vos achats chez Maison Eau D'or et espérons vous retrouver très vite.";
-            var recap = string.Empty;
-            foreach (var product in _products)
+            if (_currentUser != null)
             {
-                recap += $"{product.Product!.Name} {product.TotalPrice}\n";
+                await MainLayout.RefreshBasketAsync();
+                StateHasChanged();
             }
+
+            var recipient = _currentUser?.Email ?? _email;
+            var mailBody = $"Bonjour,\nVote commande #{_order.Id} d'un montant de {_order.Total.ToString("C")} vient d'être validée et sera prise en compte d'ici peu par nos équipes.\nNous vous remercions pour vos achats chez Maison Eau D'or et espérons vous retrouver très vite.\n";
+            var recap = "----------------------------------------------\nRécapitulatif de votre commande : \n";
+            recap += _products.Aggregate(string.Empty, (current, product) => current + $"{product.Product!.Name} {product.Product.Price:C} x{product.ProductAmount}\n");
+            recap += $"Total commande : {_products.TotalWithTva():C}\n";
             mailBody += recap;
-            _sending = true;
             await MailerService.SendEmailAsync(recipient, $"Confirmation de votre commande #{_order.Id}", mailBody);
             _sending = false;
-            NavManager.NavigateTo("/user-profile");
+            Snackbar.Clear();
+            NavManager.NavigateTo("/profile");
         }
     }
 }

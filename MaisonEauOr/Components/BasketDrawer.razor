@@ -110,7 +110,7 @@
         {
             <MudStack Style="height: 100%" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
                 <MudText Align="Align.Center">Votre panier est vide...</MudText>
-                <MudLink Href="/catalog-browser" Underline="Underline.Hover">Découvrez nos produits</MudLink>
+                <MudLink Href="/catalog-perfumes" Underline="Underline.Hover">Découvrez nos produits</MudLink>
             </MudStack>
         }
     </MudDrawerContainer>
@@ -128,7 +128,7 @@
     // Not bind for now, optional
     private string _comment = string.Empty;
 
-    private async Task RefreshBasketAsync()
+    public async Task RefreshBasketAsync()
     {
         if (CurrentUser != null)
         {
@@ -162,13 +162,14 @@
         if (CurrentUser != null)
         {
             var context = await Factory.CreateDbContextAsync();
-            var user = context.UserAccounts.FirstOrDefault(x => x.Email == CurrentUser.Email);
+            var user = context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == CurrentUser.Email);
             if (user != null)
             {
                 var order = new OrderModel
                 {
                     ClientID = user.Id,
-                    Total = _basketProducts.TotalWithTva()
+                    Total = _basketProducts.TotalWithTva(),
+                    OrderedAt = DateTime.Now
                 };
                 context.Orders.Add(order);
                 foreach (var product in _basketProducts)
@@ -177,6 +178,7 @@
                 }
                 context.BasketProducts.UpdateRange(_basketProducts);
                 await context.SaveChangesAsync();
+                await RefreshBasketAsync();
                 NavManager.NavigateTo($"/order/{order.Id}");
             }
         }

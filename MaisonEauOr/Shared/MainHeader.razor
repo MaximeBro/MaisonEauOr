@@ -26,7 +26,7 @@
             <MudToolBar>
                 <AuthorizeView Roles="Admin">
                     <Authorized>
-                        <MudTooltip Class="ml-4" Text="Panel d'administration" Arrow>
+                        <MudTooltip Class="ml-2" Text="Panel d'administration" Arrow>
                             <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4" Href="/admin-panel"/>
                         </MudTooltip>
                     </Authorized>
@@ -130,6 +130,12 @@
         await _drawer.ToggleDrawer(toggle);
     }
 
+    public async Task RefreshBasketAsync()
+    {
+        await _drawer.RefreshBasketAsync();
+        await RefreshBasketCountAsync();
+    }
+    
     public async Task RefreshBasketCountAsync()
     {
         if (_currentUser != null)

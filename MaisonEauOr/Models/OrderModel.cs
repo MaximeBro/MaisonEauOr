@@ -7,12 +7,11 @@ public class OrderModel
 {
 	public Guid Id { get; set; } = Guid.NewGuid();
 	public Guid ClientID { get; set; }
-	public UserAccount? Client { get; set; }
 	public DateTime? OrderedAt { get; set; }
 	public double ShippingPrice { get; set; }
-	public string ShippingTown { get; set; }
+	public string? ShippingTown { get; set; }
+	public string? ShippingAddress { get; set; }
 	public int ShippingPostalCode { get; set; }
-	public string ShippingAddress { get; set; }
 	public double Total { get; set; }
 	public ICollection<BasketProductModel>? Products { get; set; }
 	public bool Payed { get; set; }
