@@ -33,7 +33,7 @@ if (!Directory.Exists("../meo-data"))
 using (var serviceScope = app.Services.CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<MeoDbContext>();
-    dbContext.Database.EnsureCreated();
+    dbContext.Database.Migrate();
 }
 
 // Configure the HTTP request pipeline.

@@ -14,7 +14,7 @@ public class ProductModel
     public double Tva { get; set; }
     public bool IsAvailable { get; set; }
     public DateTime AddedAt { get; set; }
-    [NotMapped] 
+    [NotMapped]
     public List<Option> Options { get; set; } = new();
     public string ImagePath { get; set; }
 }
