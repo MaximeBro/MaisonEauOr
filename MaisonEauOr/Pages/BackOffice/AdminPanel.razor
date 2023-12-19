@@ -38,6 +38,20 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
+        <MudItem xs="12" md="6">
+            <MudCard Class="pa-4" Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Gestion des meilleures ventes</MudText>
+                    <MudText>Définissez les produits à afficher en première page pour booster leurs ventes.</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Color="Color.Primary" StartIcon="@Icons.DisplaySettings"
+                               OnClick="@(() => NavManager.NavigateTo("/admin-home"))">
+                        Gestion des meilleures ventes
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
     </MudGrid>
 </MudContainer>
 
