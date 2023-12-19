@@ -114,6 +114,9 @@
 </MudDrawer>
 
 @code {
+    [CascadingParameter(Name = "MainHeaderInstance")]
+    public MainHeader MainHeader { get; set; } = null!;
+    
     public UserSession? CurrentUser { get; set; }
     private List<BasketProductModel> _basketProducts = new();
 
@@ -135,6 +138,7 @@
     {
         await BasketService.RemoveBasketProductAsync(product);
         await RefreshBasketAsync();
+        await MainHeader.RefreshBasketCountAsync();
     }
 
     private async Task UpdateBasketProduct(BasketProductModel product)
@@ -147,6 +151,7 @@
         }
         await BasketService.UpdateBasketProductAsync(product);
         await RefreshBasketAsync();
+        await MainHeader.RefreshBasketCountAsync();
     }
 
     public async Task ToggleDrawer(bool toggle)

@@ -13,7 +13,7 @@
                 {
                     @if (lang != SelectedLanguage)
                     {
-                        <MudMenuItem Class="px-5" Style="padding-top: -4px!important; padding-bottom: -4px!important;" OnClick="@(() => RefreshLang(lang))">@lang.ToString()</MudMenuItem>
+                        <MudMenuItem Class="px-5" Style="padding-top: -4px!important; padding-bottom: -4px!important;" OnClick="@(() => RefreshLangAsync(lang))">@lang.ToString()</MudMenuItem>
                     }
                 }
 
@@ -33,7 +33,16 @@
                 </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
                 <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="@CheckUserSession"/>
-                <MudIconButton OnClick="@(async () => await ToggleDrawer())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                @if (_currentUser != null && _basketCount > 0)
+                {
+                    <MudBadge Content="@_basketCount" Overlap Color="Color.Dark" Bordered Origin="Origin.TopRight">
+                        <MudIconButton OnClick="@(async () => await ToggleDrawerAsync())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                    </MudBadge>
+                }
+                else
+                {
+                    <MudIconButton OnClick="@(async () => await ToggleDrawerAsync())" Icon="@Icons.ShoppingCart" Color="Color.Dark"/>
+                }
             </MudToolBar>
         </div>
     </MudStack>
@@ -54,7 +63,9 @@
         <a href="/catalog-mists">Brumes</a>
         <a href="/catalog-hairproducts">Produits capillaire</a>
     </nav>
-    <BasketDrawer @ref="_drawer"/>
+    <CascadingValue Name="MainHeaderInstance" Value="@this">
+         <BasketDrawer @ref="_drawer"/>
+    </CascadingValue>
 </header>
 
 @code
@@ -63,6 +74,7 @@
     private BasketDrawer _drawer = new();
     private Language SelectedLanguage { get; set; }
     private string SelectedLanguageText { get; set; } = null!;
+    private int _basketCount;
 
     private bool[] _isOpen = new bool[3];
     private string _burger = Icons.Menu;
@@ -81,6 +93,7 @@
             _currentUser = await authService.GetCurrentUserAsync();
             _drawer.CurrentUser = _currentUser;
             LoadLanguage();
+            await RefreshBasketCountAsync();
         }
     }
 
@@ -112,12 +125,21 @@
         }
     }
 
-    private async Task ToggleDrawer(bool toggle = true)
+    private async Task ToggleDrawerAsync(bool toggle = true)
     {
         await _drawer.ToggleDrawer(toggle);
     }
 
-    private async Task RefreshLang(Language lang)
+    public async Task RefreshBasketCountAsync()
+    {
+        if (_currentUser != null)
+        {
+            _basketCount = await BasketService.GetBasketCountAsync(_currentUser);
+            StateHasChanged();
+        }
+    }
+
+    private async Task RefreshLangAsync(Language lang)
     {
         await Lang.SetLanguage(Lang.GetLanguageText(lang));
         SelectedLanguage = lang;
@@ -125,7 +147,7 @@
         StateHasChanged();
     }
 
-    private async Task LangChanged(Language lang)
+    private async Task LangChangedAsync(Language lang)
     {
         await Lang.SetLanguage(Lang.GetLanguageText(lang));
         SelectedLanguage = Lang.GetCurrentLanguage();

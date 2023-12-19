@@ -48,12 +48,14 @@
                     }
                     <MudNumericField T="int" Class="flex-grow-0" @bind-Value="_selectedAmount" Min="1" Step="1" Label="QUANTITÉ" Variant="Variant.Outlined" Style="border-radius: 0!important;"/>
                 </MudStack>
-                <MudButton Class="rounded-0 my-2" Style="@($"background-color: {Colors.Grey.Darken4}; color: #fff;")" FullWidth Variant="Variant.Filled">Acheter</MudButton>
-                <MudButton Variant="Variant.Outlined" FullWidth Style="border-radius: 0!important;" OnClick="@(async() => await AddToBasket())">
-                    Ajouter au panier
-                    <MudIcon Class="my-auto ml-3" Icon="@Icons.ShoppingCart"/>
-                </MudButton>
-                <MudText Class="mt-4 mb-n2">PARTAGER</MudText>
+                <div>
+                    <MudButton Class="rounded-0 my-2" Style="@($"background-color: {Colors.Grey.Darken4}; color: #fff;")" FullWidth Variant="Variant.Filled">Acheter</MudButton>
+                    <MudButton Variant="Variant.Outlined" FullWidth Style="border-radius: 0!important;" OnClick="@(async() => await AddToBasket())">
+                        Ajouter au panier
+                        <MudIcon Class="my-auto ml-3" Icon="@Icons.ShoppingCart"/>
+                    </MudButton>
+                </div>
+                <MudText Class="mb-n2">PARTAGER</MudText>
                 <MudStack Row Justify="Justify.FlexStart">
                     <MudIconButton Color="Color.Dark" Icon="@IconsC.Brands.Facebook"/>
                     <MudIconButton Color="Color.Dark" Icon="@IconsC.Brands.Twitter"/>
@@ -72,7 +74,9 @@
 </MudContainer>
 
 @code {
-
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout MainLayout { get; set; } = null!;
+    
     [Parameter]
     public Guid ProductId { get; set; }
 
@@ -144,7 +148,7 @@
                         {
                             Snackbar.Add($"il ne reste que {added} {_productName} en stock.", Severity.Warning);
                         }
-
+                        await MainLayout.RefreshBasketCountAsync();
                         _selectedAmount = 1;
                     }
                     else

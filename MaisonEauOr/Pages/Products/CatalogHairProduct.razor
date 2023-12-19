@@ -109,6 +109,7 @@
                     {
                         Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
                     }
+                    await MainLayout.RefreshBasketCountAsync();
                 }
                 else
                 {
