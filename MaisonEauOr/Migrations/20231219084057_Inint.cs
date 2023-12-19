@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MaisonEauOr.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Inint : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -39,7 +39,7 @@ namespace MaisonEauOr.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "ProductModel",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -55,7 +55,7 @@ namespace MaisonEauOr.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_ProductModel", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -95,9 +95,9 @@ namespace MaisonEauOr.Migrations
                 {
                     table.PrimaryKey("PK_BasketProducts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BasketProducts_Products_ProductID",
+                        name: "FK_BasketProducts_ProductModel_ProductID",
                         column: x => x.ProductID,
-                        principalTable: "Products",
+                        principalTable: "ProductModel",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -132,7 +132,7 @@ namespace MaisonEauOr.Migrations
                 name: "Options");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ProductModel");
 
             migrationBuilder.DropTable(
                 name: "UserAccounts");
