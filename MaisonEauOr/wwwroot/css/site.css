@@ -47,7 +47,7 @@ nav.navbar a {
     transition: all 0.2s ease;
 }
 
-nav.navbar a:hover {
+nav.navbar a:hover, .dropdown-profil a:hover {
     color: #ECC291;
 }
 
@@ -93,19 +93,29 @@ nav.navbar a:hover {
 }
 
 /* Add a grey background color to dropdown links on hover */
-.dropdown-content a:hover {
+.dropdown-div .dropdown-content a:hover {
     color: #ECC291;
-}
-
-/* Show the dropdown menu on hover */
-.dropdown-div:hover .dropdown-content {
-
 }
 
 .show {
     display: flex;
     flex-direction: column;
 }
+
+.dropdown-profil .dropdown-content {
+    left: 0;
+    right: 0;
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.72);
+    border-radius: 10px  ;
+}
+
+.dropdown-profil .dropdown-content a{
+    border-top: rgba(0,0,0,0.2) solid 1px;
+}
+.dropdown-profil .dropdown-content a:first-child{
+    border-top: none;
+}
+
 
 /* end - Header Navbar*/
 
@@ -173,11 +183,53 @@ footer ul li {
     list-style: inside;
 }
 
+footer span{
+    font-family: 'Lora', 'Times New Roman', serif;
+}
+
 /* end - footer*/
 
 .logo {
     height: 76px;
 }
+
+/* CARROUSEL */
+.carousel-container {
+    overflow: hidden;
+}
+
+.carousel {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-inner {
+    display: flex;
+    width: 100%; /* Trois images affichées à la fois */
+}
+
+.carousel img {
+    width: 100%;
+    object-fit: cover;
+}
+
+.prev-button,
+.next-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.prev-button {
+    left: 10px;
+}
+
+.next-button {
+    right: 10px;
+}
+/* end - carrousel*/
 
 @media only screen and (max-width: 768px) {
     html, body {
@@ -204,7 +256,7 @@ footer ul li {
 
     }
 
-    .dropdown-content {
+    .dropdown-div .dropdown-content {
         position: relative;
         box-shadow: none;
 

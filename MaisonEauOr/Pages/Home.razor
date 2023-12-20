@@ -9,10 +9,8 @@
 
 <PageTitle>Maison eau d'or</PageTitle>
 
-<MudContainer Class="mt-n16 px-0" Style="overflow-x: hidden; border-top: 1px solid black;" MaxWidth="MaxWidth.ExtraExtraLarge">
-    <MudStack Row>
+<MudContainer Class="mt-n16 px-0" Style="overflow-x: hidden;" MaxWidth="MaxWidth.ExtraExtraLarge">
         <MudImage Style="width: 100vw;" Src="images/home/bar.png"/>
-    </MudStack>
     <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Nos meilleures ventes</MudText>
     <MudGrid Class="mb-16" Style="max-width: 100%;" Justify="Justify.SpaceEvenly">
         <MudItem xs="12" md="6" lg="3">
@@ -52,6 +50,48 @@
     <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Découvrez nos produits</MudText>
 
     @* Caroussel catégories (parfums, sprays intérieur, cosmétiques) *@
+    
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="carousel-inner" id="carousel-inner">
+                <!-- Vos images vont ici -->
+                <img src="images/home/parfums.png" alt="Image 1">
+                <img src="images/home/sprays_interieur.png" alt="Image 2">
+                <img src="images/home/cosmetiques.png" alt="Image 3">
+                <img src="images/home/musc_tahara_intime.png" alt="Image 4">
+                <!-- Répétez vos images pour créer le cycle infini -->
+                <img src="images/home/ahlam.png" alt="Image 1">
+                <img src="images/home/cosmetiques.png" alt="Image 2">
+            </div>
+        </div>
+        <button class="prev-button" onclick="changeSlide(-1)">&lt; Précédent</button>
+        <button class="next-button" onclick="changeSlide(1)">Suivant &gt;</button>
+    </div>
+    
+    <script>
+   
+           const carouselInner = document.getElementById('carousel-inner');
+           const images = document.querySelectorAll('.carousel-inner img');
+       
+           let currentIndex = 0;
+           const displayWidth = 3;
+       
+           function changeSlide(direction) {
+               currentIndex += direction;
+       
+               if (currentIndex < 0) {
+                   currentIndex = images.length - displayWidth;
+               } else if (currentIndex > images.length - displayWidth) {
+                   currentIndex = 0;
+               }
+       
+               const translateValue = -currentIndex * (100 / displayWidth) + '%';
+               carouselInner.style.transform = 'translateX(' + translateValue + ')';
+           }
+       
+    </script>
+    
+    
     <MudCarousel Class="px-16 py-4 mb-16 mud-full-width" Style="height: 520px; background-color: #F7E1C7;" ShowArrows ShowBullets="false" EnableSwipeGesture TData="object">
         <MudCarouselItem Transition="Transition.Slide">
             <MudStack Row Justify="Justify.SpaceEvenly">
@@ -89,8 +129,8 @@
 
     @* Description boutique avec photo réduite bar à parfum *@
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
-        <MudStack Class="py-8" Row>
-            <MudStack Class="mr-8 px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
+        <MudStack Class="py-8" Row Spacing="9" Justify="Justify.SpaceAround">
+            <MudStack Class=" px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
                 <MudText Typo="Typo.h5" Align="Align.Center">
                     <b>Le Bar à parfum</b>
                 </MudText>
@@ -103,9 +143,9 @@
                     Découvrir
                 </MudButton>
             </MudStack>
-            <MudStack Class="flex-grow-1" Style="max-width: 1400px;">
-                <MudImage Src="images/home/bar.png" Style="width: 100%; height: auto;"/>
-            </MudStack>
+            <div class="flex-grow-1 facultatif" style="max-width: 1400px;">
+                <MudImage Src="images/home/bar.png" ObjectFit="ObjectFit.None" Style="height: 100%; width: 100%" />
+            </div>
         </MudStack>
     </MudPaper>
 </MudContainer>
