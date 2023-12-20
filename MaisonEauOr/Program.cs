@@ -26,10 +26,9 @@ builder.Services.AddSingleton<LocalizationService>();
 
 var app = builder.Build();
 
-if (!Directory.Exists("../meo-data"))
-{
-    Directory.CreateDirectory("../meo-data");
-}
+if (!Directory.Exists("../meo-data")) Directory.CreateDirectory("../meo-data");
+if (!Directory.Exists("./wwwroot/images/upload")) Directory.CreateDirectory("./wwwroot/images/upload");
+
 using (var serviceScope = app.Services.CreateScope())
 {
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<MeoDbContext>();

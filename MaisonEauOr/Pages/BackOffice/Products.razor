@@ -1,4 +1,4 @@
-﻿@page "/admin-products"
+@page "/admin-products"
 @attribute [Authorize(Roles = "Admin")]
 
 @inject IDbContextFactory<MeoDbContext> Factory
@@ -10,7 +10,7 @@
 
 <MudText Class="ml-4" Typo="Typo.h3">@Lang.Get("adminPanel_stock_card_title")</MudText>
     <MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">@Lang.Get("products_addProduct_btn")</MudButton>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@(async() => await AddProductAsync())">@Lang.Get("products_addProduct_btn")</MudButton>
         <MudSpacer />
         <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
             @Lang.Get("products_back")

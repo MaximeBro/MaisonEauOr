@@ -49,7 +49,7 @@
         </MudStack>
     </DialogContent>
     <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">@(Lang.Get("validate_btn"))</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@SaveProductAsync">@(Lang.Get("validate_btn"))</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -89,7 +89,7 @@
         _imageName = Path.GetFileName(_imagePath);
     }
 
-    public async Task AddProductAsync()
+    public async Task SaveProductAsync()
     {
         if (_currentImage != null)
         {

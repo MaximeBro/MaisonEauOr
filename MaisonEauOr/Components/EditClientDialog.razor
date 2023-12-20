@@ -113,7 +113,7 @@
         _selectedRole = CurrentUser.Role;
     }
 
-    private async Task Submit()
+    private void Submit()
     {
         if (_model.Password != _model.Confirm)
         {

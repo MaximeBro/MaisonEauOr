@@ -70,6 +70,34 @@
             </MudStack>
         </MudItem>
     </MudGrid>
+    <MudStack Row Justify="Justify.Center">
+        <MudText Class="mt-16" Align="Align.Center" Typo="Typo.h4"><b>Produits similaires</b></MudText>
+    </MudStack>
+    <MudGrid Style="max-width: 100%;" Justify="Justify.Center">
+        @foreach (var product in _similarProducts)
+        {
+            <MudItem Class="mt-2" xs="6" md="3">
+                <MudCard Elevation="0">
+                    <MudCardContent>
+                        <MudStack Row="false" Justify="Justify.Center">
+                            <MudLink OnClick="@(() => NavToProduct(product.Id))">
+                                <div class="mx-auto d-block" style="height: 135px; width: 135px; position: relative; overflow: hidden;">
+                                    <img class="highlights mx-auto" src="@product.ImagePath" alt="@product.Name"/>
+                                </div>
+                            </MudLink>
+                        </MudStack>
+                        <MudText Class="mt-2" Align="Align.Center"><b>@product.Name</b></MudText>
+                        <MudText Align="Align.Center">@product.Price.ToString("C")</MudText>
+                        <MudStack Row Justify="Justify.Center">
+                            <MudButton Class="my-2" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(() => NavToProduct(product.Id))">
+                                Voir le produit
+                            </MudButton>
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
 </MudContainer>
 
 @code {
@@ -84,6 +112,8 @@
 
     private ProductModel? _product;
     private string _productName = "Produit";
+    
+    private List<ProductModel> _similarProducts = new();
 
     private List<BreadcrumbItem> _breadCrumbs = new();
 
@@ -111,6 +141,7 @@
                 new($"{_product.Category.Humanize()}", href: $"{_product.Category.ToBreadString()}"),
                 new(_productName, href: null, disabled: true)
             };
+            _similarProducts = _context.Products.Where(x => x.Category == _product.Category && x.Id != _product.Id).ToList().OrderBy(_ => new Random().Next()).Take(4).ToList();
         }
     }
     
@@ -188,5 +219,10 @@
         {
             Snackbar.Add("Vous devez vous connecter pour effectuer un achat !", Severity.Error);
         }
+    }
+
+    private void NavToProduct(Guid id)
+    {
+        NavManager.NavigateTo($"product/{id}", true);
     }
 }
