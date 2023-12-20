@@ -25,9 +25,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Core" Version="7.0.14" />
     <PackageReference Include="MudBlazor" Version="6.11.1" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\images\upload\" />
-
-  </ItemGroup>
 </Project>

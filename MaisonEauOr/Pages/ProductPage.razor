@@ -1,5 +1,4 @@
 @page "/product/{ProductId:guid}"
-@using MaisonEauOr.Extensions
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
@@ -49,7 +48,7 @@
                     <MudNumericField T="int" Class="flex-grow-0" @bind-Value="_selectedAmount" Min="1" Step="1" Label="QUANTITÉ" Variant="Variant.Outlined" Style="border-radius: 0!important;"/>
                 </MudStack>
                 <div>
-                    <MudButton Class="rounded-0 my-2" Style="@($"background-color: {Colors.Grey.Darken4}; color: #fff;")" FullWidth Variant="Variant.Filled">Acheter</MudButton>
+                    <MudButton Class="rounded-0 my-2" Style="@($"background-color: {Colors.Grey.Darken4}; color: #fff;")" FullWidth Variant="Variant.Filled" OnClick="@(async() => await ValidateOrderAsync())">Acheter</MudButton>
                     <MudButton Variant="Variant.Outlined" FullWidth Style="border-radius: 0!important;" OnClick="@(async() => await AddToBasket())">
                         Ajouter au panier
                         <MudIcon Class="my-auto ml-3" Icon="@Icons.ShoppingCart"/>
@@ -71,6 +70,34 @@
             </MudStack>
         </MudItem>
     </MudGrid>
+    <MudStack Row Justify="Justify.Center">
+        <MudText Class="mt-16" Align="Align.Center" Typo="Typo.h4"><b>Produits similaires</b></MudText>
+    </MudStack>
+    <MudGrid Style="max-width: 100%;" Justify="Justify.Center">
+        @foreach (var product in _similarProducts)
+        {
+            <MudItem Class="mt-2" xs="6" md="3">
+                <MudCard Elevation="0">
+                    <MudCardContent>
+                        <MudStack Row="false" Justify="Justify.Center">
+                            <MudLink OnClick="@(() => NavToProduct(product.Id))">
+                                <div class="mx-auto d-block" style="height: 135px; width: 135px; position: relative; overflow: hidden;">
+                                    <img class="highlights mx-auto" src="@product.ImagePath" alt="@product.Name"/>
+                                </div>
+                            </MudLink>
+                        </MudStack>
+                        <MudText Class="mt-2" Align="Align.Center"><b>@product.Name</b></MudText>
+                        <MudText Align="Align.Center">@product.Price.ToString("C")</MudText>
+                        <MudStack Row Justify="Justify.Center">
+                            <MudButton Class="my-2" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(() => NavToProduct(product.Id))">
+                                Voir le produit
+                            </MudButton>
+                        </MudStack>
+                    </MudCardContent>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
 </MudContainer>
 
 @code {
@@ -85,6 +112,8 @@
 
     private ProductModel? _product;
     private string _productName = "Produit";
+    
+    private List<ProductModel> _similarProducts = new();
 
     private List<BreadcrumbItem> _breadCrumbs = new();
 
@@ -112,6 +141,7 @@
                 new($"{_product.Category.Humanize()}", href: $"{_product.Category.ToBreadString()}"),
                 new(_productName, href: null, disabled: true)
             };
+            _similarProducts = _context.Products.Where(x => x.Category == _product.Category && x.Id != _product.Id).ToList().OrderBy(_ => new Random().Next()).Take(4).ToList();
         }
     }
     
@@ -124,7 +154,7 @@
         }
     }
     
-    private async Task AddToBasket()
+    private async Task AddToBasket(Guid orderId = default(Guid))
     {
         if (_product != null)
         {
@@ -142,14 +172,14 @@
                             ProductAmount = _selectedAmount,
                             Option = _selectedOption?.Name
                         };
+                        if (orderId != Guid.Empty) basketProduct.OrderID = orderId;
 
                         var added = await BasketService.TryAddToBasketAsync(basketProduct, _product);
                         if (added > -1)
                         {
                             Snackbar.Add($"il ne reste que {added} {_productName} en stock.", Severity.Warning);
                         }
-                        await MainLayout.RefreshBasketCountAsync();
-                        _selectedAmount = 1;
+                        await MainLayout.RefreshBasketAsync();
                     }
                     else
                     {
@@ -162,5 +192,37 @@
                 Snackbar.Add("Vous devez vous connecter pour effectuer un achat !", Severity.Error);
             }
         }
+    }
+    
+    private async Task ValidateOrderAsync()
+    {
+        if (_currentUser != null && _product != null)
+        {
+            var context = await Factory.CreateDbContextAsync();
+            var user = context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == _currentUser.Email);
+            if (user != null)
+            {
+                var order = new OrderModel
+                {
+                    ClientID = user.Id,
+                    Total = _product.Price * (1 + _product.Tva) * _selectedAmount,
+                    OrderedAt = DateTime.Now
+                };
+                await AddToBasket(order.Id);
+                
+                context.Orders.Add(order);
+                await context.SaveChangesAsync();
+                NavManager.NavigateTo($"/order/{order.Id}");
+            }
+        }
+        else
+        {
+            Snackbar.Add("Vous devez vous connecter pour effectuer un achat !", Severity.Error);
+        }
+    }
+
+    private void NavToProduct(Guid id)
+    {
+        NavManager.NavigateTo($"product/{id}", true);
     }
 }

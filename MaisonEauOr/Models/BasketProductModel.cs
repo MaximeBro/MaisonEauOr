@@ -11,6 +11,7 @@ public class BasketProductModel
 	public UserAccount? User { get; set; }
 	public int ProductAmount { get; set; }
 	public string? Option { get; set; }
+	public Guid OrderID { get; set; } = Guid.Empty;
 
 	[NotMapped] 
 	public double TotalPrice => ProductAmount * (Product!.Price * (Product.Tva+1));

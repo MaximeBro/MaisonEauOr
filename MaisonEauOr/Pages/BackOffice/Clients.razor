@@ -4,15 +4,16 @@
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
+@inject LocalizationService Lang
 
-<PageTitle>Administration - Clients</PageTitle>
+<PageTitle>@Lang.Get("adminPanel_user_title") - Clients</PageTitle>
 
-<MudText Class="ml-4" Typo="Typo.h3">Gestion des utilisateurs</MudText>
-<MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddClientAsync">Ajouter un client</MudButton>
-    <MudSpacer/>
-    <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
-        Panel d'administration
+<MudText Class="ml-4" Typo="Typo.h3">@Lang.Get("adminPanel_user_card_title")</MudText>
+    <MudStack Row>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@(async() => await AddClientAsync())">@Lang.Get("clients_addClient_btn")</MudButton>
+        <MudSpacer />
+        <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
+            @Lang.Get("administration_back_btn")
     </MudButton>
 </MudStack>
 
@@ -120,5 +121,6 @@
     private async Task RefreshAsync()
     {
         _userAccounts = await _context.UserAccounts.ToListAsync();
+        StateHasChanged();
     }
 }

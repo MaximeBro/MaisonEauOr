@@ -6,46 +6,43 @@
 @inject IHttpContextAccessor HttpContextAccessor
 @inject LocalizationService Lang
 @inject NavigationManager NavManager
+@inject BasketService BasketService
+@inject ISnackbar Snackbar
 
 <PageTitle>Maison eau d'or</PageTitle>
 
 <MudContainer Class="mt-n16 px-0" Style="overflow-x: hidden;" MaxWidth="MaxWidth.ExtraExtraLarge">
         <MudImage Style="width: 100vw;" Src="images/home/bar.png"/>
-    <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Nos meilleures ventes</MudText>
-    <MudGrid Class="mb-16" Style="max-width: 100%;" Justify="Justify.SpaceEvenly">
-        <MudItem xs="12" md="6" lg="3">
-            <MudStack Row="false" Justify="Justify.Center">
-                <div class="d-flex" style="height: 400px!important; width: auto; max-width: 100%;">
-                    <MudImage Src="images/home/ahlam.png" Fluid/>
-                </div>
-                <MudText Align="Align.Center" Typo="Typo.h6">
-                    <b>Ahlam</b>
-                </MudText>
-                <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
-                <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
-            </MudStack>
-        </MudItem>
-        <MudItem xs="12" md="6" lg="3">
-            <MudStack Row="false" Justify="Justify.Center">
-                <MudImage Src="images/home/magic_aisha.png" Height="400" Style="width: auto;" />
-                <MudText Align="Align.Center" Typo="Typo.h6">
-                    <b>Magic Aïsha</b>
-                </MudText>
-                <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
-                <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
-            </MudStack>
-        </MudItem>
-        <MudItem xs="12" md="6" lg="3">
-            <MudStack Row="false" Justify="Justify.Center">
-                <MudImage Src="images/home/supreme_flower.png" Height="400" Style="width: auto;" />
-                <MudText Align="Align.Center" Typo="Typo.h6">
-                    <b>Pure Evasion</b>
-                </MudText>
-                <MudText GutterBottom Align="Align.Center">30,00 €</MudText>
-                <MudButton Class="rounded-lg" Variant="Variant.Filled" Color="Color.Dark">Ajouter au panier</MudButton>
-            </MudStack>
-        </MudItem>
-    </MudGrid>
+    </MudStack>
+    @if (_displayedProducts.Any())
+    {
+        <MudText Class="mt-12" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Nos meilleures ventes</MudText>
+        <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center" Style="overflow-x: hidden;">
+            @foreach (var product in _displayedProducts)
+            {
+                <MudItem Class="mt-5" xs="12" sm="6" md="4" lg="3">
+                    <MudCard Elevation="0">
+                        <MudCardContent>
+                            <MudStack Row="false" Justify="Justify.Center">
+                                <MudLink Href="@($"/product/{product.ProductID}")">
+                                    <div class="mx-auto d-block" style="height: 282px; width: 282px; position: relative; overflow: hidden;">
+                                        <img class="highlights mx-auto" src="@product.Product!.ImagePath" alt="@product.Product!.Name"/>
+                                    </div>
+                                </MudLink>
+                            </MudStack>
+                            <MudText Class="mt-2" Align="Align.Center" Typo="Typo.h4"><b>@product.Product!.Name</b></MudText>
+                            <MudText Align="Align.Center" Typo="Typo.body1">@product.Product!.Price.ToString("C")</MudText>
+                            <MudStack Row Justify="Justify.Center">
+                                <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(product.Product!))">
+                                    Ajouter au panier
+                                </MudButton>
+                            </MudStack>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    }
     
     <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Découvrez nos produits</MudText>
 
@@ -110,11 +107,18 @@
 
 
 @code {
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout MainLayout { get; set; } = null;
+    
     private MeoDbContext _context = null!;
+    private List<DisplayModel> _displayedProducts = new();
+
+    private UserSession? _currentUser;
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
+        _displayedProducts = _context.DisplayedProducts.Include(x => x.Product).OrderBy(x => x.Index).ToList();
         var culture = HttpContextAccessor.HttpContext!.Request.Headers["Accept-Language"];
         var regex = new Regex(@"\b([a-z]{2}-[a-z]{2}|[a-z]{2}-[a-z]{2})\b", RegexOptions.IgnoreCase);
         var match = regex.Match(culture.ToString()); // Gets first accepted language (preferred)
@@ -130,8 +134,8 @@
         if (firstRender)
         {
             var authService = (AuthenticationService)AuthStateProvider;
-            var userSession = await authService.GetCurrentUserAsync();
-            if (userSession is null)
+            _currentUser = await authService.GetCurrentUserAsync();
+            if (_currentUser is null)
             {
                 await authService.UpdateAuthenticationState(null);
             }
@@ -151,5 +155,40 @@
             }
         }
     }
+    
+    private async Task AddToBasket(ProductModel product)
+    {
+        if (_currentUser != null && _currentUser.Role != UserRole.Guest)
+        {
+            var user = _context.UserAccounts.FirstOrDefault(x => x.Email == _currentUser.Email);
+            if (user != null)
+            {
+                if (product.AmountInStock > 0)
+                {
+                    var basketProduct = new BasketProductModel
+                    {
+                        ProductID = product.Id,
+                        ClientID = user.Id,
+                        ProductAmount = 1,
+                        Option = product.Options.FirstOrDefault()?.Name
+                    };
 
+                    var added = await BasketService.TryAddToBasketAsync(basketProduct, product);
+                    if (added > -1)
+                    {
+                        Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
+                    }
+                    await MainLayout.RefreshBasketAsync();
+                }
+                else
+                {
+                    Snackbar.Add("Ce produit est actuellement hors stock...\nNe vous en faites pas, il revient très vite !", Severity.Warning);
+                }
+            }
+        }
+        else
+        {
+            Snackbar.Add("Vous devez vous connecter pour effectuer un achat !", Severity.Error);
+        }
+    }
 }

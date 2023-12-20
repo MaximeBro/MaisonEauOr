@@ -1,12 +1,14 @@
+@inject IDbContextFactory<MeoDbContext> Factory
 @inject BasketService BasketService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
 <MudDrawer @bind-Open="_toggleDrawer" Anchor="Anchor.End" Elevation="1" Variant="DrawerVariant.Temporary" Width="400px" Height="100%">
     <MudDrawerHeader>
         <MudIconButton Class="absolute mt-n1 ml-n2" Icon="@Icons.ArrowForwardIos" OnClick="@(() => ToggleDrawer(false))" Color="Color.Dark"/>
         <MudStack Class="flex-grow-1" Row="false">
-            <MudText Typo="Typo.h6" Align="Align.Center">Panier</MudText>
+            <MudText Typo="Typo.h6" Align="Align.Center">@(Lang.Get("basketDrawer_cartTitle"))</MudText>
             <MudDivider Style="border-color: black!important;"/>
         </MudStack>
     </MudDrawerHeader>
@@ -14,15 +16,15 @@
         @if (CurrentUser is null)
         {
             <MudStack Style="height: 100%" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                <MudText>Vous n'êtes pas connecté !</MudText>
-                <MudLink Href="/signin" Underline="Underline.Hover">Cliquez ici pour vous connecter</MudLink>
+                <MudText>@(Lang.Get("basketDrawer_notLoggedInmsg"))</MudText>
+                <MudLink Href="/signin" Underline="Underline.Hover">@(Lang.Get("basketDrawer_loginLinktx"))</MudLink>
             </MudStack>
             return;
         }
 
         @if (_basketProducts.Any())
         {
-            <MudStack Class="mt-2 px-2" Spacing="2" Row="false">
+            <MudStack Class="mt-2 px-2" Style="overflow-y: scroll; padding-bottom: 140px!important;" Spacing="2" Row="false">
                 @foreach (var product in _basketProducts)
                 {
                     <MudStack Class="px-2" Row>
@@ -51,7 +53,7 @@
                             </MudStack>
                             <MudStack Row Justify="Justify.FlexEnd">
                                 <MudPaper Class="px-4 py-2" Elevation="0" Outlined>
-                                    <MudNumericField T="int" @bind-Value="@product.ProductAmount" IconSize="Size.Small" Variant="Variant.Text" Label="Quantité"
+                                    <MudNumericField T="int" @bind-Value="@product.ProductAmount" IconSize="Size.Small" Variant="Variant.Text" Label="@(Lang.Get("basketDrawer_quantity"))"
                                                      Style="max-width: 90px;" Step="1" Min="1" For="@(() => product.ProductAmount)" Adornment="Adornment.End" AdornmentIcon="@Icons.ShortText"
                                                      OnBlur="@(async () => await UpdateBasketProduct(product))" HideSpinButtons DisableUnderLine/>
                                 </MudPaper>
@@ -70,44 +72,46 @@
                 <MudExpansionPanels Elevation="0">
                     <MudExpansionPanel Text="Informations" Style="background-color: #eeeeee;">
                         <MudTextField T="string" @bind-Value="_comment" Class="mb-4" Lines="3" MaxLength="300" Variant="Variant.Outlined"
-                                      Placeholder="Ajouter une remarque pour le commerçant (optionnel)"/>
+                                      Placeholder="@(Lang.Get("basketDrawer_commentPlaceholder"))"/>
                         <MudDivider Style="border-color: black!important;"/>
                         <MudStack Class="my-2" Row>
-                            <MudText Align="Align.Left">Coût total <span class="mud-typography-caption">(Hors taxes)</span></MudText>
+                            <MudText Align="Align.Left">@(Lang.Get("basketDrawer_totalCost"))" <span class="mud-typography-caption">@(Lang.Get("basketDrawer_exclTax"))</span></MudText>
                             <MudSpacer/>
-                            <MudText Align="Align.Right">@GetTotal().ToString("C")</MudText>
+                            <MudText Align="Align.Right">@_basketProducts.Total().ToString("C")</MudText>
                         </MudStack>
                         <MudDivider Style="border-color: black!important;"/>
                         <MudStack Class="my-2" Row>
-                            <MudText Align="Align.Left">Livraison</MudText>
+                            <MudText Align="Align.Left">@(Lang.Get("basketDrawer_delivery"))</MudText>
                             <MudSpacer/>
-                            <MudText Align="Align.Right">calculé au paiement</MudText>
+                            <MudText Align="Align.Right">@(Lang.Get("basketDrawer_calculatedPayment"))</MudText>
                         </MudStack>
                         <MudDivider Style="border-color: black!important;"/>
                         <MudStack Class="mt-2" Row>
                             <MudText Align="Align.Left">
-                                <b>Total</b>
+                                <b>@(Lang.Get("basketDrawer_total"))</b>
                             </MudText>
                             <MudSpacer/>
                             <MudText Align="Align.Right">
-                                <b>@GetTotalWithTva().ToString("C")</b>
+                                <b>@_basketProducts.TotalWithTva().ToString("C")</b>
                             </MudText>
                         </MudStack>
                         <MudStack>
-                            <MudText Typo="Typo.body2" Align="Align.Left">dont TVA : @GetTotalTva().ToString("C")</MudText>
+                            <MudText Typo="Typo.body2" Align="Align.Left">dont TVA : @_basketProducts.TotalTva().ToString("C")</MudText>
                         </MudStack>
                     </MudExpansionPanel>
                 </MudExpansionPanels>
                 <MudStack Class="px-6 pb-4" Row Justify="Justify.Center">
-                    <MudButton Color="Color.Dark" Variant="Variant.Filled" FullWidth>Payer @GetTotalWithTva().ToString("C")</MudButton>
+                    <MudButton Color="Color.Dark" Variant="Variant.Filled" FullWidth OnClick="@(async () => await ValidateOrder())">
+                        Payer @_basketProducts.TotalWithTva().ToString("C")
+                    </MudButton>
                 </MudStack>
             </MudStack>
         }
         else
         {
             <MudStack Style="height: 100%" Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                <MudText Align="Align.Center">Votre panier est vide...</MudText>
-                <MudLink Href="/catalog-browser" Underline="Underline.Hover">Découvrez nos produits</MudLink>
+                <MudText Align="Align.Center">@(Lang.Get("basketDrawer_emptyCartmsg")).</MudText>
+                <MudLink Href="/catalog-perfumes" Underline="Underline.Hover">@(Lang.Get("basketDrawer_discoverProductsLinktxt"))</MudLink>
             </MudStack>
         }
     </MudDrawerContainer>
@@ -125,7 +129,7 @@
     // Not bind for now, optional
     private string _comment = string.Empty;
 
-    private async Task RefreshBasketAsync()
+    public async Task RefreshBasketAsync()
     {
         if (CurrentUser != null)
         {
@@ -154,25 +158,36 @@
         await MainHeader.RefreshBasketCountAsync();
     }
 
+    private async Task ValidateOrder()
+    {
+        if (CurrentUser != null)
+        {
+            var context = await Factory.CreateDbContextAsync();
+            var user = context.UserAccounts.AsNoTracking().FirstOrDefault(x => x.Email == CurrentUser.Email);
+            if (user != null)
+            {
+                var order = new OrderModel
+                {
+                    ClientID = user.Id,
+                    Total = _basketProducts.TotalWithTva(),
+                    OrderedAt = DateTime.Now
+                };
+                context.Orders.Add(order);
+                foreach (var product in _basketProducts)
+                {
+                    product.OrderID = order.Id;
+                }
+                context.BasketProducts.UpdateRange(_basketProducts);
+                await context.SaveChangesAsync();
+                await RefreshBasketAsync();
+                NavManager.NavigateTo($"/order/{order.Id}");
+            }
+        }
+    }
+
     public async Task ToggleDrawer(bool toggle)
     {
         _toggleDrawer = toggle;
         if (toggle) await RefreshBasketAsync();
     }
-
-    private double GetTotal()
-    {
-        return _basketProducts.Sum(x => x.Product!.Price * x.ProductAmount);
-    }
-
-    private double GetTotalWithTva()
-    {
-        return _basketProducts.Sum(x => x.Product!.Price * (1 + x.Product.Tva) * x.ProductAmount);
-    }
-
-    private double GetTotalTva()
-    {
-        return _basketProducts.Sum(x => x.Product!.Tva * x.Product.Price * x.ProductAmount);
-    }
-
 }

@@ -82,6 +82,50 @@ namespace MaisonEauOr.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DisplayedProducts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ProductID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Index = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DisplayedProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DisplayedProducts_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ShippingPrice = table.Column<double>(type: "REAL", nullable: false),
+                    ShippingTown = table.Column<string>(type: "TEXT", nullable: true),
+                    ShippingAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    ShippingPostalCode = table.Column<int>(type: "INTEGER", nullable: false),
+                    Total = table.Column<double>(type: "REAL", nullable: false),
+                    Payed = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_UserAccounts_ClientID",
+                        column: x => x.ClientID,
+                        principalTable: "UserAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BasketProducts",
                 columns: table => new
                 {
@@ -89,11 +133,18 @@ namespace MaisonEauOr.Migrations
                     ProductID = table.Column<Guid>(type: "TEXT", nullable: false),
                     ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
                     ProductAmount = table.Column<int>(type: "INTEGER", nullable: false),
-                    Option = table.Column<string>(type: "TEXT", nullable: true)
+                    Option = table.Column<string>(type: "TEXT", nullable: true),
+                    OrderID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderModelId = table.Column<Guid>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_BasketProducts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BasketProducts_Orders_OrderModelId",
+                        column: x => x.OrderModelId,
+                        principalTable: "Orders",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_BasketProducts_Products_ProductID",
                         column: x => x.ProductID,
@@ -114,9 +165,24 @@ namespace MaisonEauOr.Migrations
                 column: "ClientID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BasketProducts_OrderModelId",
+                table: "BasketProducts",
+                column: "OrderModelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BasketProducts_ProductID",
                 table: "BasketProducts",
                 column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DisplayedProducts_ProductID",
+                table: "DisplayedProducts",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ClientID",
+                table: "Orders",
+                column: "ClientID");
         }
 
         /// <inheritdoc />
@@ -129,7 +195,13 @@ namespace MaisonEauOr.Migrations
                 name: "BasketProducts");
 
             migrationBuilder.DropTable(
+                name: "DisplayedProducts");
+
+            migrationBuilder.DropTable(
                 name: "Options");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");

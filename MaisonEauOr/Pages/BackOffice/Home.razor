@@ -1,0 +1,222 @@
+﻿@page "/admin-home"
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject NavigationManager NavManager
+@inject LocalizationService Lang
+
+<PageTitle>@(Lang.Get("administration_title"))</PageTitle>
+
+<MudText Class="ml-4" Typo="Typo.h3" Align="Align.Center">@(Lang.Get("administration_management"))</MudText>
+<MudText Class="ml-4" Align="Align.Center">@(Lang.Get("administration_products"))</MudText>
+
+<MudStack Class="my-4" Row>
+    <MudSpacer/>
+    <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
+        @(Lang.Get("administration_back_btn"))
+    </MudButton>
+</MudStack>
+
+<MudTimeline Class="mb-4 px-8">
+    <MudTimelineItem Color="@(_firstValidate ? Color.Primary : Color.Dark)" Size="Size.Small">
+        <ItemOpposite>
+            @if (_firstValidate)
+            {
+                <MudIcon Icon="@Icons.CheckCircle" Color="Color.Success"/>
+            }
+        </ItemOpposite>
+        <ItemContent>
+            <MudSelect T="ProductModel?" Value="_firstSelected" ValueChanged="AddToFirst" OnClearButtonClick="@(async() => await DeleteFirst())" 
+                       Label="@(Lang.Get("administration_first_product"))" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
+                @foreach (var product in _products)
+                {
+                    <MudSelectItem Value="@product">@product.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </ItemContent>
+    </MudTimelineItem>
+    <MudTimelineItem TimelineAlign="TimelineAlign.End" Color="@(_secondValidate ? Color.Primary : Color.Dark)" Size="Size.Small">
+        <ItemOpposite>
+            @if (_secondValidate)
+            {
+                <MudIcon Icon="@Icons.CheckCircle" Color="Color.Success"/>
+            }
+        </ItemOpposite>
+        <ItemContent>
+            <MudSelect T="ProductModel?" Value="_secondSelected" ValueChanged="AddToSecond" OnClearButtonClick="@(async() => await DeleteSecond())" 
+                       Label="@(Lang.Get("administration_second_product"))" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
+                @foreach (var product in _products)
+                {
+                    <MudSelectItem Value="@product">@product.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </ItemContent>
+    </MudTimelineItem>
+    <MudTimelineItem Color="@(_thirdValidate ? Color.Primary : Color.Dark)" Size="Size.Small">
+        <ItemOpposite>
+            @if (_thirdValidate)
+            {
+                <MudIcon Icon="@Icons.CheckCircle" Color="Color.Success"/>
+            }
+        </ItemOpposite>
+        <ItemContent>
+            <MudSelect T="ProductModel?" Value="_thirdSelected" ValueChanged="AddToThird" OnClearButtonClick="@(async() => await DeleteThird())" 
+                       Label="@(Lang.Get("administration_third_product"))" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
+                @foreach (var product in _products)
+                {
+                    <MudSelectItem Value="@product">@product.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </ItemContent>
+    </MudTimelineItem>
+</MudTimeline>
+
+<MudStack Class="mb-16" Row Justify="Justify.Center">
+    <MudPaper Class="pa-4 d-block" Elevation="0" Style="height: 282px; width: 282px; position: relative; overflow: hidden; background-color: #1E1E2D;">
+        @if (_firstSelected is not null)
+        {
+            <img class="highlights mx-auto" src="@_firstSelected.ImagePath" alt="@_firstSelected.Name"/>
+        }
+    </MudPaper>
+    <MudPaper Class="pa-4 d-block" Elevation="0" Style="height: 282px; width: 282px; position: relative; overflow: hidden; background-color: #1E1E2D;">
+        @if (_secondSelected is not null)
+        {
+            <img class="highlights mx-auto" src="@_secondSelected.ImagePath" alt="@_secondSelected.Name"/>
+        }
+    </MudPaper>
+    <MudPaper Class="pa-4 d-block" Elevation="0" Style="height: 282px; width: 282px; position: relative; overflow: hidden; background-color: #1E1E2D;">
+        @if (_thirdSelected is not null)
+        {
+            <img class="highlights mx-auto" src="@_thirdSelected.ImagePath" alt="@_thirdSelected.Name"/>
+        }
+    </MudPaper>
+</MudStack>
+
+
+@code {
+    private MeoDbContext _context = null!;
+    private List<ProductModel> _products = new();
+
+    private ProductModel? _firstSelected;
+    private ProductModel? _secondSelected;
+    private ProductModel? _thirdSelected;
+
+    private bool _firstValidate;
+    private bool _secondValidate;
+    private bool _thirdValidate;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+        _products = _context.Products.Where(x => x.IsAvailable).ToList();
+        var displayedProducts = _context.DisplayedProducts.Include(x => x.Product).ToList();
+        _firstSelected = displayedProducts.FirstOrDefault(x => x.Index == 1)?.Product;
+        _secondSelected = displayedProducts.FirstOrDefault(x => x.Index == 2)?.Product;
+        _thirdSelected = displayedProducts.FirstOrDefault(x => x.Index == 3)?.Product;
+        _firstValidate = _firstSelected != null;
+        _secondValidate = _secondSelected != null;
+        _thirdValidate = _thirdSelected != null;
+    }
+
+    private async Task AddToFirst(ProductModel? product)
+    {
+        if (product is null) return;
+        _firstValidate = true;
+        var old = _context.DisplayedProducts.FirstOrDefault(x => x.Index == 1);
+        if (old != null)
+        {
+            _context.DisplayedProducts.Remove(old);
+        }
+        _context.DisplayedProducts.Add(new DisplayModel
+        {
+            ProductID = product.Id,
+            Index = 1
+        });
+        _firstSelected = product;
+        await _context.SaveChangesAsync();
+        StateHasChanged();
+    }
+    
+    private async Task AddToSecond(ProductModel? product)
+    {
+        if (product is null) return;
+        _secondValidate = true;
+        var old = _context.DisplayedProducts.FirstOrDefault(x => x.Index == 2);
+        if (old != null)
+        {
+            _context.DisplayedProducts.Remove(old);
+        }
+        _context.DisplayedProducts.Add(new DisplayModel
+        {
+            ProductID = product.Id,
+            Index = 2
+        });
+        _secondSelected = product;
+        await _context.SaveChangesAsync();
+        StateHasChanged();
+    }
+    
+    private async Task AddToThird(ProductModel? product)
+    {
+        if (product is null) return;
+        _thirdValidate = true;
+        var old = _context.DisplayedProducts.FirstOrDefault(x => x.Index == 3);
+        if (old != null)
+        {
+            _context.DisplayedProducts.Remove(old);
+        }
+        _context.DisplayedProducts.Add(new DisplayModel
+        {
+            ProductID = product.Id,
+            Index = 3
+        });
+        _thirdSelected = product;
+        await _context.SaveChangesAsync();
+        StateHasChanged();
+    }
+
+    private async Task DeleteFirst()
+    {
+        if (_firstSelected is null) return;
+        var old = _context.DisplayedProducts.FirstOrDefault(x => x.Index == 1);
+        if (old != null)
+        {
+            _context.DisplayedProducts.Remove(old);
+        }
+
+        _firstValidate = false;
+        _firstSelected = null;
+        await _context.SaveChangesAsync();
+        StateHasChanged();
+    }
+    
+    private async Task DeleteSecond()
+    {
+        if (_secondSelected is null) return;
+        var old = _context.DisplayedProducts.FirstOrDefault(x => x.Index == 2);
+        if (old != null)
+        {
+            _context.DisplayedProducts.Remove(old);
+        }
+
+        _secondValidate = false;
+        _secondSelected = null;
+        await _context.SaveChangesAsync();
+        StateHasChanged();
+    }
+    
+    private async Task DeleteThird()
+    {
+        if (_thirdSelected is null) return;
+        var old = _context.DisplayedProducts.FirstOrDefault(x => x.Index == 3);
+        if (old != null)
+        {
+            _context.DisplayedProducts.Remove(old);
+        }
+
+        _thirdValidate = false;
+        _thirdSelected = null;
+        await _context.SaveChangesAsync();
+        StateHasChanged();
+    }
+}

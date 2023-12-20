@@ -4,26 +4,27 @@
 @inject BasketService BasketService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
-<PageTitle>Maison eau d'or - Articles</PageTitle>
+<PageTitle>@(Lang.Get("catalog_frame_title"))</PageTitle>
 
 <MudContainer Class="px-16" Style="min-height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
     <MudGrid>
         <MudItem xs="12" sm="6">
             <MudText Align="Align.Left" Typo="Typo.h4">
-                <b>La Miellerie</b>
+                <b>@(Lang.Get("catalog_honeys_title"))</b>
             </MudText>
         </MudItem>
         <MudItem xs="12" sm="6">
             <MudStack Row>
                 <MudSpacer/>
                 <MudSelect T="string" ValueChanged="@ToggleFilter" MultiSelection="false" Class="flex-grow-0" Style="max-width: 220px; min-width: 220px;" @bind-Text="_selectedFilter"
-                           Variant="Variant.Outlined" Label="Filtrer" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem Value="@("all")">Tous</MudSelectItem>
+                           Variant="Variant.Outlined" Label="@(Lang.Get("catalog_filter"))" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@("all")">@(Lang.Get("catalog_all"))</MudSelectItem>
                     <MudSelectItem Value="@("A-Z")">A-Z</MudSelectItem>
                     <MudSelectItem Value="@("Z-A")">Z-A</MudSelectItem>
-                    <MudSelectItem Value="@("ascending")">Prix croissant</MudSelectItem>
-                    <MudSelectItem Value="@("descending")">Prix décroissant</MudSelectItem>
+                    <MudSelectItem Value="@("ascending")">@(Lang.Get("catalog_ascending"))</MudSelectItem>
+                    <MudSelectItem Value="@("descending")">@(Lang.Get("catalog_descending"))</MudSelectItem>
                 </MudSelect>
             </MudStack>
         </MudItem>
@@ -45,7 +46,7 @@
                         <MudText Align="Align.Center" Typo="Typo.body1">@honey.Price.ToString("C")</MudText>
                         <MudStack Row Justify="Justify.Center">
                             <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(honey))">
-                                Ajouter au panier
+                                 @(Lang.Get("catalog_basket_btn"))
                             </MudButton>
                         </MudStack>
                     </MudCardContent>
@@ -65,7 +66,7 @@
     private List<ProductModel> _honeys = new();
     private List<ProductModel> _filteredProducts = new();
 
-    private string _selectedFilter = "Tous";
+    private string _selectedFilter = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,6 +77,7 @@
             product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
         }
         _filteredProducts = _honeys.ToList();
+        _selectedFilter = Lang.Get("catalog_all");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -109,7 +111,7 @@
                     {
                         Snackbar.Add($"il ne reste que {added} {product.Name} en stock.", Severity.Warning);
                     }
-                    await MainLayout.RefreshBasketCountAsync();
+                    await MainLayout.RefreshBasketAsync();
                 }
                 else
                 {

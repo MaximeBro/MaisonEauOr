@@ -1,0 +1,52 @@
+@inject LocalizationService Lang
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Row="false" Justify="Justify.Center">
+            <MudText>@(Lang.Get("editOrderDialog_status"))</MudText>
+            <MudCheckBox T="bool" @bind-Checked="_payed" Label="@_payedText"/>
+            <MudNumericField T="double" @bind-Value="_total" Min="0" Label="@(Lang.Get("editOrderDialog_total_price"))" />
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@SaveOrder">Enregistrer</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
+
+    [Parameter]
+    public OrderModel Model { get; set; } = null!;
+
+    private bool _payed;
+    private double _total;
+
+    private string _payedText => _payed ? "Payée" : "En attente";
+
+    protected override void OnInitialized()
+    {
+        _payed = Model.Payed;
+        _total = Model.Total;
+    }
+
+    private void SaveOrder()
+    {
+        var model = new OrderModel
+        {
+            Id = Model.Id,
+            ClientID = Model.ClientID,
+            ShippingAddress = Model.ShippingAddress,
+            ShippingPrice = Model.ShippingPrice,
+            ShippingTown = Model.ShippingTown,
+            ShippingPostalCode = Model.ShippingPostalCode,
+            OrderedAt = Model.OrderedAt,
+            Products = Model.Products!.ToList(),
+            Payed = _payed,
+            Total = _total
+        };
+
+        MudDialog.Close(model);
+    }
+}

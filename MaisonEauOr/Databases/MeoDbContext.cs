@@ -10,6 +10,8 @@ public class MeoDbContext : DbContext
     public DbSet<BasketProductModel> BasketProducts { get; set; }
     public DbSet<ProductModel> Products { get; set; }
     public DbSet<Option> Options { get; set; }
+    public DbSet<DisplayModel> DisplayedProducts { get; set; }
+    public DbSet<OrderModel> Orders { get; set; }
     
     public MeoDbContext(DbContextOptions<MeoDbContext> options) : base(options)
     { }
@@ -21,6 +23,12 @@ public class MeoDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<DisplayModel>()
+            .HasOne(x => x.Product)
+            .WithMany()
+            .HasForeignKey(x => x.ProductID)
+            .OnDelete(DeleteBehavior.Cascade);
+        
         modelBuilder.Entity<BasketProductModel>()
             .HasOne(x => x.Product)
             .WithMany()
