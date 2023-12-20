@@ -2,24 +2,25 @@
 @attribute [Authorize(Roles = "Admin")]
 
 @inject NavigationManager NavManager
+@inject LocalizationService Lang
 
-<PageTitle>Administration - Panel</PageTitle>
+<PageTitle>@Lang.Get("adminPanel_stock_title") - Panel</PageTitle>
 
 <MudContainer Class="mt-6">
-    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">Panel d'administration</MudText>
-    <MudText Align="Align.Center">Seuls les administrateurs ont accès à cette page !</MudText>
-    
-    <MudGrid Class="mt-6 mb-16" Justify="Justify.Center">
-        <MudItem xs="12" md="6">
-            <MudCard Class="pa-4" Elevation="2">
-                <MudCardContent>
-                    <MudText Typo="Typo.h6">Gestion des stocks</MudText>
-                    <MudText>Créez, modifiez et supprimez tous les produits du site à l'aide d'une interface ergonomique.</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Color="Color.Primary" StartIcon="@Icons.ProductionQuantityLimits" 
-                               OnClick="@(() => NavManager.NavigateTo("/admin-products"))">
-                        Gestion des stocks
+    <MudText Typo="Typo.h3" Align="Align.Center" GutterBottom="true">@Lang.Get("adminPanel_stock_card_title")</MudText>
+        <MudText Align="Align.Center">@Lang.Get("adminPanel_stock_card_txt")</MudText>
+
+        <MudGrid Class="mt-6 mb-16" Justify="Justify.Center">
+            <MudItem xs="12" md="6">
+                <MudCard Class="pa-4" Elevation="2">
+                    <MudCardContent>
+                        <MudText Typo="Typo.h6">@Lang.Get("adminPanel_stock_card_title")</MudText>
+                        <MudText>@Lang.Get("adminPanel_stock_card_txt")</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Color="Color.Primary" StartIcon="@Icons.ProductionQuantityLimits"
+                                   OnClick="@(() => NavManager.NavigateTo("/admin-products"))">
+                            @Lang.Get("adminPanel_stock_card_btn")
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -27,13 +28,13 @@
         <MudItem xs="12" md="6">
             <MudCard Class="pa-4" Elevation="2">
                 <MudCardContent>
-                    <MudText Typo="Typo.h6">Gestion des utilisateurs</MudText>
-                    <MudText>Créez, modifiez et supprimez tous les comptes utilisateurs de la plateforme.</MudText>
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton Color="Color.Primary" StartIcon="@Icons.People"
-                               OnClick="@(() => NavManager.NavigateTo("/admin-clients"))">
-                        Gestion des utilisateurs
+                    <MudText Typo="Typo.h6">@Lang.Get("adminPanel_user_card_title")</MudText>
+                        <MudText>@Lang.Get("adminPanel_user_card_text")</MudText>
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton Color="Color.Primary" StartIcon="@Icons.People"
+                                   OnClick="@(() => NavManager.NavigateTo("/admin-clients"))">
+                            @Lang.Get("adminPanel_user_card_btn")
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -41,13 +42,13 @@
         <MudItem xs="12" md="6">
             <MudCard Class="pa-4" Elevation="2">
                 <MudCardContent>
-                    <MudText Typo="Typo.h6">Gestion des meilleures ventes</MudText>
-                    <MudText>Définissez les produits à afficher en première page pour booster leurs ventes.</MudText>
+                    <MudText Typo="Typo.h6">@(Lang.Get("adminPanel_management_sells"))</MudText>
+                    <MudText>@(Lang.Get("admin_sells_txt"))</MudText>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton Color="Color.Primary" StartIcon="@Icons.DisplaySettings"
                                OnClick="@(() => NavManager.NavigateTo("/admin-home"))">
-                        Gestion des meilleures ventes
+                        @(Lang.Get("adminPanel_management_sells"))
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -70,5 +71,5 @@
 </MudContainer>
 
 @code {
-    
+
 }
