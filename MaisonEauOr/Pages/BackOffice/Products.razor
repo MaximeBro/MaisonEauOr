@@ -4,42 +4,44 @@
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
+@inject LocalizationService Lang
 
-<PageTitle>Administration - Produits</PageTitle>
+<PageTitle>@Lang.Get("products_title")</PageTitle>
 
-<MudText Class="ml-4" Typo="Typo.h3">Gestion des stocks</MudText>
-<MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">Ajouter un produit</MudButton>
-    <MudSpacer/>
-    <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
-        Panel d'administration
+<MudText Class="ml-4" Typo="Typo.h3">@Lang.Get("adminPanel_stock_card_title")</MudText>
+    <MudStack Row>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">@Lang.Get("products_addProduct_btn")</MudButton>
+        <MudSpacer />
+        <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
+            @Lang.Get("products_back")
     </MudButton>
 </MudStack>
 
 <MudDataGrid T="ProductModel" Class="mx-8 mb-16" Items="@_products" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
-    <ToolBarContent>
-        <MudText Typo="Typo.h6">Table des produits</MudText>
-        <MudSpacer/>
-        <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search" />
-    </ToolBarContent>
-    <Columns>
-        <PropertyColumn Title="Stock" Property="x => x.AmountInStock"/>
-        <PropertyColumn Title="Nom Produit" Property="x => x.Name"/>
-        <PropertyColumn Title="Catégorie" Property="x => x.Category.Humanize()"/>
-        <PropertyColumn Title="Prix" Property="x => x.Price" Format="C"/>
-        <PropertyColumn Title="TVA" Property="x => x.Tva" Format="P2"/>
-        <PropertyColumn Title="Actif" Property="x => x.IsAvailable"/>
-        <PropertyColumn Title="Date d'ajout" Property="x => x.AddedAt" Format="dd-MM-yyyy"/>
-        <TemplateColumn Filterable="false">
-            <CellTemplate>
-                <MudStack Row Justify="Justify.SpaceEvenly">
-                    <MudIconButton Icon="@Icons.Edit" OnClick="@(() => EditProductAsync(context.Item))" />
-                    <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteProductAsync(context.Item))" />
-                </MudStack>
-            </CellTemplate>
-        </TemplateColumn>
-    </Columns>
-</MudDataGrid>
+     <ToolBarContent>
+         <MudText Typo="Typo.h6">@Lang.Get("products_table_title")</MudText>
+            <MudSpacer />
+            <MudTextField T="string" @bind-Value="_searchString" Placeholder="@(Lang.Get("search"))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search" />
+        </ToolBarContent>
+        <Columns>
+            <PropertyColumn Title="@Lang.Get("stock_lbl")" Property="x => x.AmountInStock" />
+            <PropertyColumn Title="@Lang.Get("product_name_lbl")" Property="x => x.Name" />
+            <PropertyColumn Title="@Lang.Get("category_lbl")" Property="x => x.Category.Humanize()" />
+            <PropertyColumn Title="@Lang.Get("price_lbl")" Property="x => x.Price" Format="C" />
+            <PropertyColumn Title="@Lang.Get("tva_lbl")" Property="x => x.Tva" Format="P2" />
+            <PropertyColumn Title="@Lang.Get("active_lbl")" Property="x => x.IsAvailable" />
+            <PropertyColumn Title="@Lang.Get("action_lbl")" Property="x => x.AddedAt" Format="dd-MM-yyyy" />
+            <TemplateColumn Filterable="false">
+                <CellTemplate>
+                    <MudStack Row Justify="Justify.SpaceEvenly">
+                     <MudIconButton Icon="@Icons.Edit" OnClick="@(() => EditProductAsync(context.Item))" />
+                     <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteProductAsync(context.Item))" />
+                 </MudStack>
+             </CellTemplate>
+         </TemplateColumn>
+     </Columns>
+ </MudDataGrid>
+
 
 @code {
     private MeoDbContext _context = null!;

@@ -1,4 +1,5 @@
 ﻿@inject DoubleAuthService DoubleAuthService
+@inject LocalizationService Lang
 
 <MudDialog>
     <DialogContent>
@@ -6,23 +7,23 @@
         {
             <MudStack Row="false" Justify="Justify.Center">
                 <MudProgressCircular Indeterminate Color="Color.Dark" />
-                <MudText Align="Align.Center">Chargement...</MudText>
+                 <MudText Align="Align.Center">@(Lang.Get("2A_loading_txt"))</MudText>
             </MudStack>
         }
         else
         {
             <MudStack Class="px-8" Row="false">
-                <MudTextField T="string" @bind-Value="_code" Mask="@(new PatternMask("000000"))" Label="Code" Clearable Adornment="Adornment.Start" 
+                <MudTextField T="string" @bind-Value="_code" Mask="@(new PatternMask("000000"))" Label="@(Lang.Get("2A_code_lbl"))" Clearable Adornment="Adornment.Start" 
                                           AdornmentColor="Color.Secondary" AdornmentIcon="@Icons.Numbers"/>
-                <MudText>Veuillez renseigner le code envoyé à l'adresse <MudText Color="Color.Info">@CurrentUser.Email</MudText></MudText>
-                <MudText>Le code fourni est valide pour une durée de 10 minutes !</MudText>
+                 <MudText>@(Lang.Get("2A_enter_code_msg"))<MudText Color="Color.Info">@CurrentUser.Email</MudText></MudText>
+                    <MudText>@(Lang.Get("2A_code_validity_msg"))</MudText>
             </MudStack>
         }
     </DialogContent>
     <DialogActions>
         @if (!_loading)
         {
-            <MudButton Color="Color.Success" OnClick="@AuthenticateUser" Variant="Variant.Filled">Valider</MudButton>
+            <MudButton Color="Color.Success" OnClick="@AuthenticateUser" Variant="Variant.Filled">@(Lang.Get("2A_double_authorization_validate_btn"))</MudButton>
         }
     </DialogActions>
 </MudDialog>

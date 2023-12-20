@@ -27,7 +27,7 @@
   "price_lbl": "Price (€)",
   "tva_lbl": "TVA (%)",
   "option_name_lbl": "Option Name",
-  "action_lbl": "Action",
+  "action_lbl": "Actions",
   "active_lbl": "Active",
   "upload_files_btn": "Upload Files",
   "validate_btn": "Validate",
@@ -65,13 +65,15 @@
   "adminPanel_user_card_title": "User Management",
   "adminPanel_user_card_text": "Create, modify, and delete all user accounts on the platform.",
   "adminPanel_user_card_btn": "User Management",
+  "adminPanel_management_sells": "Best Sellers Management",
+  "admin_sells_txt": "Define the products to display on the front page to boost their sales.",
 
   "clients_title": "Administration - Clients",
   "clients_subTitle": "User Management",
   "clients_addClient_btn": "Add a client",
   "clients_adminstrationPanel_btn": "Administration Panel",
   "clients_productsTable_title": "Product Table",
-  "clients_search": "Search",
+  "search": "Search",
 
   "administration_title": "Administration - Home",
   "administration_management": "Best Sellers Management",
@@ -84,14 +86,16 @@
   "products_title": "Administration - Products",
   "products_subTitle": "Product Table",
   "products_addProduct_btn": "Add a product",
+  "products_back": "Administration panel",
+  "products_table_title": "Products table",
   "products_search": "Search",
 
   "catalog_frame_title": "Maison Eau d'Or - Articles",
   "catalog_cosmetics_title": "Cosmetics",
 
-  "catalog_gourmet_page_title": "Our Gourmet Escape Perfumes",
+  "catalog_gourmets_title": "Our Gourmet Escape Perfumes",
 
-  "catalog_hair_product_title": "Hair Products",
+  "catalog_hairproducts_title": "Hair Products",
 
   "catalog_honeys_title": "The Beekeeping House",
 
@@ -268,7 +272,7 @@
   "userProfileErrorMessage": "Passwords do not match!",
   "userProfileDoubleAuthActivatedText": "Two-factor authentication activated (via email)",
   "userProfileDoubleAuthDeactivatedText": "Two-factor authentication deactivated",
-  
+
   "aboutPageTitle": "Maison eau d'or - About",
   "aboutTitle": "About",
   "aboutDescription": "The Perfume Bar",
