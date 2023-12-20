@@ -57,6 +57,9 @@
 
   "save_btn": "Enregistrer",
 
+  "editOrderDialog_status": "Status",
+  "editOrderDialog_total_price": "Prix total",
+
   "adminPanel_stock_title": "Panel d'administration",
   "adminPanel_stock_card_title": "Gestion des stocks",
   "adminPanel_stock_card_txt": "Créez, modifiez et supprimez tous les produits du site à l'aide d'une interface ergonomique.",
