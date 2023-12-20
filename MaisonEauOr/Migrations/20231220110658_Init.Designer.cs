@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231219134251_UpdatesOrders")]
-    partial class UpdatesOrders
+    [Migration("20231220110658_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -122,14 +122,13 @@ namespace MaisonEauOr.Migrations
                     b.Property<Guid>("ClientID")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("OrderedAt")
+                    b.Property<DateTime?>("OrderedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Payed")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("ShippingAddress")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ShippingPostalCode")
@@ -139,15 +138,12 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("ShippingTown")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Total")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ClientID");
 
                     b.ToTable("Orders");
                 });
@@ -251,7 +247,7 @@ namespace MaisonEauOr.Migrations
                         .IsRequired();
 
                     b.HasOne("MaisonEauOr.Models.OrderModel", null)
-                        .WithMany("ProductIDs")
+                        .WithMany("Products")
                         .HasForeignKey("OrderModelId");
 
                     b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
@@ -278,18 +274,7 @@ namespace MaisonEauOr.Migrations
 
             modelBuilder.Entity("MaisonEauOr.Models.OrderModel", b =>
                 {
-                    b.HasOne("MaisonEauOr.Models.UserAccount", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Client");
-                });
-
-            modelBuilder.Entity("MaisonEauOr.Models.OrderModel", b =>
-                {
-                    b.Navigation("ProductIDs");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>

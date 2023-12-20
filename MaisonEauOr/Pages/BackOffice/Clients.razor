@@ -9,7 +9,7 @@
 
 <MudText Class="ml-4" Typo="Typo.h3">Gestion des utilisateurs</MudText>
 <MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="AddClientAsync">Ajouter un client</MudButton>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@(async() => await AddClientAsync())">Ajouter un client</MudButton>
     <MudSpacer/>
     <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
         Panel d'administration
@@ -36,8 +36,8 @@
         <TemplateColumn Filterable="false">
             <CellTemplate>
                 <MudStack Row Justify="Justify.SpaceEvenly">
-                    <MudIconButton Icon="@Icons.Edit" OnClick="@(() => EditClientAsync(context.Item))" />
-                    <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteClientAsync(context.Item))" />
+                    <MudIconButton Icon="@Icons.Edit" OnClick="@(async() => await EditClientAsync(context.Item))" />
+                    <MudIconButton Icon="@Icons.Delete" OnClick="@(async() => await DeleteClientAsync(context.Item))" />
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -120,5 +120,6 @@
     private async Task RefreshAsync()
     {
         _userAccounts = await _context.UserAccounts.ToListAsync();
+        StateHasChanged();
     }
 }

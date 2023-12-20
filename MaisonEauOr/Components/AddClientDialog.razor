@@ -97,7 +97,7 @@
         _confirmFieldType = _confirmFieldType == InputType.Text ? InputType.Password : InputType.Text;
     }
 
-    private async Task Submit()
+    private void Submit()
     {
         if (_model.Password != _model.Confirm)
         {

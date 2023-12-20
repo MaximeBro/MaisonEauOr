@@ -9,7 +9,7 @@
 
 <MudText Class="ml-4" Typo="Typo.h3">Gestion des stocks</MudText>
 <MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@AddProductAsync">Ajouter un produit</MudButton>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@(async() => await AddProductAsync())">Ajouter un produit</MudButton>
     <MudSpacer/>
     <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
         Panel d'administration
@@ -33,8 +33,8 @@
         <TemplateColumn Filterable="false">
             <CellTemplate>
                 <MudStack Row Justify="Justify.SpaceEvenly">
-                    <MudIconButton Icon="@Icons.Edit" OnClick="@(() => EditProductAsync(context.Item))" />
-                    <MudIconButton Icon="@Icons.Delete" OnClick="@(() => DeleteProductAsync(context.Item))" />
+                    <MudIconButton Icon="@Icons.Edit" OnClick="@(async() => await EditProductAsync(context.Item))" />
+                    <MudIconButton Icon="@Icons.Delete" OnClick="@(async() => await DeleteProductAsync(context.Item))" />
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -87,7 +87,7 @@
     private async Task EditProductAsync(ProductModel model)
     {
         var parameters = new DialogParameters<EditProductDialog> { { x => x.Model, model } };
-        var dialog = await DialogService.ShowAsync<EditProductDialog>("Ajout d'un produit", parameters, _dialogOptions);
+        var dialog = await DialogService.ShowAsync<EditProductDialog>("Modification d'un produit", parameters, _dialogOptions);
         var result = await dialog.Result;
 
         if (result is { Data : ProductModel newModel })

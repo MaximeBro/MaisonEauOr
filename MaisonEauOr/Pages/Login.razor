@@ -57,7 +57,7 @@
 @code {
     private LoginModel _model = new();
 
-    private MeoDbContext _context;
+    private MeoDbContext _context = null!;
 
     private InputType _passwordFieldType = InputType.Password;
     private string _passwordFieldIcon = Icons.VisibilityOff;
