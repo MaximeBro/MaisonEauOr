@@ -106,7 +106,6 @@
             Type = _type,
             ProductID = _type is DiscountType.Product && _selectedProduct != null ? _selectedProduct.Id : Guid.Empty,
             Categories = _type is DiscountType.Category ? _selectedCategories.ToList().ConvertAll(Enum.Parse<ProductCategory>) : new List<ProductCategory>(),
-            ClientsIDs = new List<Guid>(),
             StartsAt = _startsAt,
             EndsAt = _endsAt,
             IsActive = _isActive

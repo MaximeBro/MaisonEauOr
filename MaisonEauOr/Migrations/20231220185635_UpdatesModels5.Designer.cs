@@ -3,6 +3,7 @@ using System;
 using MaisonEauOr.Databases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    partial class MeoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231220185635_UpdatesModels5")]
+    partial class UpdatesModels5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -81,6 +84,9 @@ namespace MaisonEauOr.Migrations
 
                     b.Property<string>("Categories")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClientsEmails")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("CodeName")
@@ -229,24 +235,6 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("MaisonEauOr.Models.UsedDiscount", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("TEXT");
-
-                    b.Property<Guid>("DiscountID")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UsedDiscounts");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>

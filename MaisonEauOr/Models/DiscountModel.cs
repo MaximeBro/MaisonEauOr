@@ -13,7 +13,6 @@ public class DiscountModel
     public Guid ProductID { get; set; }
     public DiscountType Type { get; set; }
     public ICollection<ProductCategory> Categories { get; set; }
-    public ICollection<Guid> ClientsIDs { get; set; }
     public DateTime? StartsAt { get; set; }
     public DateTime? EndsAt { get; set; }
     public bool IsActive { get; set; }

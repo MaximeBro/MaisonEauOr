@@ -14,6 +14,7 @@ public class MeoDbContext : DbContext
     public DbSet<DisplayModel> DisplayedProducts { get; set; }
     public DbSet<OrderModel> Orders { get; set; }
     public DbSet<DiscountModel> Discounts { get; set; }
+    public DbSet<UsedDiscount> UsedDiscounts { get; set; }
     
     public MeoDbContext(DbContextOptions<MeoDbContext> options) : base(options)
     { }
@@ -29,11 +30,6 @@ public class MeoDbContext : DbContext
             .Property(e => e.Categories)
             .HasConversion(v => v.EnumsToString<ProductCategory>(),
                 v => v.StringToEnums<ProductCategory>());
-        
-        modelBuilder.Entity<DiscountModel>()
-            .Property(e => e.ClientsIDs)
-            .HasConversion(v => v.GuidsToString(),
-                v => v.StringToGuids());
         
         modelBuilder.Entity<DisplayModel>()
             .HasOne(x => x.Product)
