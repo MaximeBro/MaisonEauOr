@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231220185944_UpdatesModels6")]
-    partial class UpdatesModels6
+    [Migration("20231220203006_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -83,10 +83,6 @@ namespace MaisonEauOr.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Categories")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("ClientsEmails")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -236,6 +232,24 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.UsedDiscount", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("DiscountID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UsedDiscounts");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>
