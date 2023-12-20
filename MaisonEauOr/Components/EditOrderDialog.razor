@@ -1,9 +1,11 @@
+@inject LocalizationService Lang
+
 <MudDialog>
     <DialogContent>
         <MudStack Row="false" Justify="Justify.Center">
-            <MudText>Status</MudText>
+            <MudText>@(Lang.Get("editOrderDialog_status"))</MudText>
             <MudCheckBox T="bool" @bind-Checked="_payed" Label="@_payedText"/>
-            <MudNumericField T="double" @bind-Value="_total" Min="0" Label="Prix total"/>
+            <MudNumericField T="double" @bind-Value="_total" Min="0" Label="@(Lang.Get("editOrderDialog_total_price"))" />
         </MudStack>
     </DialogContent>
     <DialogActions>

@@ -14,35 +14,35 @@
                           For="@(() => _model.Email)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="@(Lang.Get("phone_lbl"))" InputType="InputType.Telephone"
                           For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
-            <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
+            <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="@(Lang.Get("birthdate_lbl"))" DateFormat="dd.MM.yyyy"
                             Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
         </MudStack>
         <MudStack Row Justify="Justify.SpaceBetween">
-            <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
+            <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="@(Lang.Get("postalcode_lbl"))"
                              For="@(() => _model.PostalCode)" Style="max-width: 150px;" Variant="Variant.Text"/>
             <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
                           For="@(() => _model.Town)" Style="max-width: 260px;" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="@(Lang.Get("address_lbl"))" InputType="InputType.Text"
                           For="@(() => _model.Address)" Variant="Variant.Text"/>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="@(Lang.Get("country_lbl"))" InputType="InputType.Text"
                           For="@(() => _model.Country)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="@(Lang.Get("password_lbl"))" InputType="@_passwordFieldType"
                           AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
                           For="@(() => _model.Password)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row>
-            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Confirm" Label="Confirmer" InputType="@_confirmFieldType"
+            <MudTextField T="string" Class="mb-2" @bind-Value="_model.Confirm" Label="@(Lang.Get("confirm_password_lbl"))" InputType="@_confirmFieldType"
                           AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
                           For="@(() => _model.Confirm)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row Justify="Justify.Center">
-            <MudSelect T="UserRole" @bind-Value="_selectedRole" Label="Status de l'utilisateur" AnchorOrigin="Origin.BottomCenter">
+            <MudSelect T="UserRole" @bind-Value="_selectedRole" Label="@(Lang.Get("user_status_lbl"))" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var role in Enum.GetValues<UserRole>())
                 {
                     @if (role != UserRole.Guest)
