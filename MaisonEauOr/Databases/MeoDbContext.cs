@@ -1,3 +1,4 @@
+using MaisonEauOr.Extensions;
 using MaisonEauOr.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,6 +13,8 @@ public class MeoDbContext : DbContext
     public DbSet<Option> Options { get; set; }
     public DbSet<DisplayModel> DisplayedProducts { get; set; }
     public DbSet<OrderModel> Orders { get; set; }
+    public DbSet<DiscountModel> Discounts { get; set; }
+    public DbSet<UsedDiscount> UsedDiscounts { get; set; }
     
     public MeoDbContext(DbContextOptions<MeoDbContext> options) : base(options)
     { }
@@ -23,6 +26,11 @@ public class MeoDbContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<DiscountModel>()
+            .Property(e => e.Categories)
+            .HasConversion(v => v.EnumsToString<ProductCategory>(),
+                v => v.StringToEnums<ProductCategory>());
+        
         modelBuilder.Entity<DisplayModel>()
             .HasOne(x => x.Product)
             .WithMany()

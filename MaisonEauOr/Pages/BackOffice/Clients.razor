@@ -17,7 +17,8 @@
     </MudButton>
 </MudStack>
 
-<MudDataGrid T="UserAccount" Class="mx-8 mb-16" Items="@_userAccounts" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
+<MudDataGrid T="UserAccount" Class="mx-8 mb-16" Items="@_userAccounts" ColumnResizeMode="ResizeMode.Container" Bordered Hover Filterable Square Striped 
+             QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Table des produits</MudText>
         <MudSpacer/>

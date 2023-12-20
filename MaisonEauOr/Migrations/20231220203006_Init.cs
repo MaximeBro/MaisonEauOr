@@ -26,6 +26,27 @@ namespace MaisonEauOr.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Discounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    CodeName = table.Column<string>(type: "TEXT", nullable: false),
+                    Discount = table.Column<double>(type: "REAL", nullable: false),
+                    DiscountPercent = table.Column<double>(type: "REAL", nullable: false),
+                    IsPercent = table.Column<bool>(type: "INTEGER", nullable: false),
+                    ProductID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Categories = table.Column<string>(type: "TEXT", nullable: false),
+                    StartsAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    EndsAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    IsActive = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Discounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Options",
                 columns: table => new
                 {
@@ -56,6 +77,19 @@ namespace MaisonEauOr.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsedDiscounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Email = table.Column<string>(type: "TEXT", nullable: false),
+                    DiscountID = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsedDiscounts", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -195,10 +229,16 @@ namespace MaisonEauOr.Migrations
                 name: "BasketProducts");
 
             migrationBuilder.DropTable(
+                name: "Discounts");
+
+            migrationBuilder.DropTable(
                 name: "DisplayedProducts");
 
             migrationBuilder.DropTable(
                 name: "Options");
+
+            migrationBuilder.DropTable(
+                name: "UsedDiscounts");
 
             migrationBuilder.DropTable(
                 name: "Orders");
