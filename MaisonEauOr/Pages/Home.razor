@@ -50,48 +50,6 @@
     <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">Découvrez nos produits</MudText>
 
     @* Caroussel catégories (parfums, sprays intérieur, cosmétiques) *@
-    
-    <div class="carousel-container">
-        <div class="carousel">
-            <div class="carousel-inner" id="carousel-inner">
-                <!-- Vos images vont ici -->
-                <img src="images/home/parfums.png" alt="Image 1">
-                <img src="images/home/sprays_interieur.png" alt="Image 2">
-                <img src="images/home/cosmetiques.png" alt="Image 3">
-                <img src="images/home/musc_tahara_intime.png" alt="Image 4">
-                <!-- Répétez vos images pour créer le cycle infini -->
-                <img src="images/home/ahlam.png" alt="Image 1">
-                <img src="images/home/cosmetiques.png" alt="Image 2">
-            </div>
-        </div>
-        <button class="prev-button" onclick="changeSlide(-1)">&lt; Précédent</button>
-        <button class="next-button" onclick="changeSlide(1)">Suivant &gt;</button>
-    </div>
-    
-    <script>
-   
-           const carouselInner = document.getElementById('carousel-inner');
-           const images = document.querySelectorAll('.carousel-inner img');
-       
-           let currentIndex = 0;
-           const displayWidth = 3;
-       
-           function changeSlide(direction) {
-               currentIndex += direction;
-       
-               if (currentIndex < 0) {
-                   currentIndex = images.length - displayWidth;
-               } else if (currentIndex > images.length - displayWidth) {
-                   currentIndex = 0;
-               }
-       
-               const translateValue = -currentIndex * (100 / displayWidth) + '%';
-               carouselInner.style.transform = 'translateX(' + translateValue + ')';
-           }
-       
-    </script>
-    
-    
     <MudCarousel Class="px-16 py-4 mb-16 mud-full-width" Style="height: 520px; background-color: #F7E1C7;" ShowArrows ShowBullets="false" EnableSwipeGesture TData="object">
         <MudCarouselItem Transition="Transition.Slide">
             <MudStack Row Justify="Justify.SpaceEvenly">
