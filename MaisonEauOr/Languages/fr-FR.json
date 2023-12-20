@@ -27,7 +27,7 @@
   "price_lbl": "Prix (€)",
   "tva_lbl": "TVA (%)",
   "option_name_lbl": "Nom de l'option",
-  "action_lbl": "Action",
+  "action_lbl": "Actions",
   "active_lbl": "Actif",
   "upload_files_btn": "Charger des fichiers",
   "validate_btn": "Valider",
@@ -56,6 +56,7 @@
   "2A_double_authorization_validate_btn": "Valider",
 
   "save_btn": "Enregistrer",
+
   "adminPanel_stock_title": "Panel d'administration",
   "adminPanel_stock_card_title": "Gestion des stocks",
   "adminPanel_stock_card_txt": "Créez, modifiez et supprimez tous les produits du site à l'aide d'une interface ergonomique.",
@@ -64,18 +65,20 @@
   "adminPanel_user_card_title": "Gestion des utilisateurs",
   "adminPanel_user_card_text": "Créez, modifiez et supprimez tous les comptes utilisateurs de la plateforme.",
   "adminPanel_user_card_btn": "Gestion des utilisateurs",
+  "adminPanel_management_sells": "Gestion des meilleures ventes",
+  "admin_sells_txt": "Définissez les produits à afficher en première page pour booster leurs ventes.",
 
   "clients_title": "Administration - Clients",
   "clients_subTitle": "Gestion des utilisateurs",
   "clients_addClient_btn": "Ajouter un client",
   "clients_adminstrationPanel_btn": "Panel d'administration",
   "clients_productsTable_title": "Table des produits",
-  "clients_search": "Rechercher",
+  "search": "Rechercher",
 
   "administration_title": "Administration - Accueil",
   "administration_management": "Gestion des meilleures ventes",
   "administration_products": "Vous pouvez définir les trois produits qui seront affichés sur la page principale",
-  "administration_back_button": "Panel d'administration",
+  "administration_back_btn": "Panel d'administration",
   "administration_first_product": "Premier produit (à gauche)",
   "administration_second_product": "Deuxième produit (au centre)",
   "administration_third_product": "Troisième produit (à droite)",
@@ -83,14 +86,16 @@
   "products_title": "Adminstration _ Produits",
   "products_subTitle": "Table des produits",
   "products_addProduct_btn": "Ajouter un produit",
+  "products_back": "Panel d'administration",
+  "products_table_title": "Table des produits",
   "products_search": "Rechercher",
 
   "catalog_frame_title": "Maison eau d'or - Articles",
   "catalog_cosmetics_title": "Cosmétiques",
 
-  "catalog_gourmet_page_title": "Nos Parfums Évasion Gourmande",
+  "catalog_gourmets_title": "Nos Parfums Évasion Gourmande",
 
-  "catalog_hair_product_title": "Produits capillaire",
+  "catalog_hairproducts_title": "Produits capillaire",
 
   "catalog_honeys_title": "La Miellerie",
 
@@ -139,15 +144,11 @@
   "cookiePolicyCookiesUsed": "Les cookies utilisés sur ce site Internet peuvent être regroupés en trois catégories décrites ci-dessous.",
   "cookiePolicyPerformanceCookies": "Ces cookies nous permettent de compter le nombre de visites et d'identifier les sources de traffic...",
 
-
-
   "cookiePolicyDuration": "2 ans",
   "cookiePolicyType": "Les cookies tiers",
 
-
   "cookiePolicyDurationGid": "24 heures",
   "cookiePolicyTypeGid": "Les cookies tiers",
-
 
   "cookiePolicyDurationGa": "2 ans",
   "cookiePolicyTypeGa": "Les cookies tiers",
@@ -167,21 +168,16 @@
   "errorDevelopmentModeDescription": "Swapping to the Development environment displays detailed information about the error that occurred.",
   "errorDevelopmentModeWarning": "The Development environment shouldn't be enabled for deployed applications. It can result in displaying sensitive information from exceptions to end users. For local debugging, enable the Development environment by setting the ASPNETCORE_ENVIRONMENT environment variable to Development and restarting the app.",
 
-
-
-
   "homePageTitle": "Maison eau d'or",
 
   "homeBestSellersTitle": "Nos meilleures ventes",
   "homeAddToCart": "Ajouter au panier",
   "homeDiscoverProductsTitle": "Découvrez nos produits",
 
-
   "homeLbel": "PARFUMS",
   "homeLblSpray": "SPRAYS INTÉRIEUR",
   "homeLblCosmetic": "COSMÉTIQUES",
   "homeLblMusc": "MUSC TAHARA INTIME",
-
 
   "homeTitle": "Le Bar à parfum",
   "homeImage": "favicon.png",
@@ -242,7 +238,6 @@
   "privacyPolicyContentTransfertData": "Nous sommes susceptibles de transférer les données collectées vous concernant à des tiers agissant pour notre compte situés dans des pays hors de l'Espace économique européen («EEE») ou dans des pays considérés par la Commission européenne comme offrant un niveau de protection des données satisfaisant. Il est possible que ces autres pays n'offrent pas le même niveau de protection aux données collectées vous concernant",
   "privacyPolicyContentText": "Nous veillons à la protection de votre vie privée lors de vos visites sur notre site internet ou pour les commandes passées en ligne. Maison Eau D'or fournit des produits et services et agit en qualité de responsable du traitement des données à caractère personnel que vous communiquez lorsque vous passez commande. Vous pouvez contacter le Délégué à la protection des données de Maison Eau D'or grâce au formulaire de contact qui se trouve au bas de cette page. La présente politique en matière de protection de la vie privée définit la manière dont les données à caractère personnel vous concernant sont collectées, traitées et partagées lors de votre visite sur le site ou de votre commande sur maisoneaudor.sumup.link (le « Site Internet »).",
 
-
   "productPageTitle": "Maison eau d'or - Page de produit",
   "productPageDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "productPageLblFormat": "Format",
@@ -250,11 +245,8 @@
   "productPageBtnBuy": "Acheter",
   "productPageBtnAddCart": "Ajouter au panier",
 
-
   "stocksManagmentTitle": "Maison eau d'or - Gestion des stocks",
   "stocksManagmentTitleStock": "Gestion des stocks",
-
-
 
   "termsConditionsPageTitle": "Maison eau d'or - Conditions générales",
   "termsConditionsPageTitleIntro": "Veuillez trouver ci-dessous nos conditions générales relatives à l'utilisation du site internet maisoneaudor.sumup.link et à l'achat de produits sur ce site.",

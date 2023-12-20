@@ -4,32 +4,33 @@
 @inject BasketService BasketService
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
-<PageTitle>Maison eau d'or - Articles</PageTitle>
+<PageTitle>@Lang.Get("catalog_frame_title")</PageTitle>
 
-<MudContainer Class="px-16" Style="min-height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
-    <MudGrid>
-        <MudItem xs="12" sm="6">
-            <MudText Align="Align.Left" Typo="Typo.h4">
-                <b>Produits Capillaire</b>
+    <MudContainer Class="px-16" Style="min-height: 50vh;" MaxWidth="MaxWidth.ExtraLarge">
+        <MudGrid>
+            <MudItem xs="12" sm="6">
+                <MudText Align="Align.Left" Typo="Typo.h4">
+                    <b>@Lang.Get("catalog_hairproducts_title")</b>
             </MudText>
         </MudItem>
         <MudItem xs="12" sm="6">
             <MudStack Row>
-                <MudSpacer/>
+                <MudSpacer />
                 <MudSelect T="string" ValueChanged="@ToggleFilter" MultiSelection="false" Class="flex-grow-0" Style="max-width: 220px; min-width: 220px;" @bind-Text="_selectedFilter"
-                           Variant="Variant.Outlined" Label="Filtrer" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
-                    <MudSelectItem Value="@("all")">Tous</MudSelectItem>
-                    <MudSelectItem Value="@("A-Z")">A-Z</MudSelectItem>
-                    <MudSelectItem Value="@("Z-A")">Z-A</MudSelectItem>
-                    <MudSelectItem Value="@("ascending")">Prix croissant</MudSelectItem>
-                    <MudSelectItem Value="@("descending")">Prix décroissant</MudSelectItem>
-                </MudSelect>
-            </MudStack>
-        </MudItem>
-    </MudGrid>
-    <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center">
-        @foreach (var hairproduct in _filteredProducts)
+                           Variant="Variant.Outlined" Label="@Lang.Get("catalog_filter")" Adornment="Adornment.Start" AdornmentIcon="@Icons.FilterAlt" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelectItem Value="@("all")">@Lang.Get("catalog_all")</MudSelectItem>
+                        <MudSelectItem Value="@("A-Z")">A-Z</MudSelectItem>
+                        <MudSelectItem Value="@("Z-A")">Z-A</MudSelectItem>
+                        <MudSelectItem Value="@("ascending")">@Lang.Get("catalog_ascending")</MudSelectItem>
+                        <MudSelectItem Value="@("descending")">@Lang.Get("catalog_descending")</MudSelectItem>
+                    </MudSelect>
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+        <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center">
+            @foreach (var hairproduct in _filteredProducts)
         {
             <MudItem Class="mt-5" xs="12" sm="6" md="4" lg="3">
                 <MudCard Elevation="0">
@@ -37,15 +38,15 @@
                         <MudStack Row="false" Justify="Justify.Center">
                             <MudLink Href="@($"/product/{hairproduct.Id}")">
                                 <div class="mx-auto d-block" style="height: 282px; width: 282px; position: relative; overflow: hidden;">
-                                    <img class="highlights mx-auto" src="@hairproduct.ImagePath" alt="@hairproduct.Name"/>
+                                    <img class="highlights mx-auto" src="@hairproduct.ImagePath" alt="@hairproduct.Name" />
                                 </div>
                             </MudLink>
                         </MudStack>
                         <MudText Class="mt-2" Align="Align.Center" Typo="Typo.h4"><b>@hairproduct.Name</b></MudText>
                         <MudText Align="Align.Center" Typo="Typo.body1">@hairproduct.Price.ToString("C")</MudText>
-                        <MudStack Row Justify="Justify.Center">
-                            <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(hairproduct))">
-                                Ajouter au panier
+                            <MudStack Row Justify="Justify.Center">
+                             <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(hairproduct))">
+                                 @Lang.Get("catalog_basket_btn")
                             </MudButton>
                         </MudStack>
                     </MudCardContent>
@@ -54,6 +55,7 @@
         }
     </MudGrid>
 </MudContainer>
+
 
 @code {
 
@@ -65,7 +67,7 @@
     private List<ProductModel> _hairproducts = new();
     private List<ProductModel> _filteredProducts = new();
 
-    private string _selectedFilter = "Tous";
+    private string _selectedFilter = null!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,6 +78,7 @@
             product.Options = _context.Options.Where(x => x.ProductID == product.Id).ToList();
         }
         _filteredProducts = _hairproducts.ToList();
+        _selectedFilter = Lang.Get("catalog_all");
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
