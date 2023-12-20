@@ -40,7 +40,7 @@
                           For="@(() => _model.Confirm)" Variant="Variant.Text"/>
         </MudStack>
         <MudStack Row Justify="Justify.Center">
-            <MudSelect T="UserRole" @bind-Value="_selectedRole" Label="Status de l'utilisateur">
+            <MudSelect T="UserRole" @bind-Value="_selectedRole" Label="Status de l'utilisateur" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var role in Enum.GetValues<UserRole>())
                 {
                     @if (role != UserRole.Guest)
@@ -55,7 +55,7 @@
         <MudStack Row="false">
             @if (!string.IsNullOrWhiteSpace(_errorMessage))
             {
-                <MudAlert Severity="Severity.Error"></MudAlert>
+                <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
             }
             <MudButton OnClick="@Submit" Variant="Variant.Filled" Color="Color.Success">Enregistrer</MudButton>
         </MudStack>

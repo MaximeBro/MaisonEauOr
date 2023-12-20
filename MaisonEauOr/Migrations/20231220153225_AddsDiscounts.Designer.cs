@@ -3,6 +3,7 @@ using System;
 using MaisonEauOr.Databases;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    partial class MeoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231220153225_AddsDiscounts")]
+    partial class AddsDiscounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.14");
@@ -87,10 +90,6 @@ namespace MaisonEauOr.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CodeName")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<double>("Discount")
                         .HasColumnType("REAL");
 
@@ -105,6 +104,10 @@ namespace MaisonEauOr.Migrations
 
                     b.Property<bool>("IsPercent")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("NameCode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<Guid>("ProductID")
                         .HasColumnType("TEXT");

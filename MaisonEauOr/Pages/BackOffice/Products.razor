@@ -16,7 +16,8 @@
     </MudButton>
 </MudStack>
 
-<MudDataGrid T="ProductModel" Class="mx-8 mb-16" Items="@_products" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
+<MudDataGrid T="ProductModel" Class="mx-8 mb-16" Items="@_products" ColumnResizeMode="ResizeMode.Container" Bordered Hover Filterable Square Striped 
+             QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Table des produits</MudText>
         <MudSpacer/>

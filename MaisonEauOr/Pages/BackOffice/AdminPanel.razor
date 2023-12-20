@@ -66,6 +66,20 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
+        <MudItem xs="12" md="6">
+            <MudCard Class="pa-4" Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Gestion des codes promotionnels</MudText>
+                    <MudText>Créez, modifiez et supprimez tous les code promotionnels de la plateforme.</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Color="Color.Primary" StartIcon="@Icons.Discount"
+                               OnClick="@(() => NavManager.NavigateTo("/admin-discounts"))">
+                        Gestion des codes promotionnels
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
     </MudGrid>
 </MudContainer>
 
