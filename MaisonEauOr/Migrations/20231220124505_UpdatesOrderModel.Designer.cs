@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MaisonEauOr.Migrations
 {
     [DbContext(typeof(MeoDbContext))]
-    [Migration("20231219084057_Inint")]
-    partial class Inint
+    [Migration("20231220124505_UpdatesOrderModel")]
+    partial class UpdatesOrderModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -53,6 +53,12 @@ namespace MaisonEauOr.Migrations
                     b.Property<string>("Option")
                         .HasColumnType("TEXT");
 
+                    b.Property<Guid>("OrderID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("OrderModelId")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ProductAmount")
                         .HasColumnType("INTEGER");
 
@@ -63,9 +69,30 @@ namespace MaisonEauOr.Migrations
 
                     b.HasIndex("ClientID");
 
+                    b.HasIndex("OrderModelId");
+
                     b.HasIndex("ProductID");
 
                     b.ToTable("BasketProducts");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.DisplayModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Index")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("ProductID")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("DisplayedProducts");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.Option", b =>
@@ -84,6 +111,43 @@ namespace MaisonEauOr.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Options");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.OrderModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("ClientID")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("OrderedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Payed")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ShippingAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ShippingPostalCode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("ShippingPrice")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("ShippingTown")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Total")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientID");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.ProductModel", b =>
@@ -124,7 +188,7 @@ namespace MaisonEauOr.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductModel");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>
@@ -184,6 +248,10 @@ namespace MaisonEauOr.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MaisonEauOr.Models.OrderModel", null)
+                        .WithMany("Products")
+                        .HasForeignKey("OrderModelId");
+
                     b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
                         .WithMany()
                         .HasForeignKey("ProductID")
@@ -193,6 +261,33 @@ namespace MaisonEauOr.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.DisplayModel", b =>
+                {
+                    b.HasOne("MaisonEauOr.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.OrderModel", b =>
+                {
+                    b.HasOne("MaisonEauOr.Models.UserAccount", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("MaisonEauOr.Models.OrderModel", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("MaisonEauOr.Models.UserAccount", b =>
