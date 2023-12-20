@@ -379,7 +379,7 @@
                             {
                                 _discountText = $"Réduction de {amount} sur {target}";
                             }
-                            
+                            if (_order.Total < 0) _order.Total = 0D;
                             Snackbar.Add("Code promotionnel ajouté au panier !", Severity.Info);
                             StateHasChanged();
                         }
