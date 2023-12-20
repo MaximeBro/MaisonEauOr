@@ -39,25 +39,6 @@ namespace MaisonEauOr.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
-                    OrderedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    ShippingPrice = table.Column<double>(type: "REAL", nullable: false),
-                    ShippingTown = table.Column<string>(type: "TEXT", nullable: true),
-                    ShippingAddress = table.Column<string>(type: "TEXT", nullable: true),
-                    ShippingPostalCode = table.Column<int>(type: "INTEGER", nullable: false),
-                    Total = table.Column<double>(type: "REAL", nullable: false),
-                    Payed = table.Column<bool>(type: "INTEGER", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -120,6 +101,31 @@ namespace MaisonEauOr.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    ClientID = table.Column<Guid>(type: "TEXT", nullable: false),
+                    OrderedAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    ShippingPrice = table.Column<double>(type: "REAL", nullable: false),
+                    ShippingTown = table.Column<string>(type: "TEXT", nullable: true),
+                    ShippingAddress = table.Column<string>(type: "TEXT", nullable: true),
+                    ShippingPostalCode = table.Column<int>(type: "INTEGER", nullable: false),
+                    Total = table.Column<double>(type: "REAL", nullable: false),
+                    Payed = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_UserAccounts_ClientID",
+                        column: x => x.ClientID,
+                        principalTable: "UserAccounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "BasketProducts",
                 columns: table => new
                 {
@@ -172,6 +178,11 @@ namespace MaisonEauOr.Migrations
                 name: "IX_DisplayedProducts_ProductID",
                 table: "DisplayedProducts",
                 column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ClientID",
+                table: "Orders",
+                column: "ClientID");
         }
 
         /// <inheritdoc />
@@ -193,10 +204,10 @@ namespace MaisonEauOr.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "UserAccounts");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "UserAccounts");
         }
     }
 }
