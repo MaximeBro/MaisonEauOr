@@ -1,23 +1,25 @@
 @page "/about"
 
-<PageTitle>Maison eau d'or - À propos</PageTitle>
+@inject LocalizationService Lang
+
+<PageTitle>Maison eau d'or - ï¿½ propos</PageTitle>
 
 
 <MudContainer>
-    <MudText Typo="Typo.h3">À propos</MudText>
+    <MudText Typo="Typo.h3">ï¿½ propos</MudText>
 
    
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
-         <MudStack Class="py-8" Row>
+        <MudStack Class="py-8" Row>
             <MudStack Class="mr-8 px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
-                <MudText Typo="Typo.h5" Align="Align.Center"><b>Le Bar à parfum</b></MudText>
+                <MudText Typo="Typo.h5" Align="Align.Center"><b>Le Bar ï¿½ parfum</b></MudText>
                 <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200" />
                 <MudText Align="Align.Center">Composez votre cocktail de parfums !</MudText>
-                <MudText Align="Align.Center">Nous sommes accueillies chaleureusement dans la boutique Ydentik qui se situe au 123 Avenue René Coté au Havre. Leur concept est de créer des parfums uniques et personnalisés. Je trouve l’idée géniale.</MudText>
+                <MudText Align="Align.Center">Nous sommes accueillies chaleureusement dans la boutique Ydentik qui se situe au 123 Avenue Renï¿½ Cotï¿½ au Havre. Leur concept est de crï¿½er des parfums uniques et personnalisï¿½s. Je trouve lï¿½idï¿½e gï¿½niale.</MudText>
                 <MudText Align="Align.Center">
-                    Le décor est chic et épuré dans les couleurs blanches, les bouteilles de parfum remplissent un côté du mur comme dans les bars et de l’autre nous découvrons les senteurs des mélanges.
-                    Le plus souvent, nous le savons bien, dans un parfum, c’est la marque et le packaging que nous payons, ici, il n’est plus question de cela.
-                    L’équipe est accueillante et aux petits soins. C’est à vous de composer votre parfum grâce à leurs conseils. Une fois vos ingrédients choisis, ils préparent votre cocktail de parfum unique.
+                    Le dï¿½cor est chic et ï¿½purï¿½ dans les couleurs blanches, les bouteilles de parfum remplissent un cï¿½tï¿½ du mur comme dans les bars et de lï¿½autre nous dï¿½couvrons les senteurs des mï¿½langes.
+                    Le plus souvent, nous le savons bien, dans un parfum, cï¿½est la marque et le packaging que nous payons, ici, il nï¿½est plus question de cela.
+                    Lï¿½ï¿½quipe est accueillante et aux petits soins. Cï¿½est ï¿½ vous de composer votre parfum grï¿½ce ï¿½ leurs conseils. Une fois vos ingrï¿½dients choisis, ils prï¿½parent votre cocktail de parfum unique.
                 </MudText>
                 <MudSpacer />
                 
@@ -28,3 +30,12 @@
         </MudStack>
     </MudPaper>
 </MudContainer>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+}

@@ -3,6 +3,7 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LocalizationService Lang
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
 
@@ -107,7 +108,10 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private void ShowPassword()
     {

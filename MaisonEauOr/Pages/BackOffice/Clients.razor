@@ -76,7 +76,10 @@
     {
         _context = await Factory.CreateDbContextAsync();
         await RefreshAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private async Task AddClientAsync()
     {

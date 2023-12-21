@@ -2,6 +2,7 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LocalizationService Lang
 @inject BasketService BasketService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
@@ -143,7 +144,10 @@
             };
             _similarProducts = _context.Products.Where(x => x.Category == _product.Category && x.Id != _product.Id).ToList().OrderBy(_ => new Random().Next()).Take(4).ToList();
         }
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

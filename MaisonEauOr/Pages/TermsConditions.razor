@@ -1,5 +1,7 @@
 @page "/terms-and-conditions"
 
+@inject LocalizationService Lang
+
 <PageTitle>Maison eau d'or - Conditions générales</PageTitle>
 
 <MudContainer Class="my-5 mb-16" MaxWidth="MaxWidth.Medium">
@@ -78,3 +80,12 @@
         Toute disposition des présentes conditions générales qui viendrait à être nulle, illégale ou non applicable pour quelque raison que ce soit sera réputée dissociée du reste des conditions générales qui demeureront valables et exécutoires.
     </MudText>
 </MudContainer>
+
+@code{
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+}

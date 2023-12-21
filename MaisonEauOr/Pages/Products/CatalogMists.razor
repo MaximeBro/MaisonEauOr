@@ -78,7 +78,10 @@
         }
         _filteredProducts = _mists.ToList();
         _selectedFilter = Lang.Get("catalog_all");
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

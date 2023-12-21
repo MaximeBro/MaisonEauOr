@@ -2,6 +2,7 @@
 @attribute [Authorize(Roles = "Admin")]
 
 @inject IDbContextFactory<MeoDbContext> Factory
+@inject LocalizationService Lang
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
 
@@ -58,7 +59,10 @@
     {
         _context = await Factory.CreateDbContextAsync();
         await RefreshOrdersAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private DialogOptions _dialogOptions = new DialogOptions
     {

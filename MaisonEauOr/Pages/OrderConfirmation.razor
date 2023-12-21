@@ -1,8 +1,8 @@
 @page "/order/{OrderId:guid}"
-@using System.Collections.Immutable
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LocalizationService Lang
 @inject MailerService MailerService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
@@ -216,7 +216,10 @@
                 _originalPrice = _order.Total;
             }
         }
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

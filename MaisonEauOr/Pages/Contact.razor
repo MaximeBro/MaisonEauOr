@@ -1,6 +1,7 @@
 @page "/Contact"
 @using System.ComponentModel.DataAnnotations
 
+@inject LocalizationService Lang
 @inject MailerService MailerService
 @inject ISnackbar Snackbar
 
@@ -37,7 +38,14 @@
 
 @code {
     private ContactModel _model = new();
-    
+
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+
     private async Task OnValidSubmitAsync()
     {
         if (_model.ConditionsAccepted)

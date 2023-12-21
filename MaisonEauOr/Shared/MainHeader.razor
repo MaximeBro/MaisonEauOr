@@ -76,6 +76,9 @@
 
 @code
 {
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout MainLayout { get; set; } = null!;
+    
     private UserSession? _currentUser;
     private BasketDrawer _drawer = new();
     private Language SelectedLanguage { get; set; }

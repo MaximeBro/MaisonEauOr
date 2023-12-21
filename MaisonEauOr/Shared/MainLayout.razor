@@ -7,13 +7,15 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MainHeader @ref="_mainHeader"/>
+    <CascadingValue Name="MainLayoutInstance" Value="@this">
+        <MainHeader @ref="_mainHeader"/>
+    </CascadingValue>
     <MudMainContent Class="py-0">
         <CascadingValue Name="MainLayoutInstance" Value="@this">
             @Body
         </CascadingValue>
     </MudMainContent>
-    
+
     <MainFooter/>
 </MudLayout>
 

@@ -1,5 +1,7 @@
 @page "/cookie-policy"
 
+@inject LocalizationService Lang
+
 <PageTitle>Maison eau d'or - Politique de cookies</PageTitle>
 
 <MudContainer Class="my-5 mb-16" MaxWidth="MaxWidth.Medium">
@@ -129,5 +131,10 @@
 </MudContainer>
 
 @code {
-    
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 }

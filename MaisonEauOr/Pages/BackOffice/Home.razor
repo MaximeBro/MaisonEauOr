@@ -116,7 +116,10 @@
         _firstValidate = _firstSelected != null;
         _secondValidate = _secondSelected != null;
         _thirdValidate = _thirdSelected != null;
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private async Task AddToFirst(ProductModel? product)
     {
