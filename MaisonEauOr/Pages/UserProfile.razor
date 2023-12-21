@@ -12,7 +12,7 @@
 <PageTitle>Maison eau d'or - Profil</PageTitle>
 <MudTabs Class="mt-8 mx-16 mb-16" Style="min-height: 50vh;" Position="Position.Top" Outlined Rounded @bind-ActivePanelIndex="_activePanel">
     <MudTabPanel Icon="@Icons.AccountCircle" Text="Informations personnelles">
-        <MudText Class="my-4" Align="Align.Center" Typo="Typo.h4">Vos informations personnelles</MudText>
+         <MudText Class="my-4" Align="Align.Center" Typo="Typo.h4">@(Lang.Get("userProfilePersonalInfoTitle2"))</MudText>
         <MudStack Row Justify="Justify.Center">
             <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
                 <MudText Class="my-3 ml-3" Typo="Typo.h6" Align="Align.Center">@(Lang.Get("userProfileGeneralInfoSectionTitle"))</MudText>
