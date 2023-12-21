@@ -1,8 +1,9 @@
-﻿@page "/signin"
+@page "/signin"
 @layout LoginLayout
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LocalizationService Lang
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
@@ -58,7 +59,7 @@
 @code {
     private LoginModel _model = new();
 
-    private MeoDbContext _context;
+    private MeoDbContext _context = null!;
 
     private InputType _passwordFieldType = InputType.Password;
     private string _passwordFieldIcon = Icons.VisibilityOff;
@@ -74,7 +75,10 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private void ShowPassword()
     {

@@ -79,3 +79,12 @@
         @Lang.Get("termsConditionsPageTitleSeverability"))
     </MudText>
 </MudContainer>
+
+@code{
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+}

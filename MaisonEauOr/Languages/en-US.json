@@ -27,11 +27,23 @@
   "price_lbl": "Price (€)",
   "tva_lbl": "TVA (%)",
   "option_name_lbl": "Option Name",
-  "action_lbl": "Action",
+  "action_lbl": "Actions",
   "active_lbl": "Active",
   "upload_files_btn": "Upload Files",
   "validate_btn": "Validate",
   "deleted_txt": "Delete",
+
+  "promo_name_lbl": "Code",
+  "promo_start_date": "Start Date",
+  "promo_end_date": "End Date",
+  "promo_type_articles": "Affected Articles",
+  "promo_reduction_txt": "The discount will apply to all products.",
+  "promo_category": "Categories",
+  "promo_percent": "Percentage",
+  "promo_fixed_value": "Fixed Value",
+  "promo_specific_product": "Specific Product",
+  "promo_active": "Active",
+  "promo_validate_btn": "Validate",
 
   "basketDrawer_cartTitle": "Cart",
   "basketDrawer_quantity": "Quantity",
@@ -57,6 +69,9 @@
 
   "save_btn": "Save",
 
+  "editOrderDialog_status": "Status",
+  "editOrderDialog_total_price": "Total price",
+
   "adminPanel_stock_title": "Administration Panel",
   "adminPanel_stock_card_title": "Stock Management",
   "adminPanel_stock_card_txt": "Create, modify, and delete all products on the site using an intuitive interface.",
@@ -65,13 +80,32 @@
   "adminPanel_user_card_title": "User Management",
   "adminPanel_user_card_text": "Create, modify, and delete all user accounts on the platform.",
   "adminPanel_user_card_btn": "User Management",
+  "adminPanel_management_sells": "Best Sellers Management",
+  "adminPanel_order_management": "Order Management",
+  "adminPanel_order_txt": "Manage orders placed by your customers by modifying their status and total price.",
+  "adminPanel_codes_management": "Promotional Codes Management",
+  "adminPanel_codes_txt": "Create, modify, and delete all promotional codes on the platform.",
+  "admin_sells_txt": "Define the products to display on the front page to boost their sales.",
 
   "clients_title": "Administration - Clients",
   "clients_subTitle": "User Management",
   "clients_addClient_btn": "Add a client",
   "clients_adminstrationPanel_btn": "Administration Panel",
   "clients_productsTable_title": "Product Table",
-  "clients_search": "Search",
+  "search": "Search",
+
+  "discounts_title": "Administration - Orders",
+  "discounts_subtitle": "Promotional Codes Management",
+  "discounts_add_code": "Add a promotional code",
+  "discounts_back_btn": "Administration Panel",
+  "discounts_table_title": "Product Table",
+  "discounts_promo_code": "Promo Code",
+  "discounts_promo_type": "Promo Type",
+  "discounts_promo_value": "Value (€)",
+  "discounts_promo_percent": "Value (%)",
+  "discounts_promo_start": "Start Date",
+  "discounts_promo_end": "End Date",
+  "discounts_promo_active": "Active",
 
   "administration_title": "Administration - Home",
   "administration_management": "Best Sellers Management",
@@ -84,14 +118,16 @@
   "products_title": "Administration - Products",
   "products_subTitle": "Product Table",
   "products_addProduct_btn": "Add a product",
+  "products_back": "Administration panel",
+  "products_table_title": "Products table",
   "products_search": "Search",
 
   "catalog_frame_title": "Maison Eau d'Or - Articles",
   "catalog_cosmetics_title": "Cosmetics",
 
-  "catalog_gourmet_page_title": "Our Gourmet Escape Perfumes",
+  "catalog_gourmets_title": "Our Gourmet Escape Perfumes",
 
-  "catalog_hair_product_title": "Hair Products",
+  "catalog_hairproducts_title": "Hair Products",
 
   "catalog_honeys_title": "The Beekeeping House",
 

@@ -3,16 +3,17 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject NavigationManager NavManager
+@inject LocalizationService Lang
 
-<PageTitle>Administration - Accueil</PageTitle>
+<PageTitle>@(Lang.Get("administration_title"))</PageTitle>
 
-<MudText Class="ml-4" Typo="Typo.h3" Align="Align.Center">Gestion des meilleures ventes</MudText>
-<MudText Class="ml-4" Align="Align.Center">Vous pouvez définir les trois produits qui seront affichés sur la page principale</MudText>
+<MudText Class="ml-4" Typo="Typo.h3" Align="Align.Center">@(Lang.Get("administration_management"))</MudText>
+<MudText Class="ml-4" Align="Align.Center">@(Lang.Get("administration_products"))</MudText>
 
 <MudStack Class="my-4" Row>
     <MudSpacer/>
     <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
-        Panel d'administration
+        @(Lang.Get("administration_back_btn"))
     </MudButton>
 </MudStack>
 
@@ -26,7 +27,7 @@
         </ItemOpposite>
         <ItemContent>
             <MudSelect T="ProductModel?" Value="_firstSelected" ValueChanged="AddToFirst" OnClearButtonClick="@(async() => await DeleteFirst())" 
-                       Label="Premier produit (à gauche)" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
+                       Label="@(Lang.Get("administration_first_product"))" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var product in _products)
                 {
                     <MudSelectItem Value="@product">@product.Name</MudSelectItem>
@@ -43,7 +44,7 @@
         </ItemOpposite>
         <ItemContent>
             <MudSelect T="ProductModel?" Value="_secondSelected" ValueChanged="AddToSecond" OnClearButtonClick="@(async() => await DeleteSecond())" 
-                       Label="Deuxième produit (au centre)" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
+                       Label="@(Lang.Get("administration_second_product"))" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var product in _products)
                 {
                     <MudSelectItem Value="@product">@product.Name</MudSelectItem>
@@ -60,7 +61,7 @@
         </ItemOpposite>
         <ItemContent>
             <MudSelect T="ProductModel?" Value="_thirdSelected" ValueChanged="AddToThird" OnClearButtonClick="@(async() => await DeleteThird())" 
-                       Label="Troisième produit (à droite)" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
+                       Label="@(Lang.Get("administration_third_product"))" Variant="Variant.Outlined" Clearable Style="max-width: 320px;" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var product in _products)
                 {
                     <MudSelectItem Value="@product">@product.Name</MudSelectItem>
@@ -115,7 +116,10 @@
         _firstValidate = _firstSelected != null;
         _secondValidate = _secondSelected != null;
         _thirdValidate = _thirdSelected != null;
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private async Task AddToFirst(ProductModel? product)
     {

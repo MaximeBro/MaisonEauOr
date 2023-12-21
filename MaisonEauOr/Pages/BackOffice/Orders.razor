@@ -1,0 +1,117 @@
+@page "/admin-orders"
+@attribute [Authorize(Roles = "Admin")]
+
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject LocalizationService Lang
+@inject IDialogService DialogService
+@inject NavigationManager NavManager
+
+<PageTitle>Administration - Commandes</PageTitle>
+
+<MudText Class="ml-4" Typo="Typo.h3">Gestion des commandes</MudText>
+<MudStack Row>
+    <MudSpacer/>
+    <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
+        Panel d'administration
+    </MudButton>
+</MudStack>
+
+<MudDataGrid T="OrderModel" Class="mx-8 mb-16" Items="@_orders" ColumnResizeMode="ResizeMode.Container" Bordered Hover Filterable Square Striped 
+             QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Table des produits</MudText>
+        <MudSpacer/>
+        <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search"/>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Title="ID Commande" Property="x => x.Id"/>
+        <PropertyColumn Title="Nom client" Property="x => x.Client.FullName"/>
+        <PropertyColumn Title="Total" Property="x => x.Total" Format="C"/>
+        <PropertyColumn Title="Commandée le" Property="x => x.OrderedAt" Format="dd-MM-yyyy"/>
+        <PropertyColumn Title="Status" Property="x => x.PayedText"/>
+        <TemplateColumn Filterable="false">
+            <CellTemplate>
+                <MudStack Row Justify="Justify.SpaceEvenly">
+                    <MudIconButton Icon="@Icons.Edit" OnClick="@(async() => await EditOrderAsync(context.Item))"/>
+                    <MudIconButton Icon="@Icons.Delete" OnClick="@(async() => await DeleteOrderAsync(context.Item))"/>
+                </MudStack>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    private MeoDbContext _context = null!;
+    private List<OrderModel> _orders = new();
+    private string _searchString = string.Empty;
+
+    public Func<OrderModel, bool> QuickFilter => x =>
+    {
+        if (x.Id.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.Total.ToString("C").Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.Client != null && x.Client.FullName.ToString().Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+        if (x.OrderedAt.HasValue && x.OrderedAt.Value.ToString("dd-MM-yyyy").Contains(_searchString, StringComparison.OrdinalIgnoreCase)) return true;
+
+        return false;
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+        await RefreshOrdersAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+
+    private DialogOptions _dialogOptions = new DialogOptions
+    {
+        CloseButton = true,
+        DisableBackdropClick = false,
+        CloseOnEscapeKey = true
+    };
+
+    private async Task EditOrderAsync(OrderModel order)
+    {
+        var parameters = new DialogParameters<EditOrderDialog> { { x => x.Model, order } };
+        var dialog = await DialogService.ShowAsync<EditOrderDialog>("Modification d'une commande", parameters, _dialogOptions);
+        var result = await dialog.Result;
+        if (result is { Data: OrderModel model})
+        {
+            _orders.Remove(order);
+            _orders.Add(model);
+
+            _context.BasketProducts.RemoveRange(order.Products!);
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+            
+            _context.Orders.Add(model);
+            _context.BasketProducts.AddRange(model.Products!);
+            await _context.SaveChangesAsync();
+            await RefreshOrdersAsync();
+        }
+    }
+
+    public async Task DeleteOrderAsync(OrderModel order)
+    {
+        var old = _context.Orders.FirstOrDefault(x => x.Id == order.Id);
+        if (old != null)
+        {
+            _context.Orders.Remove(old);
+            await _context.SaveChangesAsync();
+            await RefreshOrdersAsync();
+        }
+    }
+
+    private Task RefreshOrdersAsync()
+    {
+        _orders.Clear();
+        _orders.AddRange(_context.Orders.Include(x => x.Client).OrderBy(x => x.ClientID).ToList());
+        foreach (var order in _orders)
+        {
+            order.Products = _context.BasketProducts.Where(x => x.OrderID == order.Id).ToList();
+        }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+}

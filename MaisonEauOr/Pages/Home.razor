@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 @using System.Text.RegularExpressions
 
 @inject IDbContextFactory<MeoDbContext> Factory
@@ -87,8 +87,8 @@
 
     @* Description boutique avec photo réduite bar à parfum *@
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
-        <MudStack Class="py-8" Row>
-            <MudStack Class="mr-8 px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
+        <MudStack Class="py-8" Row Spacing="9" Justify="Justify.SpaceAround">
+            <MudStack Class=" px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
                 <MudText Typo="Typo.h5" Align="Align.Center">
                     <b>@Lang.Get("homeTitle"))</b>
                 </MudText>
@@ -101,9 +101,9 @@
                         @Lang.Get("homeDdiscoverButton"))
                 </MudButton>
             </MudStack>
-            <MudStack Class="flex-grow-1" Style="max-width: 1400px;">
-                <MudImage Src="images/home/bar.png" Style="width: 100%; height: auto;"/>
-            </MudStack>
+            <div class="flex-grow-1 facultatif" style="max-width: 1400px;">
+                <MudImage Src="images/home/bar.png" ObjectFit="ObjectFit.None" Style="height: 100%; width: 100%" />
+            </div>
         </MudStack>
     </MudPaper>
 </MudContainer>
@@ -130,7 +130,10 @@
         {
             await Lang.SetLanguage(match.Value);
         }
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

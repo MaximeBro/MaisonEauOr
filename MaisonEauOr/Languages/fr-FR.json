@@ -27,11 +27,23 @@
   "price_lbl": "Prix (€)",
   "tva_lbl": "TVA (%)",
   "option_name_lbl": "Nom de l'option",
-  "action_lbl": "Action",
+  "action_lbl": "Actions",
   "active_lbl": "Actif",
   "upload_files_btn": "Charger des fichiers",
   "validate_btn": "Valider",
   "delete_txt": "Supprimer",
+
+  "promo_name_lbl": "Code",
+  "promo_start_date": "Date de début",
+  "promo_end_date": "Date de fin",
+  "promo_type_articles": "Articles concernés",
+  "promo_reduction_txt": "La réduction s'appliquera à tous les produits.",
+  "promo_category": "Catégoires",
+  "promo_pourcent": "En pourcentage",
+  "promo_fixed_value": "Valeur fixe",
+  "promo_specific_product": "Produit en particulier",
+  "promo_active": "Actif",
+  "promo_validate_btn": "Valdier",
 
   "basketDrawer_cartTitle": "Panier",
   "basketDrawer_quantity": "Quantité",
@@ -56,6 +68,10 @@
   "2A_double_authorization_validate_btn": "Valider",
 
   "save_btn": "Enregistrer",
+
+  "editOrderDialog_status": "Status",
+  "editOrderDialog_total_price": "Prix total",
+
   "adminPanel_stock_title": "Panel d'administration",
   "adminPanel_stock_card_title": "Gestion des stocks",
   "adminPanel_stock_card_txt": "Créez, modifiez et supprimez tous les produits du site à l'aide d'une interface ergonomique.",
@@ -64,18 +80,37 @@
   "adminPanel_user_card_title": "Gestion des utilisateurs",
   "adminPanel_user_card_text": "Créez, modifiez et supprimez tous les comptes utilisateurs de la plateforme.",
   "adminPanel_user_card_btn": "Gestion des utilisateurs",
+  "adminPanel_management_sells": "Gestion des meilleures ventes",
+  "adminPanel_order_management": "Gestion des commandes",
+  "adminPanel_order_txt": "Gérez les commandes émises par vos clients en modifiant leur statut ainsi que leur prix total.",
+  "adminPanel_codes_management": "Gestion des codes promotionnels",
+  "adminPanel_codes_txt": "Créez, modifiez et supprimez tous les code promotionnels de la plateforme.",
+  "admin_sells_txt": "Définissez les produits à afficher en première page pour booster leurs ventes.",
 
   "clients_title": "Administration - Clients",
   "clients_subTitle": "Gestion des utilisateurs",
   "clients_addClient_btn": "Ajouter un client",
   "clients_adminstrationPanel_btn": "Panel d'administration",
   "clients_productsTable_title": "Table des produits",
-  "clients_search": "Rechercher",
+  "search": "Rechercher",
+
+  "discounts_title": "Administration - Commandes",
+  "discounts_subtitle": "Gestion des codes promotionnels",
+  "discounts_add_code": "Ajouter un code promotionnel",
+  "discounts_back_btn": "Panel d'administration",
+  "discounts_table_title": "Table des produits",
+  "discounts_promo_code": "Code promo",
+  "discounts_promo_type": "Type de promo",
+  "discounts_promo_value": "Valeur (€)",
+  "discounts_promo_percent": "Valeur(%)",
+  "discounts_promo_start": "Date début",
+  "discounts_promo_end": "Date fin",
+  "discounts_promo_active": "Actif",
 
   "administration_title": "Administration - Accueil",
   "administration_management": "Gestion des meilleures ventes",
   "administration_products": "Vous pouvez définir les trois produits qui seront affichés sur la page principale",
-  "administration_back_button": "Panel d'administration",
+  "administration_back_btn": "Panel d'administration",
   "administration_first_product": "Premier produit (à gauche)",
   "administration_second_product": "Deuxième produit (au centre)",
   "administration_third_product": "Troisième produit (à droite)",
@@ -83,14 +118,16 @@
   "products_title": "Adminstration _ Produits",
   "products_subTitle": "Table des produits",
   "products_addProduct_btn": "Ajouter un produit",
+  "products_back": "Panel d'administration",
+  "products_table_title": "Table des produits",
   "products_search": "Rechercher",
 
   "catalog_frame_title": "Maison eau d'or - Articles",
   "catalog_cosmetics_title": "Cosmétiques",
 
-  "catalog_gourmet_page_title": "Nos Parfums Évasion Gourmande",
+  "catalog_gourmets_title": "Nos Parfums Évasion Gourmande",
 
-  "catalog_hair_product_title": "Produits capillaire",
+  "catalog_hairproducts_title": "Produits capillaire",
 
   "catalog_honeys_title": "La Miellerie",
 
@@ -183,21 +220,16 @@
   "errorDevelopmentModeDescription": "Swapping to the Development environment displays detailed information about the error that occurred.",
   "errorDevelopmentModeWarning": "The Development environment shouldn't be enabled for deployed applications. It can result in displaying sensitive information from exceptions to end users. For local debugging, enable the Development environment by setting the ASPNETCORE_ENVIRONMENT environment variable to Development and restarting the app.",
 
-
-
-
   "homePageTitle": "Maison eau d'or",
 
   "homeBestSellersTitle": "Nos meilleures ventes",
   "homeAddToCart": "Ajouter au panier",
   "homeDiscoverProductsTitle": "Découvrez nos produits",
 
-
   "homeLbel": "PARFUMS",
   "homeLblSpray": "SPRAYS INTÉRIEUR",
   "homeLblCosmetic": "COSMÉTIQUES",
   "homeLblMusc": "MUSC TAHARA INTIME",
-
 
   "homeTitle": "Le Bar à parfum",
   "homeDescription": "Bienvenue dans notre bar à parfum",
@@ -323,7 +355,6 @@
   "productPageBtnBuy": "Acheter",
   "productPageBtnAddCart": "Ajouter au panier",
   "productPageShare": "Partager",
-
 
   "stocksManagmentTitle": "Maison eau d'or - Gestion des stocks",
   "stocksManagmentTitleStock": "Gestion des stocks",

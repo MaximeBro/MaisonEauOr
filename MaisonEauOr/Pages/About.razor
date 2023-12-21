@@ -11,7 +11,7 @@
 
    
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
-         <MudStack Class="py-8" Row>
+        <MudStack Class="py-8" Row>
             <MudStack Class="mr-8 px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
                 <MudText Typo="Typo.h5" Align="Align.Center"><b>@Lang.Get("aboutDescription"))</b></MudText>
                 <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200" />
@@ -29,3 +29,12 @@
         </MudStack>
     </MudPaper>
 </MudContainer>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+}

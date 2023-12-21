@@ -7,6 +7,7 @@ public class OrderModel
 {
 	public Guid Id { get; set; } = Guid.NewGuid();
 	public Guid ClientID { get; set; }
+	public UserAccount? Client { get; set; }
 	public DateTime? OrderedAt { get; set; }
 	public double ShippingPrice { get; set; }
 	public string? ShippingTown { get; set; }
@@ -17,4 +18,5 @@ public class OrderModel
 	public bool Payed { get; set; }
 
 	[NotMapped] public string ShippingPriceText => ShippingPrice <= 0 ? "GRATUIT" : ShippingPrice.ToString("C");
+	[NotMapped] public string PayedText => Payed ? "Payée" : "En attente";
 }

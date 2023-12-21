@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace MaisonEauOr.Models;
 
 public class UserAccount
@@ -16,4 +18,6 @@ public class UserAccount
     public string Password { get; set; }
     public bool DoubleAuth { get; set; } = true;
     public ICollection<BasketProductModel>? BasketProducts { get; set; }
+
+    [NotMapped] public string FullName => $"{Firstname} {Lastname}";
 }
