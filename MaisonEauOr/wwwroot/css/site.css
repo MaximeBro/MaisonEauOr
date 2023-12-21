@@ -47,7 +47,7 @@ nav.navbar a {
     transition: all 0.2s ease;
 }
 
-nav.navbar a:hover {
+nav.navbar a:hover, .dropdown-profil a:hover {
     color: #ECC291;
 }
 
@@ -93,19 +93,29 @@ nav.navbar a:hover {
 }
 
 /* Add a grey background color to dropdown links on hover */
-.dropdown-content a:hover {
+.dropdown-div .dropdown-content a:hover {
     color: #ECC291;
-}
-
-/* Show the dropdown menu on hover */
-.dropdown-div:hover .dropdown-content {
-
 }
 
 .show {
     display: flex;
     flex-direction: column;
 }
+
+.dropdown-profil .dropdown-content {
+    left: 0;
+    right: 0;
+    box-shadow: 0px 0px 10px 1px rgba(0,0,0,0.72);
+    border-radius: 10px  ;
+}
+
+.dropdown-profil .dropdown-content a{
+    border-top: rgba(0,0,0,0.2) solid 1px;
+}
+.dropdown-profil .dropdown-content a:first-child{
+    border-top: none;
+}
+
 
 /* end - Header Navbar*/
 
@@ -173,10 +183,69 @@ footer ul li {
     list-style: inside;
 }
 
+footer span{
+    font-family: 'Lora', 'Times New Roman', serif;
+}
+
 /* end - footer*/
 
 .logo {
     height: 76px;
+}
+
+/* CARROUSEL */
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    position: relative;
+}
+
+.swiper-slide img{
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    position: relative;
+}
+
+.swiper-slide span{
+    font-family: 'Lora', 'Times New Roman', serif;
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 10px;
+    font-size: 2.3vw;
+    color: white;
+    text-shadow: 1px 0 #000000, -1px 0 #000000, 0 1px #000000, 0 -1px #000000,
+    1px 1px #000000, -1px -1px #000000, 1px -1px #000000, -1px 1px #000000;
+    position: absolute;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+}
+/* end - carrousel*/
+
+h2.title {
+    font-size: 50px;
+    font-family: 'Lora', 'Times New Roman', serif;
 }
 
 @media only screen and (max-width: 768px) {
@@ -204,7 +273,7 @@ footer ul li {
 
     }
 
-    .dropdown-content {
+    .dropdown-div .dropdown-content {
         position: relative;
         box-shadow: none;
 
@@ -257,6 +326,18 @@ footer ul li {
 
     .facultatif {
         display: none;
+    }
+    
+    /* carousel */
+    .swiper-slide span{
+        font-weight: 400;
+        line-height: normal;
+        letter-spacing: 7px;
+        font-size: 7vw;
+    }
+    /* end carousel*/
+    h2.title{
+        font-size: 7vw;
     }
 }
 
