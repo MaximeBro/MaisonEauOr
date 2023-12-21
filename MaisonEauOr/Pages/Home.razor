@@ -11,7 +11,7 @@
 @inject LocalizationService Lang
 
 
-<PageTitle>@Lang.Get("loginPageTitle"))</PageTitle>
+<PageTitle>@(Lang.Get("loginPageTitle"))</PageTitle>
 
 <MudContainer Class="mt-n16 px-0" Style="overflow-x: hidden; border-top: 1px solid black;" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudStack Row>
@@ -19,7 +19,7 @@
     </MudStack>
     @if (_displayedProducts.Any())
     {
-        <MudText Class="mt-12" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">@Lang.Get("homeBestSellersTitle"))</MudText>
+        <MudText Class="mt-12" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">@(Lang.Get("homeBestSellersTitle"))</MudText>
         <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center" Style="overflow-x: hidden;">
             @foreach (var product in _displayedProducts)
             {
@@ -37,7 +37,7 @@
                             <MudText Align="Align.Center" Typo="Typo.body1">@product.Product!.Price.ToString("C")</MudText>
                             <MudStack Row Justify="Justify.Center">
                                 <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(product.Product!))">
-                                     @Lang.Get("homeAddToCart"))
+                                     @(Lang.Get("homeAddToCart"))
                                 </MudButton>
                             </MudStack>
                         </MudCardContent>
@@ -47,7 +47,7 @@
         </MudGrid>
     }
     
-    <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">@Lang.Get("homeDiscoverProductsTitle"))</MudText>
+    <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">@(Lang.Get("homeDiscoverProductsTitle"))</MudText>
 
     @* Caroussel catégories (parfums, sprays intérieur, cosmétiques) *@
     <MudCarousel Class="px-16 py-4 mb-16 mud-full-width" Style="height: 520px; background-color: #F7E1C7;" ShowArrows ShowBullets="false" EnableSwipeGesture TData="object">
@@ -55,15 +55,15 @@
             <MudStack Row Justify="Justify.SpaceEvenly">
                 <MudStack Row="false" Style="height: 100%;">
                     <MudImage Class="flex-grow-1" Src="images/home/parfums.png" Height="520"/>
-                     <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@Lang.Get("homeLbel"))</MudText>
+                     <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLbel"))</MudText>
                 </MudStack>
                 <MudStack Row="false" Style="height: 100%;">
                     <MudImage Class="flex-grow-1" Src="images/home/sprays_interieur.png" Height="520"/>
-                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">SPRAYS<br />@Lang.Get("homeLblSpray"))</MudText>
+                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">SPRAYS<br />@(Lang.Get("homeLblSpray"))</MudText>
                 </MudStack>
                 <MudStack Row="false" Style="height: 100%;">
                     <MudImage Class="flex-grow-1" Src="images/home/cosmetiques.png" Height="520"/>
-                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@Lang.Get("homeLblCosmetic"))</MudText>
+                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLblCosmetic"))</MudText>
                 </MudStack>
             </MudStack>
         </MudCarouselItem>
@@ -71,15 +71,15 @@
             <MudStack Row Justify="Justify.SpaceEvenly">
                 <MudStack Row="false" Style="height: 100%;">
                     <MudImage Class="flex-grow-1" Src="images/home/musc_tahara_intime.png" Height="520"/>
-                     <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@Lang.Get("homeLblMusc"))<br />INTIME</MudText>
+                     <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLblMusc"))<br />INTIME</MudText>
                 </MudStack>
                 <MudStack Row="false" Style="height: 100%;">
                     <MudImage Class="flex-grow-1" Src="images/home/ahlam.png" Height="520"/>
-                    <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@Lang.Get("homeLbel"))</MudText>
+                    <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLbel"))</MudText>
                 </MudStack>
                 <MudStack Row="false" Style="height: 100%;">
                     <MudImage Class="flex-grow-1" Src="images/home/cosmetiques.png" Height="520"/>
-                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@Lang.Get("homehomeLblCosmeticLbel"))</MudText>
+                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homehomeLblCosmeticLbel"))</MudText>
                 </MudStack>
             </MudStack>
         </MudCarouselItem>
@@ -90,15 +90,15 @@
         <MudStack Class="py-8" Row Spacing="9" Justify="Justify.SpaceAround">
             <MudStack Class=" px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
                 <MudText Typo="Typo.h5" Align="Align.Center">
-                    <b>@Lang.Get("homeTitle"))</b>
+                    <b>@(Lang.Get("homeTitle"))</b>
                 </MudText>
                 <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200"/>
-                <MudText Align="Align.Center">@Lang.Get("homeDescription"))</MudText>
-                    <MudText Align="Align.Center">@Lang.Get("homeWelcomeText"))</MudText>
-                    <MudText Align="Align.Center">@Lang.Get("homeOfferingText"))</MudText>
+                <MudText Align="Align.Center">@(Lang.Get("homeDescription"))</MudText>
+                    <MudText Align="Align.Center">@(Lang.Get("homeWelcomeText"))</MudText>
+                    <MudText Align="Align.Center">@(Lang.Get("homeOfferingText"))</MudText>
                 <MudSpacer/>
                 <MudButton Class="rounded-lg mx-auto mb-8" Style="background-color: #F7E1C7; color: #916043;" OnClick="@(() => NavManager.NavigateTo("/about"))" EndIcon="@Icons.KeyboardArrowRight" Variant="Variant.Filled">
-                        @Lang.Get("homeDdiscoverButton"))
+                        @(Lang.Get("homeDdiscoverButton"))
                 </MudButton>
             </MudStack>
             <div class="flex-grow-1 facultatif" style="max-width: 1400px;">
