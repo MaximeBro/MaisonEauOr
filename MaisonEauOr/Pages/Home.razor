@@ -8,7 +8,6 @@
 @inject NavigationManager NavManager
 @inject BasketService BasketService
 @inject ISnackbar Snackbar
-@inject LocalizationService Lang
 
 
 <PageTitle>@(Lang.Get("loginPageTitle"))</PageTitle>
@@ -19,7 +18,7 @@
     </MudStack>
     @if (_displayedProducts.Any())
     {
-    <h2 class="mt-12 text-center title" style="color:#ECC291!important;">@(Lang.Get("homeBestSellersTitle")) </h2 >
+    <h2 class="mt-12 text-center title" style="color:#ECC291!important;">@(Lang.Get("homeBestSellersTitle")) </h2>
         <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center" Style="overflow-x: hidden;">
             @foreach (var product in _displayedProducts)
             {
