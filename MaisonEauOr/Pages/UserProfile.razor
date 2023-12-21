@@ -1,4 +1,4 @@
-﻿@page "/profile"
+﻿@page "/profile/{orders?}"
 @attribute [Authorize(Roles = "Admin, Client")]
 
 @inject IDbContextFactory<MeoDbContext> Factory
@@ -9,7 +9,7 @@
 @inject ISnackbar Snackbar
 
 <PageTitle>Maison eau d'or - Profil</PageTitle>
-<MudTabs Class="mt-8 mx-16 mb-16" Style="min-height: 50vh;" Position="Position.Top" Outlined Rounded>
+<MudTabs Class="mt-8 mx-16 mb-16" Style="min-height: 50vh;" Position="Position.Top" Outlined Rounded @bind-ActivePanelIndex="_activePanel">
     <MudTabPanel Icon="@Icons.AccountCircle" Text="Informations personnelles">
         <MudText Class="my-4" Align="Align.Center" Typo="Typo.h4">Vos informations personnelles</MudText>
         <MudStack Row Justify="Justify.Center">
@@ -167,9 +167,13 @@
 </MudTabs>
 
 @code {
-
     [CascadingParameter(Name = "MainLayoutInstance")]
     public MainLayout Layout { get; set; } = null!;
+    
+    [Parameter]
+    public string? Orders { get; set; }
+
+    private int _activePanel = 0;
 
     private MeoDbContext _context = null!;
     private UserAccount? _currentUser;
@@ -192,6 +196,7 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
+        if (!string.IsNullOrWhiteSpace(Orders)) _activePanel = 1;
         Lang.LanguageChanged += InvokeStateChanged;
     }
 
