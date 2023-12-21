@@ -314,6 +314,7 @@
 
   "orderConfirmationPageTitle": "Maison eau d'or - Page de paiement",
   "orderConfirmationconfirmationTitle": "Confirmation de commande",
+  "orderConfirmationInformation": "Uniquement à des fin de facturation et de commande",
   "orderConfirmationcontactPanelTitle": "1. Contact",
   "orderConfirmationcontactPanelDescription": "Uniquement à des fins de facturation et de commande",
   "orderConfirmationfullNameLabel": "Nom complet",
@@ -344,8 +345,6 @@
   "orderConfirmationMessage": "Votre commande #{0} d'un montant de {1} vient d'être validée et sera prise en compte d'ici peu par nos équipes. Nous vous remercions pour vos achats chez Maison Eau D'or et espérons vous retrouver très vite.",
   "orderSummaryTitle": "Récapitulatif de votre commande",
   "orderConfirmationtotalOrderLabel": "Total commande",
-
-
 
   "productPageTitle": "Maison eau d'or - Page de produit",
   "productPageDescription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
@@ -441,5 +440,24 @@
   "aboutImageAlt": "Le Bar à parfum",
   "aboutImageDescription": "Composez votre cocktail de parfums !",
   "aboutText": "Nous sommes accueillies chaleureusement dans la boutique Ydentik qui se situe au 123 Avenue René Coté au Havre. Leur concept est de créer des parfums uniques et personnalisés. Je trouve l’idée géniale.",
-  "aboutText2": "Le décor est chic et épuré dans les couleurs blanches, les bouteilles de parfum remplissent un côté du mur comme dans les bars et de l’autre nous découvrons les senteurs des mélanges. Le plus souvent, nous le savons bien, dans un parfum, c’est la marque et le packaging que nous payons, ici, il n’est plus question de cela. L’équipe est accueillante et aux petits soins. C’est à vous de composer votre parfum grâce à leurs conseils. Une fois vos ingrédients choisis, ils préparent votre cocktail de parfum unique."
+  "aboutText2": "Le décor est chic et épuré dans les couleurs blanches, les bouteilles de parfum remplissent un côté du mur comme dans les bars et de l’autre nous découvrons les senteurs des mélanges. Le plus souvent, nous le savons bien, dans un parfum, c’est la marque et le packaging que nous payons, ici, il n’est plus question de cela. L’équipe est accueillante et aux petits soins. C’est à vous de composer votre parfum grâce à leurs conseils. Une fois vos ingrédients choisis, ils préparent votre cocktail de parfum unique.",
+
+  "footer_securised": "Paiement sécurisé",
+  "footer_payment_type": "Paypal, CB, Apple Pay",
+  "footer_delivery_countries": "Livraison en",
+  "footer_delivery_coutrines2": "Europe",
+  "footer_follow_us": "Nous suivre",
+  "footer_menu": "Menu",
+  "footer_perfumes": "Parfums",
+  "footer_houses": "Maison",
+  "footer_musks": "Musc Tahara Intime",
+  "footer_cosmetics": "Cosmétiques",
+  "footer_mists": "Brumes corps & cheveux",
+  "footer_hairproducts": "Produits capillaire",
+  "footer_needhelp": "Besoin d'aide",
+  "footer_about": "À propos",
+  "footer_contact": "Contactez-nous",
+  "footer_privacy_policy": "Politique de confidentialité",
+  "footer_cookie_policy": "Politique de cookies",
+  "footer_terms_condition": "Conditions générales de vente"
 }
