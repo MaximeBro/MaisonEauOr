@@ -5,7 +5,7 @@
 @inject AuthenticationStateProvider AuthStateProvider
 @inject LocalizationService Lang
 @inject IDialogService DialogService
-@inject NavigationManager NavManager
+@inject NavigationManager NavManager    
 @inject ISnackbar Snackbar
 @inject LocalizationService Lang
 
@@ -13,7 +13,7 @@
 <MudTabs Class="mt-8 mx-16 mb-16" Style="min-height: 50vh;" Position="Position.Top" Outlined Rounded @bind-ActivePanelIndex="_activePanel">
     <MudTabPanel Icon="@Icons.AccountCircle" Text="Informations personnelles">
          <MudText Class="my-4" Align="Align.Center" Typo="Typo.h4">@(Lang.Get("userProfilePersonalInfoTitle2"))</MudText>
-        <div class="profil">
+        <MudStack Row Justify="Justify.Center">
             <MudPaper Class="py-6 px-12" Elevation="1" Outlined>
                 <MudText Class="my-3 ml-3" Typo="Typo.h6" Align="Align.Center">@(Lang.Get("userProfileGeneralInfoSectionTitle"))</MudText>
                 <MudStack Row Justify="Justify.SpaceBetween">
@@ -74,7 +74,7 @@
                      <MudButton StartIcon="@Icons.CheckCircle" Color="Color.Success" OnClick="@SaveDoubleAuth">@(Lang.Get("save_btn"))</MudButton>
                 </MudStack>
             </MudPaper>
-        </div>
+        </MudStack>
         <MudStack Class="mt-6 mb-8" Row Justify="Justify.Center">
             <MudPaper Class="py-2 px-12" Elevation="1" Outlined>
                 <MudButton Color="Color.Info" OnClick="@LogoutUserAsync">@(Lang.Get("userProfileLogoutButton"))</MudButton>
@@ -170,7 +170,7 @@
 @code {
     [CascadingParameter(Name = "MainLayoutInstance")]
     public MainLayout Layout { get; set; } = null!;
-    
+
     [Parameter]
     public string? Orders { get; set; }
 
@@ -192,13 +192,17 @@
     private bool _isConfirmShown;
 
     private bool _doubleAuth;
-    private string DoubleAuthText => _doubleAuth ? "Authentification à deux facteurs activée (par mail)" : "Authentification à deux facteurs désactivée";
+    private string _authentificationActivated = string.Empty;
+    private string _authentificationDesactivated = string.Empty;
+    private string DoubleAuthText => _doubleAuth ? _authentificationActivated : _authentificationDesactivated;
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
         if (!string.IsNullOrWhiteSpace(Orders)) _activePanel = 1;
         Lang.LanguageChanged += InvokeStateChanged;
+        _authentificationActivated = Lang.Get("userProfileActive");
+        _authentificationDesactivated = Lang.Get("userProfileDesactivate");
     }
 
     private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);

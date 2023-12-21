@@ -429,6 +429,8 @@
   "userProfileNoOrder": "You don't have an order yet...",
   "userProfileDiscoverProduct": "Discover our products",
   "userProfileErrorRedirection": "An error has occurred. Redirection in progress...",
+  "userProfileActive": "Two-factor authentication enabled (via email)",
+  "userProfileDesactivate": "Two-factor authentication disabled",
 
   "aboutPageTitle": "Maison eau d'or - About",
   "aboutTitle": "About",

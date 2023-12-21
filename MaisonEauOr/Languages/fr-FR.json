@@ -432,6 +432,8 @@
   "userProfileNoOrder": "Vous n'avez pas encore de commande...",
   "userProfileDiscoverProduct": "Découvrez nos produits",
   "userProfileErrorRedirection": "Une erreur s'est produite. Redirection en cours...",
+  "userProfileActive": "Authentification à deux facteurs activée (par mail)",
+  "userProfileDesactivate": "Authentification à deux facteurs désactivée",
 
 
   "aboutPageTitle": "Maison eau d'or - À propos",
