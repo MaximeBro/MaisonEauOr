@@ -74,9 +74,9 @@
                             </MudItem>
                             <MudItem xs="12">
                                 <MudStack Row Justify="Justify.FlexStart" AlignItems="AlignItems.Center">
-                                    <MudTextField Class="mt-4" T="string" @bind-Value="_discount" Label="Code Promo" Variant="Variant.Outlined" Clearable
+                                    <MudTextField Class="mt-4" T="string" @bind-Value="_discount" Label="@(Lang.Get("discounts_promo_code"))" Variant="Variant.Outlined" Clearable
                                                   Adornment="Adornment.Start" AdornmentIcon="@Icons.Discount" OnClearButtonClick="@ClearDiscount"/>
-                                    <MudButton Class="px-10" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ValidateDiscount">Valider</MudButton>
+                                         <MudButton Class="px-10" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ValidateDiscount">@(Lang.Get("validate_btn"))</MudButton>
                                 </MudStack>
                             </MudItem>
                         </MudGrid>
