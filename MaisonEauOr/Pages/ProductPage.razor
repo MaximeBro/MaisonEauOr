@@ -36,7 +36,7 @@
                 <MudStack Class="mb-4" Row>
                     @if (_product.Options.Any())
                     {
-                        <MudSelect T="Option?" @bind-Value="_selectedOption" Label=@Lang.Get("productPageLblOption")) Style="border-radius: 0!important;" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelect T="Option?" @bind-Value="_selectedOption" Label=@(Lang.Get("productPageLblOption")) Style="border-radius: 0!important;" Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
                             @foreach (var option in _product.Options)
                             {
                                 <MudSelectItem Value="@option">@option.Name</MudSelectItem>
@@ -47,7 +47,7 @@
                     {
                         <MudSelect T="string" Text="--" Variant="Variant.Outlined" Style="border-radius: 0!important;" Label="OPTION" Disabled/>
                     }
-                    <MudNumericField T="int" Class="flex-grow-0" @bind-Value="_selectedAmount" Min="1" Step="1" Label=@Lang.Get("productPageLblQt")) Variant="Variant.Outlined" Style="border-radius: 0!important;"/>
+                    <MudNumericField T="int" Class="flex-grow-0" @bind-Value="_selectedAmount" Min="1" Step="1" Label=@(Lang.Get("productPageLblQt")) Variant="Variant.Outlined" Style="border-radius: 0!important;"/>
                 </MudStack>
                 <div>
                     <MudButton Class="rounded-0 my-2" Style="@($"background-color: {Colors.Grey.Darken4}; color: #fff;")" FullWidth Variant="Variant.Filled" OnClick="@(async() => await ValidateOrderAsync())">@(Lang.Get("productPageBtnBuy"))</MudButton>
