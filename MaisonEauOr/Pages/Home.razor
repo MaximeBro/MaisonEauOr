@@ -1,4 +1,4 @@
-@page "/"
+﻿@page "/"
 @using System.Text.RegularExpressions
 
 @inject IDbContextFactory<MeoDbContext> Factory
@@ -8,10 +8,8 @@
 @inject NavigationManager NavManager
 @inject BasketService BasketService
 @inject ISnackbar Snackbar
-@inject LocalizationService Lang
 
-
-<PageTitle>@(Lang.Get("loginPageTitle"))</PageTitle>
+<PageTitle>Maison eau d'or</PageTitle>
 
 <MudContainer Class="mt-n16 px-0" Style="overflow-x: hidden; border-top: 1px solid black;" MaxWidth="MaxWidth.ExtraExtraLarge">
     <MudStack Row>
@@ -19,7 +17,7 @@
     </MudStack>
     @if (_displayedProducts.Any())
     {
-        <MudText Class="mt-12" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">@(Lang.Get("homeBestSellersTitle"))</MudText>
+        <h2 Class="mt-12 text-center title" Style="color: #ECC291!important;">Nos meilleures ventes</h2>
         <MudGrid Class="my-5" Spacing="5" Justify="Justify.Center" Style="overflow-x: hidden;">
             @foreach (var product in _displayedProducts)
             {
@@ -37,7 +35,7 @@
                             <MudText Align="Align.Center" Typo="Typo.body1">@product.Product!.Price.ToString("C")</MudText>
                             <MudStack Row Justify="Justify.Center">
                                 <MudButton Class="my-2 px-16" Variant="Variant.Outlined" Style="border-radius: 0!important;" Color="Color.Dark" OnClick="@(async() => await AddToBasket(product.Product!))">
-                                     @(Lang.Get("homeAddToCart"))
+                                    Ajouter au panier
                                 </MudButton>
                             </MudStack>
                         </MudCardContent>
@@ -47,58 +45,62 @@
         </MudGrid>
     }
     
-    <MudText Class="my-8" Style="color: #ECC291!important;" Typo="Typo.h2" Align="Align.Center">@(Lang.Get("homeDiscoverProductsTitle"))</MudText>
+    <h2 Class="my-8 text-center title" Style="color: #ECC291!important;">Découvrez nos produits</h2>
 
     @* Caroussel catégories (parfums, sprays intérieur, cosmétiques) *@
-    <MudCarousel Class="px-16 py-4 mb-16 mud-full-width" Style="height: 520px; background-color: #F7E1C7;" ShowArrows ShowBullets="false" EnableSwipeGesture TData="object">
-        <MudCarouselItem Transition="Transition.Slide">
-            <MudStack Row Justify="Justify.SpaceEvenly">
-                <MudStack Row="false" Style="height: 100%;">
-                    <MudImage Class="flex-grow-1" Src="images/home/parfums.png" Height="520"/>
-                     <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLbel"))</MudText>
-                </MudStack>
-                <MudStack Row="false" Style="height: 100%;">
-                    <MudImage Class="flex-grow-1" Src="images/home/sprays_interieur.png" Height="520"/>
-                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">SPRAYS<br />@(Lang.Get("homeLblSpray"))</MudText>
-                </MudStack>
-                <MudStack Row="false" Style="height: 100%;">
-                    <MudImage Class="flex-grow-1" Src="images/home/cosmetiques.png" Height="520"/>
-                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLblCosmetic"))</MudText>
-                </MudStack>
-            </MudStack>
-        </MudCarouselItem>
-        <MudCarouselItem Transition="Transition.Slide">
-            <MudStack Row Justify="Justify.SpaceEvenly">
-                <MudStack Row="false" Style="height: 100%;">
-                    <MudImage Class="flex-grow-1" Src="images/home/musc_tahara_intime.png" Height="520"/>
-                     <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLblMusc"))<br />INTIME</MudText>
-                </MudStack>
-                <MudStack Row="false" Style="height: 100%;">
-                    <MudImage Class="flex-grow-1" Src="images/home/ahlam.png" Height="520"/>
-                    <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homeLbel"))</MudText>
-                </MudStack>
-                <MudStack Row="false" Style="height: 100%;">
-                    <MudImage Class="flex-grow-1" Src="images/home/cosmetiques.png" Height="520"/>
-                        <MudText Class="absolute align-self-center" Style="bottom: 15px; color: #fff;" Align="Align.Center" Typo="Typo.h3">@(Lang.Get("homehomeLblCosmeticLbel"))</MudText>
-                </MudStack>
-            </MudStack>
-        </MudCarouselItem>
-    </MudCarousel>
+    
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            <!-- Vos images vont ici -->
+            <a class="swiper-slide" href="/catalog-perfumes"><img src="images/home/parfums.png" alt="Parfum"/><span>Parfum</span></a>
+            <a class="swiper-slide" href="/catalog-mists"><img src="images/home/sprays_interieur.png" alt="Spray"/><span>Spray</span></a>
+            <a class="swiper-slide" href="/catalog-cosmetics"><img src="images/home/cosmetiques.png" alt="Cosmetiques"/><span>Cosmétiques</span></a>
+            <a class="swiper-slide" href="/catalog-musks"><img src="images/home/musc_tahara_intime.png" alt="Musc Tahara"/><span>Musc Tahara</span></a>
+            <a class="swiper-slide" href="catalog-cosmetics"><img src="images/home/ahlam.png" alt="Cosmetiques"/><span>Cosmétiques</span></a>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            breakpoints: {
+                768: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                }
+            },
+            loop: true,
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            navigation: {
+                nextEl: ".swiper-button-next",
+                prevEl: ".swiper-button-prev",
+            },
+        });
+      </script>
 
     @* Description boutique avec photo réduite bar à parfum *@
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
         <MudStack Class="py-8" Row Spacing="9" Justify="Justify.SpaceAround">
             <MudStack Class=" px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
                 <MudText Typo="Typo.h5" Align="Align.Center">
-                    <b>@(Lang.Get("homeTitle"))</b>
+                    <b>Le Bar à parfum</b>
                 </MudText>
                 <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200"/>
-                <MudText Align="Align.Center">@(Lang.Get("homeDescription"))</MudText>
-                    <MudText Align="Align.Center">@(Lang.Get("homeWelcomeText"))</MudText>
-                    <MudText Align="Align.Center">@(Lang.Get("homeOfferingText"))</MudText>
+                <MudText Align="Align.Center">Bienvenue dans notre bar à parfum</MudText>
+                <MudText Align="Align.Center">Découvrez le concept original de maison eau d'or situé au 123 Avenue René Coté au Havre</MudText>
+                <MudText Align="Align.Center">Nous proposons des collections uniques de parfums et de sprays d'intérieur</MudText>
                 <MudSpacer/>
                 <MudButton Class="rounded-lg mx-auto mb-8" Style="background-color: #F7E1C7; color: #916043;" OnClick="@(() => NavManager.NavigateTo("/about"))" EndIcon="@Icons.KeyboardArrowRight" Variant="Variant.Filled">
-                        @(Lang.Get("homeDdiscoverButton"))
+                    Découvrir
                 </MudButton>
             </MudStack>
             <div class="flex-grow-1 facultatif" style="max-width: 1400px;">
@@ -130,10 +132,7 @@
         {
             await Lang.SetLanguage(match.Value);
         }
-        Lang.LanguageChanged += InvokeStateChanged;
     }
-
-    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
