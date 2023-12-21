@@ -1,37 +1,38 @@
 @page "/admin-discounts"
 @attribute [Authorize(Roles = "Admin")]
+@inject LocalizationService Lang
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject LocalizationService Lang
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
 
-<PageTitle>Administration - Commandes</PageTitle>
+<PageTitle>@(Lang.Get("discounts_title"))</PageTitle>
 
-<MudText Class="ml-4" Typo="Typo.h3">Gestion des codes promotionnels</MudText>
+<MudText Class="ml-4" Typo="Typo.h3">@(Lang.Get("discounts_subtitle"))</MudText>
 <MudStack Row>
-    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@(async() => await AddDiscountAsync())">Ajouter un code promotionnel</MudButton>
+    <MudButton Class="mx-8 my-2" Variant="Variant.Filled" Color="Color.Success" OnClick="@(async() => await AddDiscountAsync())">@(Lang.Get("discounts_add_code"))</MudButton>
     <MudSpacer/>
     <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
-        Panel d'administration
+        @(Lang.Get("discounts_back_btn"))
     </MudButton>
 </MudStack>
 
 <MudDataGrid T="DiscountModel" Class="mx-8 mb-16" Items="@_discounts" ColumnResizeMode="ResizeMode.Container" Bordered Hover Filterable Square Striped 
              QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Table des produits</MudText>
+         <MudText Typo="Typo.h6">@(Lang.Get("discounts_table_title"))</MudText>
         <MudSpacer/>
-        <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search"/>
+         <MudTextField T="string" @bind-Value="_searchString" Placeholder="@(Lang.Get("discounts_title"))" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search" />
     </ToolBarContent>
     <Columns>
-        <PropertyColumn Title="Code promo" Property="x => x.CodeName"/>
-        <PropertyColumn Title="Type de promo" Property="x => x.Type.Humanize()"/>
-        <PropertyColumn Title="Valeur" Property="x => x.Discount" Format="C"/>
-        <PropertyColumn Title="Valeur" Property="x => x.DiscountPercent" Format="P2"/>
-        <PropertyColumn Title="Date début" Property="x => x.StartsAt" Format="dd-MM-yyyy"/>
-        <PropertyColumn Title="Date fin" Property="x => x.EndsAt" Format="dd-MM-yyyy"/>
-        <PropertyColumn Title="Actif" Property="x => x.IsActive"/>
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_code"))" Property="x => x.CodeName" />
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_type"))" Property="x => x.Type.Humanize()" />
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_value"))" Property="x => x.Discount" Format="C" />
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_percent"))" Property="x => x.DiscountPercent" Format="P2" />
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_start"))" Property="x => x.StartsAt" Format="dd-MM-yyyy" />
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_end"))" Property="x => x.EndsAt" Format="dd-MM-yyyy" />
+         <PropertyColumn Title="@(Lang.Get("discounts_promo_active"))" Property="x => x.IsActive" />
         <TemplateColumn Filterable="false">
             <CellTemplate>
                 <MudStack Row Justify="Justify.SpaceEvenly">

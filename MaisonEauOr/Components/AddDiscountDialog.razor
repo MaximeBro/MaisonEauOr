@@ -1,16 +1,17 @@
 @inject IDbContextFactory<MeoDbContext> Factory
+@inject LocalizationService Lang
 
 <MudDialog>
     <DialogContent>
-        <MudTextField T="string" @bind-Value="_codeName" Label="Code" />
+        <MudTextField T="string" @bind-Value="_codeName" Label="@(Lang.Get("promo_name_lbl"))" />
         <MudCheckBox T="bool" @bind-Checked="_isPercent" Label="@_isPercentText" />
         <MudNumericField T="double" @bind-Value="_discount" Min="0" Label="@_isPercentText" />
         <MudStack Row>
-            <MudDatePicker Clearable @bind-Date="_startsAt" Label="Date de début" DateFormat="dd-MM-yyyy" />
-            <MudDatePicker Clearable @bind-Date="_endsAt" Label="Date de fin" DateFormat="dd-MM-yyyy" />
+            <MudDatePicker Clearable @bind-Date="_startsAt" Label="@(Lang.Get("promo_start_date"))" DateFormat="dd-MM-yyyy" />
+             <MudDatePicker Clearable @bind-Date="_endsAt" Label="@(Lang.Get("promo_end_date"))" DateFormat="dd-MM-yyyy" />
         </MudStack>
         <MudPaper Class="mt-4 pa-4" Elevation="0" Outlined>
-            <MudSelect T="DiscountType" @bind-Value="_type" Label="Articles concernés" AnchorOrigin="Origin.BottomCenter">
+            <MudSelect T="DiscountType" @bind-Value="_type" Label="@(Lang.Get("promo_type_articles"))" AnchorOrigin="Origin.BottomCenter">
                 @foreach (var type in Enum.GetValues<DiscountType>())
                 {
                     <MudSelectItem Value="@type">@type.Humanize()</MudSelectItem>
@@ -20,12 +21,12 @@
             {
                 case DiscountType.All:
                 {
-                    <MudText Class="mt-2" Align="Align.Center">La réduction s'appliquera à tous les produits.</MudText>
+                        <MudText Class="mt-2" Align="Align.Center">@(Lang.Get("promo_reduction_txt"))</MudText>
                     break;
                 }
                 case DiscountType.Category:
                 {
-                    <MudSelect T="string" @bind-SelectedValues="_selectedCategories" Label="Catégories" MultiSelection AnchorOrigin="Origin.BottomCenter">
+                        <MudSelect T="string" @bind-SelectedValues="_selectedCategories" Label="@(Lang.Get("promo_category"))" MultiSelection AnchorOrigin="Origin.BottomCenter">
                         @foreach (var categ in Enum.GetValues<ProductCategory>())
                         {
                             <MudSelectItem Value="@categ.ToString()">@categ.Humanize()</MudSelectItem>
@@ -35,7 +36,7 @@
                 }
                 case DiscountType.Product:
                 {
-                    <MudSelect T="ProductModel?" ValueChanged="@ValueChanged" Value="_selectedProduct" Label="Produit en particulier" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelect T="ProductModel?" ValueChanged="@ValueChanged" Value="_selectedProduct" Label="@(Lang.Get("promo_specific_product"))" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var product in _models)
                         {
                             <MudSelectItem Value="@product">@product.Name</MudSelectItem>
@@ -45,10 +46,10 @@
                 }
             }
         </MudPaper>
-        <MudCheckBox Class="mt-4" T="bool" @bind-Checked="_isActive" Label="Actif"/>
+        <MudCheckBox Class="mt-4" T="bool" @bind-Checked="_isActive" Label="@(Lang.Get("promo_active"))" />
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="@Submit" Variant="Variant.Filled" Color="Color.Success">Valider</MudButton>
+        <MudButton OnClick="@Submit" Variant="Variant.Filled" Color="Color.Success">@(Lang.Get("promo_validate_btn"))</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -57,7 +58,7 @@
     public MudDialogInstance MudDialog { get; set; } = null!;
 
     private MeoDbContext _context = null!;
-    
+
     private string _codeName = string.Empty;
     private bool _isPercent;
     private double _discount;
@@ -69,12 +70,16 @@
     public bool _isActive;
 
     private List<ProductModel> _models = new();
-    private string _isPercentText => _isPercent ? "En pourcentage" : "Valeur fixe";
+    private string _percentText = string.Empty;
+    private string _fixedText = string.Empty;
+    private string _isPercentText => _isPercent ? _percentText : _fixedText;
 
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
         _models = _context.Products.AsNoTracking().ToList();
+        _percentText = Lang.Get("promo_pourcent");
+        _fixedText = Lang.Get("promo_fixed_value");
     }
 
     private void Submit()
