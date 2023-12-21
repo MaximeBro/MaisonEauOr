@@ -31,7 +31,7 @@
         
         <MudItem Class="px-6" xs="12" sm="12" md="8">
             <MudExpansionPanel Text=@(Lang.Get("orderConfirmationcontactPanelTitle")) @bind-IsExpanded="_firstExpand">
-                <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Default};")">Uniquement � des fin de facturation et de commande</MudText>
+                <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Default};")">@(Lang.Get("orderConfirmationInformation"))</MudText>
                 <MudTextField T="string" InputType="InputType.Text" Label=@(Lang.Get("orderConfirmationfullNameLabel")) Variant="Variant.Outlined"></MudTextField>
                 <MudTextField T="string" InputType="InputType.Email" Label=@(Lang.Get("orderConfirmationemailLabel")) Variant="Variant.Outlined"></MudTextField>
                 <MudTextField T="string" InputType="InputType.Telephone" Label=@(Lang.Get("orderConfirmationphoneNumberLabel")) Variant="Variant.Outlined"></MudTextField>
@@ -74,9 +74,9 @@
                             </MudItem>
                             <MudItem xs="12">
                                 <MudStack Row Justify="Justify.FlexStart" AlignItems="AlignItems.Center">
-                                    <MudTextField Class="mt-4" T="string" @bind-Value="_discount" Label="Code Promo" Variant="Variant.Outlined" Clearable
+                                    <MudTextField Class="mt-4" T="string" @bind-Value="_discount" Label="@(Lang.Get("discounts_promo_code"))" Variant="Variant.Outlined" Clearable
                                                   Adornment="Adornment.Start" AdornmentIcon="@Icons.Discount" OnClearButtonClick="@ClearDiscount"/>
-                                    <MudButton Class="px-10" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ValidateDiscount">Valider</MudButton>
+                                         <MudButton Class="px-10" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ValidateDiscount">@(Lang.Get("validate_btn"))</MudButton>
                                 </MudStack>
                             </MudItem>
                         </MudGrid>
