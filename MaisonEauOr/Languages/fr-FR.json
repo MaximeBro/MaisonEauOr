@@ -87,6 +87,12 @@
   "adminPanel_codes_txt": "Créez, modifiez et supprimez tous les code promotionnels de la plateforme.",
   "admin_sells_txt": "Définissez les produits à afficher en première page pour booster leurs ventes.",
 
+  "ordersAdminIdOrder": "ID Commande",
+  "ordersAdminClientName": "Nom client",
+  "ordersAdminTotal": "Total",
+  "ordersAdminStatus": "Status",
+  "ordersAdminOrder": "Commandée le",
+
   "clients_title": "Administration - Clients",
   "clients_subTitle": "Gestion des utilisateurs",
   "clients_addClient_btn": "Ajouter un client",

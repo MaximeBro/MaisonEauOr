@@ -5,30 +5,31 @@
 @inject LocalizationService Lang
 @inject IDialogService DialogService
 @inject NavigationManager NavManager
+@inject LocalizationService Lang
 
-<PageTitle>Administration - Commandes</PageTitle>
+<PageTitle>@(Lang.Get("discounts_title"))</PageTitle>
 
-<MudText Class="ml-4" Typo="Typo.h3">Gestion des commandes</MudText>
+<MudText Class="ml-4" Typo="Typo.h3">@(Lang.Get("adminPanel_order_management"))</MudText>
 <MudStack Row>
     <MudSpacer/>
     <MudButton Class="mr-8 my-2" StartIcon="@Icons.ArrowBack" Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => NavManager.NavigateTo("/admin-panel"))">
-        Panel d'administration
+        @(Lang.Get("adminPanel_stock_title"))
     </MudButton>
 </MudStack>
 
 <MudDataGrid T="OrderModel" Class="mx-8 mb-16" Items="@_orders" ColumnResizeMode="ResizeMode.Container" Bordered Hover Filterable Square Striped 
              QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Table des produits</MudText>
+         <MudText Typo="Typo.h6">@(Lang.Get("discounts_table_title"))</MudText>
         <MudSpacer/>
         <MudTextField T="string" @bind-Value="_searchString" Placeholder="Rechercher" Adornment="Adornment.Start" AdornmentIcon="@Icons.Search"/>
     </ToolBarContent>
     <Columns>
-        <PropertyColumn Title="ID Commande" Property="x => x.Id"/>
-        <PropertyColumn Title="Nom client" Property="x => x.Client.FullName"/>
-        <PropertyColumn Title="Total" Property="x => x.Total" Format="C"/>
-        <PropertyColumn Title="Commandée le" Property="x => x.OrderedAt" Format="dd-MM-yyyy"/>
-        <PropertyColumn Title="Status" Property="x => x.PayedText"/>
+         <PropertyColumn Title=@(Lang.Get("ordersAdminIdOrder")) Property="x => x.Id" />
+         <PropertyColumn Title=@(Lang.Get("ordersAdminClientName")) Property="x => x.Client.FullName" />
+         <PropertyColumn Title=@(Lang.Get("ordersAdminTotal")) Property="x => x.Total" Format="C" />
+         <PropertyColumn Title=@(Lang.Get("ordersAdminOrder")) Property="x => x.OrderedAt" Format="dd-MM-yyyy" />
+         <PropertyColumn Title=@(Lang.Get("ordersAdminStatus")) Property="x => x.PayedText" />
         <TemplateColumn Filterable="false">
             <CellTemplate>
                 <MudStack Row Justify="Justify.SpaceEvenly">

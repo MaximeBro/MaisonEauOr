@@ -87,6 +87,12 @@
   "adminPanel_codes_txt": "Create, modify, and delete all promotional codes on the platform.",
   "admin_sells_txt": "Define the products to display on the front page to boost their sales.",
 
+  "ordersAdminIdOrder": "Order ID",
+  "ordersAdminClientName": "Customer Name",
+  "ordersAdminTotal": "Total",
+  "ordersAdminStatus": "Status",
+  "ordersAdminOrder": "Ordered on",
+
   "clients_title": "Administration - Clients",
   "clients_subTitle": "User Management",
   "clients_addClient_btn": "Add a client",
