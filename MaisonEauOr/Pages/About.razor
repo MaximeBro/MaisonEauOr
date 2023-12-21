@@ -1,23 +1,24 @@
 @page "/about"
+@inject LocalizationService Lang
 
-<PageTitle>Maison eau d'or - À propos</PageTitle>
+
+
+<PageTitle>@(Lang.Get("aboutPageTitle"))</PageTitle>
 
 
 <MudContainer>
-    <MudText Typo="Typo.h3">À propos</MudText>
+        <MudText Typo="Typo.h3">@(Lang.Get("aboutTitle"))</MudText>
 
    
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
-         <MudStack Class="py-8" Row>
+        <MudStack Class="py-8" Row>
             <MudStack Class="mr-8 px-10 py-6" Row="false" Style="background-color: #fff;" Justify="Justify.Center">
-                <MudText Typo="Typo.h5" Align="Align.Center"><b>Le Bar à parfum</b></MudText>
+                <MudText Typo="Typo.h5" Align="Align.Center"><b>@(Lang.Get("aboutDescription"))</b></MudText>
                 <MudImage Class="mx-auto my-n6" Src="favicon.png" Width="200" />
-                <MudText Align="Align.Center">Composez votre cocktail de parfums !</MudText>
-                <MudText Align="Align.Center">Nous sommes accueillies chaleureusement dans la boutique Ydentik qui se situe au 123 Avenue René Coté au Havre. Leur concept est de créer des parfums uniques et personnalisés. Je trouve l’idée géniale.</MudText>
+                <MudText Align="Align.Center">@(Lang.Get("aboutImageDescription"))</MudText>
+                    <MudText Align="Align.Center">@(Lang.Get("aboutText"))</MudText>
                 <MudText Align="Align.Center">
-                    Le décor est chic et épuré dans les couleurs blanches, les bouteilles de parfum remplissent un côté du mur comme dans les bars et de l’autre nous découvrons les senteurs des mélanges.
-                    Le plus souvent, nous le savons bien, dans un parfum, c’est la marque et le packaging que nous payons, ici, il n’est plus question de cela.
-                    L’équipe est accueillante et aux petits soins. C’est à vous de composer votre parfum grâce à leurs conseils. Une fois vos ingrédients choisis, ils préparent votre cocktail de parfum unique.
+                        @(Lang.Get("aboutText2"))
                 </MudText>
                 <MudSpacer />
                 
@@ -28,3 +29,12 @@
         </MudStack>
     </MudPaper>
 </MudContainer>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+}

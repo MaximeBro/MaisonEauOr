@@ -32,7 +32,26 @@
                     </Authorized>
                 </AuthorizeView>
                 <MudIconButton Icon="@Icons.Search" Color="Color.Dark"/>
-                <MudIconButton Icon="@Icons.Person" Color="Color.Dark" OnClick="@CheckUserSession"/>
+                <MudMenu PopoverClass="rounded-lg" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter" Icon="@Icons.Person" Color="Color.Dark" Variant="Variant.Text">
+                    @if (_currentUser != null && _currentUser.Role != UserRole.Guest)
+                    {
+                        <MudStack Class="px-8 py-2" Row="false" Justify="Justify.Center">
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/profile" Underline="Underline.Hover">Profil</MudLink>
+                            <MudDivider DividerType="DividerType.Middle" Style="border-color: black!important;"/>
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/profile/orders" Underline="Underline.Hover">Vos commandes</MudLink>
+                            <MudDivider DividerType="DividerType.FullWidth" Style="border-color: black!important; border-width: thin!important;"/>
+                            <MudButton Class="mx-auto" Color="Color.Secondary" Variant="Variant.Text" OnClick="@(async() => await LogoutUserAsync())">Déconnexion</MudButton>
+                        </MudStack>
+                    }
+                    else
+                    {
+                        <MudStack Class="px-8 py-4" Row="false" Justify="Justify.Center">
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/signin" Underline="Underline.Hover"><b>Se connecter</b></MudLink>
+                            <MudDivider DividerType="DividerType.Middle" Style="border-color: black!important;"/>
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/signup" Underline="Underline.Hover">S'inscrire</MudLink>
+                        </MudStack>
+                    }
+                </MudMenu>
                 @if (_currentUser != null && _basketCount > 0)
                 {
                     <MudBadge Content="@_basketCount" Overlap Color="Color.Dark" Bordered Origin="Origin.TopRight">
@@ -57,11 +76,11 @@
                 <a href="/catalog-gourmets">Les Evasions Gourmandes</a>
             </div>
         </div>
-        <a href="/catalog-homes">Maison</a>
-        <a href="/catalog-musks">Muscs Tahara intime</a>
-        <a href="/catalog-cosmetics">Cosmétiques</a>
-        <a href="/catalog-mists">Brumes</a>
-        <a href="/catalog-hairproducts">Produits capillaire</a>
+        <a href="/catalog-homes" onclick="@(() => CloseAll())">Maison</a>
+        <a href="/catalog-musks" onclick="@(() => CloseAll())">Muscs Tahara intime</a>
+        <a href="/catalog-cosmetics" onclick="@(() => CloseAll())">Cosmétiques</a>
+        <a href="/catalog-mists" onclick="@(() => CloseAll())">Brumes</a>
+        <a href="/catalog-hairproducts" onclick="@(() => CloseAll())">Produits capillaire</a>
     </nav>
     <CascadingValue Name="MainHeaderInstance" Value="@this">
          <BasketDrawer @ref="_drawer"/>
@@ -70,6 +89,9 @@
 
 @code
 {
+    [CascadingParameter(Name = "MainLayoutInstance")]
+    public MainLayout MainLayout { get; set; } = null!;
+    
     private UserSession? _currentUser;
     private BasketDrawer _drawer = new();
     private Language SelectedLanguage { get; set; }
@@ -112,17 +134,13 @@
             _drawer.CurrentUser = _currentUser;
         }
     }
-
-    private void CheckUserSession()
+    
+    private async Task LogoutUserAsync()
     {
-        if (_currentUser != null && _currentUser.Role != UserRole.Guest)
-        {
-            NavManager.NavigateTo("/profile");
-        }
-        else
-        {
-            NavManager.NavigateTo("/signin");
-        }
+        var authService = (AuthenticationService)AuthStateProvider;
+        await authService.UpdateAuthenticationState(null);
+        await RefreshUserSession();
+        NavManager.NavigateTo("/");
     }
 
     private async Task ToggleDrawerAsync(bool toggle = true)
@@ -166,6 +184,14 @@
         for (int i = 0; i < _isOpen.Length; i++)
         {
             _isOpen[i] = (i == num && !_isOpen[i]);
+        }
+    }
+
+    private void CloseAll()
+    {
+        for (int i = 0; i < _isOpen.Length; i++)
+        {
+            _isOpen[i] = false;
         }
     }
 

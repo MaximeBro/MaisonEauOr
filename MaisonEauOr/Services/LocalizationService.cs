@@ -8,6 +8,8 @@ public class LocalizationService
     public string[] SupportedLanguages { get; set; } = { "fr-FR", "en-US" };
     public string SelectedLanguage { get; set; }
     private Dictionary<string, string> _translations = new();
+    public delegate Task LanguageChangedEventHandler(string language);
+    public event LanguageChangedEventHandler LanguageChanged = null!;
     
     public LocalizationService()
     {
@@ -20,6 +22,7 @@ public class LocalizationService
         var stream = File.OpenRead($".\\Languages\\{SelectedLanguage}.json");
         stream.Seek(0, SeekOrigin.Begin);
         _translations = JsonSerializer.Deserialize<Dictionary<string, string>>(stream)!;
+        LanguageChanged?.Invoke(SelectedLanguage);
         return Task.CompletedTask;
     }
 

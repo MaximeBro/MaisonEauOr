@@ -1,0 +1,106 @@
+@inject IDbContextFactory<MeoDbContext> Factory
+@inject LocalizationService Lang
+
+<MudDialog>
+    <DialogContent>
+        <MudTextField T="string" @bind-Value="_codeName" Label="@(Lang.Get("promo_name_lbl"))" />
+        <MudCheckBox T="bool" @bind-Checked="_isPercent" Label="@_isPercentText" />
+        <MudNumericField T="double" @bind-Value="_discount" Min="0" Label="@_isPercentText" />
+        <MudStack Row>
+            <MudDatePicker Clearable @bind-Date="_startsAt" Label="@(Lang.Get("promo_start_date"))" DateFormat="dd-MM-yyyy" />
+             <MudDatePicker Clearable @bind-Date="_endsAt" Label="@(Lang.Get("promo_end_date"))" DateFormat="dd-MM-yyyy" />
+        </MudStack>
+        <MudPaper Class="mt-4 pa-4" Elevation="0" Outlined>
+            <MudSelect T="DiscountType" @bind-Value="_type" Label="@(Lang.Get("promo_type_articles"))" AnchorOrigin="Origin.BottomCenter">
+                @foreach (var type in Enum.GetValues<DiscountType>())
+                {
+                    <MudSelectItem Value="@type">@type.Humanize()</MudSelectItem>
+                }
+            </MudSelect>
+            @switch (_type)
+            {
+                case DiscountType.All:
+                {
+                        <MudText Class="mt-2" Align="Align.Center">@(Lang.Get("promo_reduction_txt"))</MudText>
+                    break;
+                }
+                case DiscountType.Category:
+                {
+                        <MudSelect T="string" @bind-SelectedValues="_selectedCategories" Label="@(Lang.Get("promo_category"))" MultiSelection AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var categ in Enum.GetValues<ProductCategory>())
+                        {
+                            <MudSelectItem Value="@categ.ToString()">@categ.Humanize()</MudSelectItem>
+                        }
+                    </MudSelect>
+                    break;
+                }
+                case DiscountType.Product:
+                {
+                        <MudSelect T="ProductModel?" ValueChanged="@ValueChanged" Value="_selectedProduct" Label="@(Lang.Get("promo_specific_product"))" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var product in _models)
+                        {
+                            <MudSelectItem Value="@product">@product.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                    break;
+                }
+            }
+        </MudPaper>
+        <MudCheckBox Class="mt-4" T="bool" @bind-Checked="_isActive" Label="@(Lang.Get("promo_active"))" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@Submit" Variant="Variant.Filled" Color="Color.Success">@(Lang.Get("promo_validate_btn"))</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; } = null!;
+
+    private MeoDbContext _context = null!;
+
+    private string _codeName = string.Empty;
+    private bool _isPercent;
+    private double _discount;
+    private ProductModel? _selectedProduct;
+    private DiscountType _type = DiscountType.All;
+    private IEnumerable<string> _selectedCategories = new List<string>();
+    public DateTime? _startsAt;
+    public DateTime? _endsAt;
+    public bool _isActive;
+
+    private List<ProductModel> _models = new();
+    private string _percentText = string.Empty;
+    private string _fixedText = string.Empty;
+    private string _isPercentText => _isPercent ? _percentText : _fixedText;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = await Factory.CreateDbContextAsync();
+        _models = _context.Products.AsNoTracking().ToList();
+        _percentText = Lang.Get("promo_pourcent");
+        _fixedText = Lang.Get("promo_fixed_value");
+    }
+
+    private void Submit()
+    {
+        
+        var discount = new DiscountModel
+        {
+            CodeName = _codeName,
+            Discount = !_isPercent ? _discount : 0,
+            DiscountPercent = _isPercent ? _discount / 100 : 0,
+            IsPercent = _isPercent,
+            Type = _type,
+            ProductID = _type is DiscountType.Product && _selectedProduct != null ? _selectedProduct.Id : Guid.Empty,
+            Categories = _type is DiscountType.Category ? _selectedCategories.ToList().ConvertAll(Enum.Parse<ProductCategory>) : new List<ProductCategory>(),
+            StartsAt = _startsAt,
+            EndsAt = _endsAt,
+            IsActive = _isActive
+        };
+        
+        MudDialog.Close(discount);
+    }
+    
+    private void ValueChanged(ProductModel? product) => _selectedProduct = product;
+}

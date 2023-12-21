@@ -2,10 +2,11 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
-@inject BasketService BasketService
+@inject LocalizationService Lang
 @inject MailerService MailerService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
 @if (_order is null)
 {
@@ -15,7 +16,7 @@
     return;
 }
 
-<PageTitle>Maison eau d'or - Page de paiement</PageTitle>
+<PageTitle>@(Lang.Get("orderConfirmationPageTitle"))</PageTitle>
 
 @if (_sending)
 {
@@ -25,54 +26,58 @@
 }
 
 <MudContainer Class="mb-16" MaxWidth="MaxWidth.ExtraLarge">
-    <MudText Typo="Typo.h3">Confirmation de commande</MudText>
+    <MudText Typo="Typo.h3">@(Lang.Get("orderConfirmationconfirmationTitle"))</MudText>
     <MudGrid Justify="Justify.Center">
         
         <MudItem Class="px-6" xs="12" sm="12" md="8">
-            <MudExpansionPanel Text="1. Contact" @bind-IsExpanded="_firstExpand">
+            <MudExpansionPanel Text=@(Lang.Get("orderConfirmationcontactPanelTitle")) @bind-IsExpanded="_firstExpand">
                 <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Default};")">Uniquement � des fin de facturation et de commande</MudText>
-                <MudTextField T="string" InputType="InputType.Text" Label=" Nom complet" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField T="string" InputType="InputType.Email" Label="E-mail" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField T="string" InputType="InputType.Telephone" Label="Num�ro de t�l�phone" Variant="Variant.Outlined"></MudTextField>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandSecond">Continuer</MudButton>
+                <MudTextField T="string" InputType="InputType.Text" Label=@(Lang.Get("orderConfirmationfullNameLabel")) Variant="Variant.Outlined"></MudTextField>
+                <MudTextField T="string" InputType="InputType.Email" Label=@(Lang.Get("orderConfirmationemailLabel")) Variant="Variant.Outlined"></MudTextField>
+                <MudTextField T="string" InputType="InputType.Telephone" Label=@(Lang.Get("orderConfirmationphoneNumberLabel")) Variant="Variant.Outlined"></MudTextField>
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandSecond">@(Lang.Get("orderConfirmationcontinueButtonLabel1"))</MudButton>
             </MudExpansionPanel>
 
-            <MudExpansionPanel Text="2. Mode de livraison" @bind-IsExpanded="_secondExpand">
-                <MudTextField T="string" Label="Nom complet" Variant="Variant.Outlined"/>
-                <MudTextField T="string" @bind-Value="_address" Label="Adresse" Variant="Variant.Outlined"/>
-                <MudTextField T="string" @bind-Value="_town" Label="Ville" Variant="Variant.Outlined"/>
-                <MudTextField T="string" @bind-Value="_postaleCode" Mask="@(new PatternMask("00000"))" Label="Code postal" Variant="Variant.Outlined"/>
-                <MudTextField T="string" Label="Pays" Variant="Variant.Outlined"/>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandThird">Continuer</MudButton>
+            <MudExpansionPanel Text=@(Lang.Get("orderConfirmationdeliveryPanelTitle")) @bind-IsExpanded="_secondExpand">
+                <MudTextField T="string" Label=@(Lang.Get("orderConfirmationfullNameLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" @bind-Value="_address" Label=@(Lang.Get("orderConfirmationaddressLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" @bind-Value="_town" Label=@(Lang.Get("orderConfirmationcityLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" @bind-Value="_postaleCode" Mask="@(new PatternMask("00000"))" Label=@(Lang.Get("orderConfirmationpostalCodeLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" Label=@(Lang.Get("orderConfirmationcountryLabel")) Variant="Variant.Outlined" />
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandThird">@(Lang.Get("orderConfirmationcontinueButtonLabel1"))</MudButton>
             </MudExpansionPanel>
 
-            <MudExpansionPanel Text="3. Moyen de paiement" @bind-IsExpanded="_thirdExpand">
+            <MudExpansionPanel Text=@(Lang.Get("orderConfirmationpaymentPanelTitle")) @bind-IsExpanded="_thirdExpand">
                 <MudRadioGroup @bind-SelectedOption="@_selectedOption">
-                    <MudRadio Option="@("CB")" Color="Color.Dark"><MudIcon Icon="@Icons.CreditCard"/> CB</MudRadio>
-                    <MudRadio Class="mx-4" Option="@("PAYPAL")" Color="Color.Dark"><MudIcon Icon="fab fa-paypal"/> Paypal</MudRadio>
-                    <MudRadio Option="@("IPAY")" Color="Color.Dark"><MudIcon Icon="@IconsC.Brands.Apple"/> Ipay</MudRadio>
+                    <MudRadio Option="@("CB")" Color="Color.Dark"><MudIcon Icon="@Icons.CreditCard" /> @(Lang.Get("orderConfirmationcreditCardLabel"))</MudRadio>
+                    <MudRadio Class="mx-4" Option="@("PAYPAL")" Color="Color.Dark"><MudIcon Icon="fab fa-paypal" /> @(Lang.Get("orderConfirmationpaypalLabel"))</MudRadio>
+                    <MudRadio Option="@("IPAY")" Color="Color.Dark"><MudIcon Icon="@IconsC.Brands.Apple" /> @(Lang.Get("orderConfirmationipayLabel"))</MudRadio>
                 </MudRadioGroup>
                 @switch (_selectedOption)
                 {
                     case "CB":
                     {
-                        <MudText Class="mt-3" Typo="Typo.body1">Payer avec Carte de cr�dit/d�bit</MudText>
-                        <MudTextField T="string" Label="Nom sur la carte" Variant="Variant.Outlined"></MudTextField>
+                            <MudText Class="mt-3" Typo="Typo.body1">@(Lang.Get("orderConfirmationpayWithCreditCard"))</MudText>
+                            <MudTextField T="string" Label=@(Lang.Get("orderConfirmationcardHolderLabel")) Variant="Variant.Outlined"></MudTextField>
                         <MudGrid Style="max-width: 400px;" Justify="Justify.SpaceBetween">
                             <MudItem xs="12">
-                                <MudTextField T="string" Mask="@(new PatternMask("0000 0000 0000 0000"))" Label="Num�ro de carte bancaire"
+                                    <MudTextField T="string" Mask="@(new PatternMask("0000 0000 0000 0000"))" Label=@(Lang.Get("orderConfirmationcardNumberLabel"))
                                               Variant="@Variant.Text" Clearable/>
                             </MudItem>
                             <MudItem xs="5">
-                                <MudTextField T="DateTime?" Mask="@(new DateMask("MM/YY", 'Y', 'M'))" Label="Date d'expiration"
+                                     <MudTextField T="DateTime?" Mask="@(new DateMask("MM/YY", 'Y', 'M'))" Label=@(Lang.Get("orderConfirmationexpirationDateLabel"))
                                               Variant="@Variant.Text"/>
                             </MudItem>
 
                             <MudItem xs="4">
-                                <MudTextField T="int" Mask="@(new PatternMask("000"))" Label="Cryptogramme" Placeholder="CVC" Variant="@Variant.Text"/>
+                                     <MudTextField T="int" Mask="@(new PatternMask("000"))" Label=@(Lang.Get("orderConfirmationcvcLabel")) Placeholder="CVC" Variant="@Variant.Text" />
                             </MudItem>
                             <MudItem xs="12">
-                                <MudTextField Class="mt-4" T="string" Label="Code Promo" Variant="Variant.Outlined" Clearable Adornment="Adornment.Start" AdornmentIcon="@Icons.Discount"/>
+                                <MudStack Row Justify="Justify.FlexStart" AlignItems="AlignItems.Center">
+                                    <MudTextField Class="mt-4" T="string" @bind-Value="_discount" Label="Code Promo" Variant="Variant.Outlined" Clearable
+                                                  Adornment="Adornment.Start" AdornmentIcon="@Icons.Discount" OnClearButtonClick="@ClearDiscount"/>
+                                    <MudButton Class="px-10" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ValidateDiscount">Valider</MudButton>
+                                </MudStack>
                             </MudItem>
                         </MudGrid>
                         break;
@@ -81,7 +86,7 @@
                     {
                         <MudStack Row Justify="Justify.Center">
                             <MudButton Class="py-3 px-12" Variant="Variant.Filled" Color="Color.Warning" Style="color: #000;">
-                                Payer avec Paypal
+                                     @(Lang.Get("orderConfirmationpayWithPaypal"))
                                 <MudIcon Class="ml-4" Icon="fab fa-cc-paypal" Style="color: #0079C1!important;"/>
                             </MudButton>
                         </MudStack>
@@ -91,7 +96,7 @@
                     {
                         <MudStack Row Justify="Justify.Center">
                             <MudButton Class="py-3 px-12" Variant="Variant.Filled" Color="Color.Dark" Style="color: #fff;">
-                                Payer avec Apple Pay
+                                     @(Lang.Get("orderConfirmationpayWithApplePay"))
                                 <MudIcon Class="ml-4" Icon="fab fa-cc-apple-pay" Style="color: #fff;"/>
                             </MudButton>
                         </MudStack>
@@ -100,13 +105,13 @@
                 }
             </MudExpansionPanel>
             <MudText Class="mt-2" Typo="Typo.body1">
-                En continuant vous accepter nos
+                @(Lang.Get("orderConfirmationtermsAndConditionsMessage"))
                 <MudLink Color="Color.Dark" Underline="Underline.Always" Href="/terms-and-conditions">conditions g�n�rales de vente.</MudLink>
             </MudText>
-            <MudCheckBox T="bool" Label="J'accepte le traitement de mes donn�es par Maison d'eau D'or � des fins marketing."></MudCheckBox>
+            <MudCheckBox T="bool" Label=@(Lang.Get("orderConfirmationmarketingConsentLabel"))></MudCheckBox>
             <MudStack Class="px-16" Row Justify="Justify.Center">
                 <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(async () => await SetOrderStatus())" FullWidth>
-                    Payer @_products.TotalWithTva().ToString("C")
+                    @(Lang.Get("orderConfirmationpayButtonLabel")) @_products.TotalWithTva().ToString("C")
                 </MudButton>
             </MudStack>
         </MudItem>
@@ -150,6 +155,12 @@
                     }
                 </MudStack>
             </MudPaper>
+            @if (!string.IsNullOrWhiteSpace(_discountText))
+            {
+                <MudPaper Class="mt-2 px-6 py-4" Elevation="1" Outlined>
+                    <MudText>@_discountText</MudText>
+                </MudPaper>
+            }
         </MudItem>
     </MudGrid>
 </MudContainer>
@@ -170,6 +181,7 @@
     private string _town = string.Empty;
     private string _address = string.Empty;
     private string _postaleCode = string.Empty;
+    private string _discount = string.Empty;
 
     private bool _firstExpand;
     private bool _secondExpand;
@@ -178,7 +190,9 @@
     private bool _sending = false;
 
     private string _selectedOption = "CB";
-    private string _email = "maimemail.brochard.com@gmail.com";
+    private string _email = string.Empty;
+    private double _originalPrice;
+    private string _discountText = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -194,15 +208,19 @@
         {
             if (_order.Payed)
             {
-                Snackbar.Add("Votre commande a d�j� �t� pay�e !", Severity.Info);
+                Snackbar.Add(Lang.Get("orderConfirmationMessage"), Severity.Info);
                 NavManager.NavigateTo("/profile");
             }
             else
             {
                 _products = _context.BasketProducts.Include(x => x.Product).Where(x => x.OrderID == _order.Id).ToList();
+                _originalPrice = _order.Total;
             }
         }
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -227,6 +245,11 @@
 
     private async Task SetOrderStatus()
     {
+        if (string.IsNullOrWhiteSpace(_email))
+        {
+            Snackbar.Add("Veuillez renseigner votre adresse mail !", Severity.Warning);
+            return;
+        }
         if (_order is null)
         {
             Snackbar.Add("Une erreur est survenue, redirection en cours...", Severity.Error);
@@ -237,9 +260,22 @@
         {
             if (_order.Payed)
             {
-                Snackbar.Add("Votre commande a d�j� �t� valid�e !", Severity.Info);
+                Snackbar.Add("Votre commande a déjà été validée !", Severity.Info);
                 NavManager.NavigateTo("/profile");
                 return;
+            }
+            if (!string.IsNullOrWhiteSpace(_discountText))
+            {
+                var discount = _context.Discounts.FirstOrDefault(x => x.CodeName == _discount.ToUpper());
+                if (discount != null)
+                {
+                    _context.UsedDiscounts.Add(new UsedDiscount
+                    {
+                        Email = _email,
+                        DiscountID = discount.Id
+                    });
+                    await _context.SaveChangesAsync();
+                }
             }
             Snackbar.Add("Validation de la commande en cours...", Severity.Success);
             _sending = true;
@@ -257,8 +293,8 @@
             }
 
             var recipient = _currentUser?.Email ?? _email;
-            var mailBody = $"Bonjour,\nVotre commande #{_order.Id} d'un montant de {_order.Total.ToString("C")} vient d'�tre valid�e et sera prise en compte d'ici peu par nos �quipes.\nNous vous remercions pour vos achats chez Maison Eau D'or et esp�rons vous retrouver tr�s vite.\n";
-            var recap = "----------------------------------------------\nR�capitulatif de votre commande : \n";
+            var mailBody = $"Bonjour,\nVotre commande #{_order.Id} d'un montant de {_order.Total.ToString("C")} vient d'�tre valid�e et sera prise en compte d'ici peu par nos �quipes.\nNous vous remercions pour vos achats chez Maison Eau D'or et espérons vous retrouver très vite.\n";
+            var recap = "----------------------------------------------\nRécapitulatif de votre commande : \n";
             recap += _products.Aggregate(string.Empty, (current, product) => current + $"{product.Product!.Name} {product.Product.Price:C} x{product.ProductAmount}\n");
             recap += $"Total commande : {_products.TotalWithTva():C}\n";
             mailBody += recap;
@@ -266,6 +302,121 @@
             _sending = false;
             Snackbar.Clear();
             NavManager.NavigateTo("/profile");
+        }
+    }
+
+    private void ValidateDiscount()
+    {
+        if (_order is null)
+        {
+            Snackbar.Add("Une erreur est survenue, redirection en cours...", Severity.Error);
+            NavManager.NavigateTo("/");
+            StateHasChanged();
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(_email))
+            {
+                Snackbar.Add("Veuillez renseigner votre adresse email !", Severity.Warning);
+                return;
+            }
+            if (!string.IsNullOrWhiteSpace(_discount))
+            {
+                if (_currentUser != null)
+                {
+                    var user = _context.UserAccounts.FirstOrDefault(x => x.Email == _currentUser.Email);
+                    if (user != null && string.IsNullOrWhiteSpace(_email)) _email = user.Email;
+                }
+
+                var discount = _context.Discounts.FirstOrDefault(x => x.CodeName == _discount.ToUpper());
+                if (discount != null && !string.IsNullOrWhiteSpace(_email))
+                {
+                    var isUsed = _context.UsedDiscounts.FirstOrDefault(x => x.Email == _email && x.DiscountID == discount.Id) != null;
+                    if (!isUsed)
+                    {
+                        var date = DateTime.Now;
+                        if (discount is { StartsAt: null, EndsAt: null} || (!discount.StartsAt.HasValue && discount.EndsAt.HasValue && discount.EndsAt.Value > date) ||
+                            (!discount.EndsAt.HasValue && discount.StartsAt.HasValue && discount.StartsAt.Value <= date) ||
+                            (discount.StartsAt.HasValue && discount.StartsAt.Value <= date && discount.EndsAt.HasValue && discount.EndsAt.Value > date))
+                        {
+                            _order.Total = _originalPrice;
+                            var amount = discount.IsPercent ? $"-{discount.DiscountPercent:P2}" : $"{discount.Discount:C}";
+                            var target = string.Empty;
+                            
+                            switch (discount.Type)
+                            {
+                                case DiscountType.Product:
+                                {
+                                    var discountedProduct = _products.FirstOrDefault(x => x.ProductID == discount.ProductID);
+                                    if (discountedProduct != null && discountedProduct.Product != null)
+                                    {
+                                        target = $"tous les {discountedProduct.Product.Name} de votre panier !";
+                                        if(discount.IsPercent) _order.Total = discountedProduct.TotalWithTva() * (discount.Discount/100);
+                                        else _order.Total = discountedProduct.TotalWithTva() - (discountedProduct.ProductAmount * discount.Discount);
+                                    }
+                                    break;
+                                }
+                                case DiscountType.Category:
+                                {
+                                    target = $"tous les produits classés comme {string.Join(",", discount.Categories.ToList().ConvertAll(x => x.Humanize().ToLower()))}";
+                                    var discountedProducts = _products.Where(x => discount.Categories.Contains(x.Product!.Category)).ToList();
+                                    var nonDiscounted = _products.Where(x => !discount.Categories.Contains(x.Product!.Category)).ToList();
+                                    if (discountedProducts.Any())
+                                    {
+                                        _order.Total = nonDiscounted.TotalWithTva() + discountedProducts.TotalWithTva(discount.IsPercent ? discount.DiscountPercent : discount.Discount, discount.IsPercent);
+                                    }
+                                    break;
+                                }
+                                default:
+                                {
+                                    target = "l'ensemble des articles de votre panier !";
+                                    _order.Total = discount.IsPercent ? _order.Total * (1 - discount.DiscountPercent) : _order.Total - discount.Discount;
+                                    break;
+                                }
+                            }
+
+                            if (_order.Total == _originalPrice)
+                            {
+                                _discountText = "Votre code de réduction n'est pas valable pour votre panier et sera consommé si vous le laissez.";
+                            }
+                            else
+                            {
+                                _discountText = $"Réduction de {amount} sur {target}";
+                            }
+                            if (_order.Total < 0) _order.Total = 0D;
+                            Snackbar.Add("Code promotionnel ajouté au panier !", Severity.Info);
+                            StateHasChanged();
+                        }
+                        else
+                        {
+                            Snackbar.Add("Votre code promotionnel n'est plus valable !", Severity.Warning);
+                        }
+                    }
+                    else
+                    {
+                        Snackbar.Add("Vous avez déjà utilisé ce code promotionnel !", Severity.Warning);
+                        _discountText = string.Empty;
+                        _discount = string.Empty;
+                        StateHasChanged();
+                    }
+                }
+            }
+        }
+    }
+
+    private void ClearDiscount()
+    {
+        if (_order is null)
+        {
+            Snackbar.Add("Une erreur est survenue, redirection en cours...", Severity.Error);
+            NavManager.NavigateTo("/");
+            StateHasChanged();
+        }
+        else
+        {
+            _order.Total = _originalPrice;
+            _discountText = string.Empty;
+            StateHasChanged();
         }
     }
 }

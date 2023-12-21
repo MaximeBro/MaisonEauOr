@@ -56,13 +56,27 @@
         <MudItem xs="12" md="6">
             <MudCard Class="pa-4" Elevation="2">
                 <MudCardContent>
-                    <MudText Typo="Typo.h6">Gestion des commandes</MudText>
-                    <MudText>Gérez les commandes émises par vos clients en modifiant leur statut ainsi que leur prix total.</MudText>
+                    <MudText Typo="Typo.h6">@(Lang.Get("adminPanel_order_management"))</MudText>
+                    <MudText>@(Lang.Get("adminPanel_order_txt"))</MudText>
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton Color="Color.Primary" StartIcon="@Icons.ShoppingBasket"
                                OnClick="@(() => NavManager.NavigateTo("/admin-orders"))">
-                        Gestion des commandes
+                        @(Lang.Get("adminPanel_order_management"))
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudCard Class="pa-4" Elevation="2">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">@(Lang.Get("adminPanel_codes_management"))</MudText>
+                    <MudText>@(Lang.Get("adminPanel_codes_txt"))</MudText>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Color="Color.Primary" StartIcon="@Icons.Discount"
+                               OnClick="@(() => NavManager.NavigateTo("/admin-discounts"))">
+                        @(Lang.Get("adminPanel_codes_management"))
                     </MudButton>
                 </MudCardActions>
             </MudCard>
@@ -71,5 +85,11 @@
 </MudContainer>
 
 @code {
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
 }

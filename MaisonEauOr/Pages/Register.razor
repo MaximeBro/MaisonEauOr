@@ -3,10 +3,12 @@
 
 @inject IDbContextFactory<MeoDbContext> Factory
 @inject AuthenticationStateProvider AuthStateProvider
+@inject LocalizationService Lang
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
-<PageTitle>Maison eau d'or - Inscription</PageTitle>
+<PageTitle>@(Lang.Get("pageTitle"))</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="OnValidSubmitAsync">
     <DataAnnotationsValidator/>
@@ -21,69 +23,69 @@
                             </MudLink>
                         </MudStack>
                     </MudStack>
-                    <MudText Align="Align.Center" Typo="Typo.h3">S'inscrire</MudText>
+                     <MudText Align="Align.Center" Typo="Typo.h3">@(Lang.Get("loginSignupButton"))</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent Class="mt-n5" Style="max-width: 500px!important;">
                 <MudStack Row Justify="Justify.SpaceBetween">
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label="Prénom" InputType="InputType.Text"
+                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.Firstname" Label=@(Lang.Get("firstname_lbl")) InputType="InputType.Text"
                                   For="@(() => _model.Firstname)" Style="max-width: 220px;" Variant="Variant.Text"/>
 
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label="Nom" InputType="InputType.Text"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Lastname" Label=@(Lang.Get("lastname_lbl")) InputType="InputType.Text"
                                   For="@(() => _model.Lastname)" Style="max-width: 220px;" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label="Email" InputType="InputType.Email"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Email" Label=@(Lang.Get("email_lbl")) InputType="InputType.Email"
                                   For="@(() => _model.Email)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label="Téléphone" InputType="InputType.Telephone"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.PhoneNumber" Label=@(Lang.Get("phone_lbl")) InputType="InputType.Telephone"
                                   For="@(() => _model.PhoneNumber)" Style="max-width: 220px;" Variant="Variant.Text"/>
-                    <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label="Date de naissance" DateFormat="dd.MM.yyyy"
+                    <MudDatePicker Class="mb-2" MaxDate="DateTime.Now" @bind-Date="_model.BornAt" Label=@(Lang.Get("birthdate_lbl")) DateFormat="dd.MM.yyyy"
                                    Style="max-width: 220px;" Variant="Variant.Text" For="@(() => _model.BornAt)"/>
                 </MudStack>
                 <MudStack Row Justify="Justify.SpaceBetween">
-                    <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label="Code postal"
+                     <MudNumericField Class="mb-2" @bind-Value="_model.PostalCode" Label=@(Lang.Get("paymentPageLblPostal"))
                                      For="@(() => _model.PostalCode)" Variant="Variant.Text"/>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label="Ville" InputType="InputType.Text"
+                     <MudTextField T="string" Class="mb-2" @bind-Value="_model.Town" Label=@(Lang.Get("town_lbl")) InputType="InputType.Text"
                                   For="@(() => _model.Town)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label="Adresse" InputType="InputType.Text"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Address" Label=@(Lang.Get("address_lbl")) InputType="InputType.Text"
                                   For="@(() => _model.Address)" Variant="Variant.Text"/>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label="Pays" InputType="InputType.Text"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Country" Label=@(Lang.Get("country_lbl")) InputType="InputType.Text"
                                   For="@(() => _model.Country)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label=@(Lang.Get("loginPasswordLabel")) InputType="@_passwordFieldType"
                                   AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
                                   For="@(() => _model.Password)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
-                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Confirm" Label="Confirmer" InputType="@_confirmFieldType"
+                    <MudTextField T="string" Class="mb-2" @bind-Value="_model.Confirm" Label=@(Lang.Get("confirm_password_lbl")) InputType="@_confirmFieldType"
                                   AdornmentIcon="@_confirmFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowConfirm"
                                   For="@(() => _model.Confirm)" Variant="Variant.Text"/>
                 </MudStack>
                 <MudStack Row>
                     <MudCheckBox @bind-Checked="_conditionsAccepted" Color="Color.Dark" Required/>
                     <MudText>
-                        En envoyant un message, j'accepte les <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">Conditions générales</MudLink> et la
-                        <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">Politique de confidentialité</MudLink>,
-                        et j'autorise Maison Eau D'or à traiter mes données afin de répondre à mon message.
+                         @(Lang.Get("acceptTermsText")) <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">@(Lang.Get("termsConditionsTitle"))</MudLink> @(Lang.Get("acceptTermsText2"))
+                         <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">@(Lang.Get("privacyLink"))</MudLink>,
+                        @(Lang.Get("acceptTermsText3"))
                     </MudText>
                 </MudStack>
             </MudCardContent>
             <MudCardActions Class="flex-column">
                 <MudStack Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
                     <MudButton Class="mb-3 py-2 rounded-lg" Style="font-size: 16px; padding-inline: 5rem;" Variant="Variant.Filled" Color="Color.Dark" ButtonType="ButtonType.Submit">
-                        Créer son compte
+                         @(Lang.Get("createAccountButton"))
                     </MudButton>
                     <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center">
                         <MudDivider Style="border-color: black!important;"/>
                         <MudText Align="Align.Center">Déjà inscrit ?</MudText>
                         <MudDivider Style="border-color: black!important;"/>
                     </MudStack>
-                    <MudButton Class="mb-3 py-2 rounded-lg" Href="/signin" Style="padding-inline: 2.5rem;" Variant="Variant.Filled" Color="Color.Dark">Se connecter</MudButton>
+                     <MudButton Class="mb-3 py-2 rounded-lg" Href="/signin" Style="padding-inline: 2.5rem;" Variant="Variant.Filled" Color="Color.Dark">@(Lang.Get("loginTitle"))</MudButton>
                 </MudStack>
             </MudCardActions>
         </MudCard>
@@ -107,7 +109,10 @@
     protected override async Task OnInitializedAsync()
     {
         _context = await Factory.CreateDbContextAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private void ShowPassword()
     {

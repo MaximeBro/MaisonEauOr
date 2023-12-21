@@ -17,7 +17,7 @@
     </MudButton>
 </MudStack>
 
-<MudDataGrid T="ProductModel" Class="mx-8 mb-16" Items="@_products" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
+<MudDataGrid T="ProductModel" Class="mx-8 mb-16" Items="@_products" ColumnResizeMode="ResizeMode.Container" Bordered Hover Filterable Square Striped QuickFilter="@QuickFilter" FixedHeader Dense Height="55vh">
      <ToolBarContent>
          <MudText Typo="Typo.h6">@Lang.Get("products_table_title")</MudText>
             <MudSpacer />
@@ -69,7 +69,10 @@
     {
         _context = await Factory.CreateDbContextAsync();
         await RefreshProductsAsync();
+        Lang.LanguageChanged += InvokeStateChanged;
     }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
 
     private async Task AddProductAsync()
     {
