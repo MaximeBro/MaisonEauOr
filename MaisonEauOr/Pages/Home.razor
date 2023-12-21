@@ -8,6 +8,7 @@
 @inject NavigationManager NavManager
 @inject BasketService BasketService
 @inject ISnackbar Snackbar
+@inject IJSRuntime JsRuntime
 
 
 <PageTitle>@(Lang.Get("loginPageTitle"))</PageTitle>
@@ -63,32 +64,8 @@
         <div class="swiper-button-next"></div>
         <div class="swiper-button-prev"></div>
     </div>
+    <script src="./js/carrousel.js"></script> 
     
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-    
-    <script>
-        var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            breakpoints: {
-                768: {
-                    slidesPerView: 3,
-                    spaceBetween: 30,
-                }
-            },
-            loop: true,
-            autoplay: {
-                delay: 5000,
-                disableOnInteraction: false,
-            },
-            navigation: {
-                nextEl: ".swiper-button-next",
-                prevEl: ".swiper-button-prev",
-            },
-        });
-      </script>
-
     @* Description boutique avec photo réduite bar à parfum *@
     <MudPaper Class="px-10 my-16" Elevation="0" Square Style="background-color: #F7E1C7;">
          <MudStack Class="py-8" Row Spacing="9" Justify="Justify.SpaceAround">
@@ -143,6 +120,8 @@
     {
         if (firstRender)
         {
+            await JsRuntime.InvokeVoidAsync("swiperjs");
+            StateHasChanged();
             var authService = (AuthenticationService)AuthStateProvider;
             _currentUser = await authService.GetCurrentUserAsync();
             if (_currentUser is null)
