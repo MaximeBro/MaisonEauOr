@@ -3,8 +3,9 @@
 
 @inject MailerService MailerService
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
-<PageTitle>Maison eau d'or - Contact</PageTitle>
+<PageTitle>@(Lang.Get("contactPageName"))</PageTitle>
 
 <MudContainer>
     <MudGrid Class="mt-6 mb-16" Justify="Justify.Center">
@@ -12,21 +13,21 @@
             <EditForm Model="@_model" OnValidSubmit="OnValidSubmitAsync">
                 <DataAnnotationsValidator/>
                 <MudStack Row="false">
-                    <MudText Typo="Typo.h3"><b>Nous contacter</b></MudText>
-                    <MudTextField T="string" @bind-Value="_model.Name" Label="Nom" For="() => _model.Name" Variant="Variant.Outlined"/>
-                    <MudTextField T="string" @bind-Value="_model.Email" Label="Email" For="() => _model.Email" Variant="Variant.Outlined"/>
-                    <MudTextField T="string" @bind-Value="_model.Subject" Label="Objet" For="() => _model.Subject" Variant="Variant.Outlined"/>
-                    <MudTextField T="string" @bind-Value="_model.Message" Label="Message" For="() => _model.Message" Lines="5" Variant="Variant.Outlined"/>
+                        <MudText Typo="Typo.h3"><b>@(Lang.Get("contactUs"))</b></MudText>
+                    <MudTextField T="string" @bind-Value="_model.Name" Label=@(Lang.Get("lastname_lbl"))  For="() => _model.Name" Variant="Variant.Outlined"/>
+                    <MudTextField T="string" @bind-Value="_model.Email" Label=@(Lang.Get("email_lbl")) For="() => _model.Email" Variant="Variant.Outlined"/>
+                    <MudTextField T="string" @bind-Value="_model.Subject" Label=@(Lang.Get("contactSubject")) For="() => _model.Subject" Variant="Variant.Outlined"/>
+                    <MudTextField T="string" @bind-Value="_model.Message"  Label=@(Lang.Get("contactMsg")) For="() => _model.Message" Lines="5" Variant="Variant.Outlined"/>
                     <MudStack Row>
                         <MudCheckBox @bind-Checked="_model.ConditionsAccepted" Color="Color.Dark" Required />
                         <MudText>
-                            En envoyant un message, j'accepte les <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">Conditions générales</MudLink> et la 
-                            <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">Politique de confidentialité</MudLink>,
-                            et j'autorise Maison Eau D'or à traiter mes données afin de répondre à mon message.
+                             @(Lang.Get("contactRulesAndCookies"))<MudLink Underline="Underline.Always" Color="Color.Dark" Href="/terms-and-conditions">@(Lang.Get("contactRulesAndCookies2"))</MudLink> @(Lang.Get("contactRulesAndCookies3"))
+                            <MudLink Underline="Underline.Always" Color="Color.Dark" Href="/privacy-policy">@(Lang.Get("contactRulesAndCookies4"))</MudLink>,
+                                @(Lang.Get("contactRulesAndCookies5")).
                         </MudText>
                     </MudStack>
                     <MudStack Row>
-                        <MudButton Color="Color.Dark" ButtonType="ButtonType.Submit" Variant="Variant.Filled" FullWidth>Envoyer</MudButton>
+                        <MudButton Color="Color.Dark" ButtonType="ButtonType.Submit" Variant="Variant.Filled" FullWidth>@(Lang.Get("contactSend"))</MudButton>
                     </MudStack>
                 </MudStack>
             </EditForm>

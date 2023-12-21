@@ -8,8 +8,9 @@
 @inject IDialogService DialogService
 @inject MailerService MailerService
 @inject DoubleAuthService DoubleAuthService
+@inject LocalizationService Lang
 
-<PageTitle>Maison eau d'or - Connexion</PageTitle>
+<PageTitle>@Lang.Get("loginPageTitle"))</PageTitle>
 
 <EditForm Model="_model" OnValidSubmit="OnValidSubmitAsync">
     <MudContainer Class="d-flex justify-center align-center" Style="height: 100vh; width: 100vw;" Fixed>
@@ -23,31 +24,31 @@
                             </MudLink>
                         </MudStack>
                     </MudStack>
-                    <MudText Align="Align.Center" Typo="Typo.h3">Se connecter</MudText>
+                     <MudText Align="Align.Center" Typo="Typo.h3">@Lang.Get("loginTitle"))</MudText>
                 </CardHeaderContent>
             </MudCardHeader>
             <MudCardContent Class="mt-n5">
-                <MudTextField T="string" Class="mb-3" @bind-Value="_model.Email" Label="Email" InputType="InputType.Email"
+                    <MudTextField T="string" Class="mb-3" @bind-Value="_model.Email" Label=@(Lang.Get("email_lbl")) InputType="InputType.Email"
                               For="@(() => _model.Email)" Style="max-width: 300px;" Variant="Variant.Text"
-                              Required RequiredError="Veuillez renseigner votre identifiant"/>
+                                Required RequiredError=@(Lang.Get("userProfileSubmitId")) />
 
-                <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label="Mot de passe" InputType="@_passwordFieldType"
+                 <MudTextField T="string" Class="mb-2" @bind-Value="_model.Password" Label=@(Lang.Get("loginForgotPasswordLink")) InputType="@_passwordFieldType"
                               AdornmentIcon="@_passwordFieldIcon" Adornment="Adornment.End" OnAdornmentClick="ShowPassword"
                               For="@(() => _model.Password)" Style="max-width: 300px;" Variant="Variant.Text"
-                              Required RequiredError="Veuillez renseigner votre mot de passe"/>
+                                Required RequiredError=@(Lang.Get("userProfileSubmitPassword")) />
             </MudCardContent>
             <MudCardActions Class="flex-column">
                 <MudStack Row="false" Justify="Justify.Center" AlignItems="AlignItems.Center">
-                    <MudLink Class="mx-auto" Style="text-align: center;" Href="/">Mot de passe oublié ?</MudLink>
+                     <MudLink Class="mx-auto" Style="text-align: center;" Href="/">@(Lang.Get("loginForgotPasswordLink"))</MudLink>
                     <MudButton Class="mb-3 py-2 rounded-lg" Style="font-size: 16px; padding-inline: 5rem;" Variant="Variant.Filled" Color="Color.Dark" ButtonType="ButtonType.Submit">
                         Connexion
                     </MudButton>
                     <MudStack Row Justify="Justify.Center" AlignItems="AlignItems.Center">
                         <MudDivider Style="border-color: black!important;"/>
-                        <MudText Align="Align.Center">Nouveau client ?</MudText>
+                         <MudText Align="Align.Center">@(Lang.Get("loginNewCustomerText"))</MudText>
                         <MudDivider Style="border-color: black!important;"/>
                     </MudStack>
-                    <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Href="/signup" Variant="Variant.Filled" Color="Color.Dark">S'inscrire</MudButton>
+                     <MudButton Class="mb-3 py-2 rounded-lg" Style="padding-inline: 2.5rem;" Href="/signup" Variant="Variant.Filled" Color="Color.Dark">@(Lang.Get("loginSignupButton"))</MudButton>
                 </MudStack>
             </MudCardActions>
         </MudCard>

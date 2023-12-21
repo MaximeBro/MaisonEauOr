@@ -1,80 +1,81 @@
 @page "/terms-and-conditions"
 
-<PageTitle>Maison eau d'or - Conditions générales</PageTitle>
+@inject LocalizationService Lang
+
+<PageTitle>@Lang.Get("termsConditionsPageTitle"))</PageTitle>
 
 <MudContainer Class="my-5 mb-16" MaxWidth="MaxWidth.Medium">
-    <MudText Typo="Typo.h2"><b>Conditions générales</b></MudText>
+        <MudText Typo="Typo.h2"><b>@Lang.Get("termsConditionsTitle"))</b></MudText>
     <MudText Class="mt-4" Typo="Typo.body1">
-        Veuillez trouver ci-dessous nos conditions générales relatives à l'utilisation du site internet maisoneaudor.sumup.link et à l'achat de produits sur ce site.
+        @Lang.Get("termsConditionsPageTitleIntro"))
     </MudText>
     <MudText Class="mt-4" Typo="Typo.body1">
-        N'hésitez pas à nous faire part de toute question relative aux présentes conditions au moyen du formulaire de contact ci-dessous.    
+        @Lang.Get("termsConditionsPageTitleContactInfo"))
     </MudText>
     <MudText Class="mt-4" Typo="Typo.body1">
-        L'utilisation par les clients du site internet est régie par les présentes conditions générales ainsi que tout avis ou toutes conditions figurant sur une quelconque autre partie du site internet. Nous précisons à toutes fins utiles que Maison Eau D'or peut modifier ou retirer à tout moment toute partie du site internet, sans que sa responsabilité ne puisse être engagée du fait de ces modifications à l'égard des clients. Maison Eau D'or se réserve le droit de modifier les présentes conditions générales à l'avenir sans être tenue d'en aviser spécifiquement les clients. Le fait de poursuivre l'utilisation du site internet ou de passer commande ultérieurement à ces modifications vaudra acceptation de ces modifications.
+        @Lang.Get("termsConditionsPageTitleSiteUsage"))
     </MudText>
     <MudText Class="mt-4" Typo="Typo.body1">
-        Le contrat ne prendra effet entre vous (en qualité de client) et nous qu'une fois que la commande aura été traitée et expédiée.
+        @Lang.Get("termsConditionsPageTitleContractEffect"))
     </MudText>
     <MudText Class="mt-4" Typo="Typo.body1">
-        En passant une commande au travers du présent site internet, le client garantit :
+        @Lang.Get("termsConditionsPageTitleOrderGuarantee"))
     </MudText>
     <ol>
-        <li><MudText Typo="Typo.body1">- qu'il n'est pas mineur ou dans l'incapacité légale de passer un contrat.</MudText></li>
-        <li><MudText Typo="Typo.body1">- que les coordonnées divulguées lors de l'enregistrement sont complètes et exactes.</MudText></li>
-        <li><MudText Typo="Typo.body1">- qu'il n'utilise pas un faux nom ou celui d'une autre personne physique ou morale sans autorisation.</MudText></li>
+        <li><MudText Typo="Typo.body1">@Lang.Get("termsConditionsMinor"))</MudText></li>
+            <li><MudText Typo="Typo.body1">@Lang.Get("termsConditionsCoord"))</MudText></li>
+            <li><MudText Typo="Typo.body1">@Lang.Get("termsConditionsFalseIdentity"))</MudText></li>
     </ol>
     
     <MudText Class="mt-10" Typo="Typo.h4">
-        Passer une commande
+        @Lang.Get("termsConditionsCmd"))
     </MudText>
     <MudText Typo="Typo.body1">
-        En passant une commande, vous acceptez les présentes conditions générales et reconnaissez les avoir lu avant de procéder à la commande.
+        @Lang.Get("termsConditionsPageTitleOrderGuarantee"))
     </MudText>
     
     <MudText Class="mt-4" Typo="Typo.h4">
-        Annuler une commande
+        @Lang.Get("termsConditionsPageTitleOrderGuarantee"))
     </MudText>
     <MudText Typo="Typo.body1">
-        En tant que client, vous pouvez annuler une commande sous 14 jours et vous serez remboursé du montant de cette dernière sur le compte avec lequel vous avez payé votre commande.
+        @Lang.Get("termsConditionsPageTitleCancelOrder"))
     </MudText>
     
     <MudText Class="mt-4" Typo="Typo.h4">
-        Accepter une commande
+        @Lang.Get("termsConditionsAcceptCmd"))
     </MudText>
     <MudText Typo="Typo.body1">
-        Lorsqu'une commande est passée, vous recevrez une confirmation de commande à l'adresse e-mail fournie lors du paiement, contenant les informations sur le contenu et le prix de la commande.
+        @Lang.Get("termsConditionsPageTitleAcceptOrder"))
     </MudText>
     
     <MudText Class="mt-4" Typo="Typo.h4">
-        Livraison
+        @Lang.Get("termsConditionsDelivery"))
     </MudText>
     <MudText Typo="Typo.body1">
-        En tant qu'acheteur, vous pouvez choisir parmi les options de livraison mentionnées et le moment qui vous convient le mieux. Maison Eau D'or ne peut être tenu responsable de tout dommage causé pendant le transport ou dû à tout retard indépendant de sa volonté : - Récupérer en magasin
+        @Lang.Get("termsConditionsPageTitleDeliveryOptions"))
     </MudText>
     
     <MudText Class="mt-4" Typo="Typo.h4">
-        Politique de retour
+        @Lang.Get("termsConditionsreturnPolitcs"))
     </MudText>
     <MudText Typo="Typo.body1">
-        Maison Eau D'or accepte les retours sous 14 jours si les articles n'ont pas été utilisés, modifiés, lavés ou autrement manipulés. Les articles doivent être retournés dans leur emballage d'origine. Les articles ne peuvent être retournés à Maison Eau D'or sans le consentement écrit préalable de Maison Eau D'or et sont soumis à des frais de retour.
+        @Lang.Get("termsConditionsPageTitleReturnPolicy"))
     </MudText>
     
     <MudText Class="mt-4" Typo="Typo.h4">
-        Responsabilité
+        @Lang.Get("termsConditionsResponsability"))
     </MudText>
     <MudText Typo="Typo.body1">
-        Nous nous efforçons de maintenir les informations figurant sur le présent site internet aussi exactes que possible ; toutefois, nous ne formulons aucune garantie à cet égard, qu'elle soit expresse ou implicite. De même, nous ne formulons aucune garantie à l'égard de l'utilisation du présent site internet ; il incombe à chaque utilisateur de s'assurer que ses appareils sont protégés contre les virus ou contre tout autre facteur extérieur.
-        Vos droits sont protégés en vertu de la loi irlandaise sur la vente de marchandises et la prestation de services (Sale of Goods and Supply of Services Act) de 1980, ainsi que de la loi en matière de protection des consommateurs (Consumer Protection Act) de 2007, en votre qualité de consommateur. Le présent site internet n'affectera pas vos droits en vertu du droit en vigueur de quelque manière que ce soit.
+        @Lang.Get("termsConditionsPageTitleLiability"))
     </MudText>
     
     <MudText Class="mt-4" Typo="Typo.h4">
-        Divisibilité
+        @Lang.Get("termsConditionsDivisibility"))
     </MudText>
     <MudText Typo="Typo.body1">
-        Toute disposition des présentes conditions générales qui viendrait à être nulle, illégale ou non applicable pour quelque raison que ce soit sera réputée dissociée du reste des conditions générales qui demeureront valables et exécutoires.
+        @Lang.Get("termsConditionsPageTitleSeverability"))
     </MudText>
     <MudText Class="mt-8" Typo="Typo.body1">
-        Toute disposition des présentes conditions générales qui viendrait à être nulle, illégale ou non applicable pour quelque raison que ce soit sera réputée dissociée du reste des conditions générales qui demeureront valables et exécutoires.
+        @Lang.Get("termsConditionsPageTitleSeverability"))
     </MudText>
 </MudContainer>

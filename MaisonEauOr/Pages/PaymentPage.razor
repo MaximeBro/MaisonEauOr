@@ -1,82 +1,85 @@
 @page "/PaymentPage"
 
-<PageTitle>Maison eau d'or - Page de paiement</PageTitle>
+
+@inject LocalizationService Lang
+
+<PageTitle>@Lang.Get("paymentPageTitle"))</PageTitle>
 
 
 <div Class="d-flex justify-content-around mb-4 align-items-start">
     <MudPaper Class="p-4">
-        <MudText Align="Align.Center" Typo="Typo.h3">Confirmation de commande</MudText>
-        <MudExpansionPanel Text="1.Contact">
-            <MudText Typo=" Typo.body2" Style="@($"color:{Colors.Grey.Default};")">Uniquement à des fin de facturation et de commande</MudText>
-            <MudTextField T="string" @bind-Value="Name" InputType="InputType.Text" Label=" Nom complet" Variant="Variant.Outlined"></MudTextField>
-            <MudTextField T="string" @bind-Value="Mail" InputType="InputType.Email" Label="E-mail" Variant="Variant.Outlined"></MudTextField>
-            <MudTextField T="string" @bind-Value="Phone" InputType="InputType.Telephone" Label="Numéro de télèphone" Variant="Variant.Outlined"></MudTextField>
-            <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark">Continuer</MudButton>
+            <MudText Align="Align.Center" Typo="Typo.h3">@Lang.Get("paymentPageTitleCmd"))</MudText>
+            <MudExpansionPanel Text=@(Lang.Get("paymentPageTitleContact"))>
+                <MudText Typo=" Typo.body2" Style="@($"color:{Colors.Grey.Default};")">@Lang.Get("paymentPageDescription"))</MudText>
+                <MudTextField T="string" @bind-Value="Name" InputType="InputType.Text" Label=@(Lang.Get("paymentPageLbl")) Variant="Variant.Outlined"></MudTextField>
+                <MudTextField T="string" @bind-Value="Mail" InputType="InputType.Email" Label=@(Lang.Get("email_lbl")) Variant="Variant.Outlined"></MudTextField>
+                <MudTextField T="string" @bind-Value="Phone" InputType="InputType.Telephone" Label=@(Lang.Get("phone_lbl")) Variant="Variant.Outlined"></MudTextField>
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark"> Label=@(Lang.Get("paymentPageBtnContinue"))</MudButton>
         </MudExpansionPanel>
 
-        <MudExpansionPanel Text="2.Méthode de livraison">
-            <MudTextField T="string" @bind-Value="Name" Label="Nom complet" Variant="Variant.Outlined"></MudTextField>
+            <MudExpansionPanel Text=@(Lang.Get("paymentPageTitleLivraison"))>
+                <MudTextField T="string" @bind-Value="Name" Label=@(Lang.Get("paymentPageLbl")) Variant="Variant.Outlined"></MudTextField>
             <MudStack>
-                <MudTextField T="string" @bind-Value="Street" Label="Rue" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField T="string" @bind-Value="Number" Label="Numéro" Variant="Variant.Outlined"></MudTextField>
+                    <MudTextField T="string" @bind-Value="Street" Label=@(Lang.Get("paymentPageLblStreet")) Variant="Variant.Outlined"></MudTextField>
+                    <MudTextField T="string" @bind-Value="Number" Label=@(Lang.Get("paymentPageLblNb")) Variant="Variant.Outlined"></MudTextField>
             </MudStack>
             <MudStack>
-                <MudTextField T="string" @bind-Value="City" Label="Ville" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField T="string" @bind-Value="Postale" Label="Code postale" Variant="Variant.Outlined"></MudTextField>
+                    <MudTextField T="string" @bind-Value="City" Label=@(Lang.Get("town_lbl")) Variant="Variant.Outlined"></MudTextField>
+                    <MudTextField T="string" @bind-Value="Postale" Label=@(Lang.Get("paymentPageLblPostal")) Variant="Variant.Outlined"></MudTextField>
             </MudStack>
-            <MudTextField T="string" @bind-Value="Name" Label="Pays" Variant="Variant.Outlined"></MudTextField>
-            <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark">Continuer</MudButton>
+                <MudTextField T="string" @bind-Value="Name" Label=@(Lang.Get("country_lbl")) Variant="Variant.Outlined"></MudTextField>
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark">@(Lang.Get("paymentPageBtnContinue"))</MudButton>
         </MudExpansionPanel>
 
-        <MudExpansionPanel Text="3.Moyen de paiement">
+            <MudExpansionPanel Text=@(Lang.Get("paymentPageTitlePay"))>
             <MudRadioGroup @bind-SelectedOption="@SelectedOption">
-                <MudRadio Option="@("Radio 1")" Color="Color.Dark">CB</MudRadio>
-                <MudRadio Option="@("Radio 2")" Color="Color.Dark">Paypal</MudRadio>
-                <MudRadio Option="@("Radio 3")" Color="Color.Dark">Ipay</MudRadio>
+                    <MudRadio Option="@("Radio 1")" Color="Color.Dark">@(Lang.Get("paymentPageOptionCB"))</MudRadio>
+                    <MudRadio Option="@("Radio 2")" Color="Color.Dark">@(Lang.Get("paymentPageOptionPaypal"))</MudRadio>
+                    <MudRadio Option="@("Radio 3")" Color="Color.Dark">@(Lang.Get("paymentPageOptionIpay"))</MudRadio>
                     
             </MudRadioGroup>
-            <MudText Class="mt-3" Typo="Typo.body1">Payer avec Carte de crédit/débit</MudText>
-            <MudTextField T="string" @bind-Value="CbCard" Label="Nom sur la carte" Variant="Variant.Outlined"></MudTextField>
+                <MudText Class="mt-3" Typo="Typo.body1">@(Lang.Get("paymentPageContent"))</MudText>
+                <MudTextField T="string" @bind-Value="CbCard" Label=@(Lang.Get("paymentPageLblNameCB")) Variant="Variant.Outlined"></MudTextField>
             <MudGrid Class="justify-space-between" Style="max-width: 400px;">
                 <MudItem xs="12">
-                    <MudTextField Mask="@(new PatternMask("0000 0000 0000 0000"))" Label="Numéro de carte bancaire"
+                        <MudTextField Mask="@(new PatternMask("0000 0000 0000 0000"))" Label=@(Lang.Get("paymentPageLblNbCB"))
                                     @bind-Value="creditCard" Variant="@Variant.Text" Clearable />
                     </MudItem>
                     <MudItem xs="5">
-                        <MudTextField Mask="@(new DateMask("MM/YY", 'Y', 'M'))" Label="Date d'expiration"
+                     <MudTextField Mask="@(new DateMask("MM/YY", 'Y', 'M'))" Label=@(Lang.Get("paymentPageLblDate"))
                                     @bind-Value="expiration" Variant="@Variant.Text" />
                     </MudItem>
                      
                     <MudItem xs="4">
-                        <MudTextField Mask="@(new PatternMask("000"))"  Label="Cryptogramme" Placeholder="CVC"
+                     <MudTextField Mask="@(new PatternMask("000"))" Label=@(Lang.Get("paymentPageLblCrypto")) Placeholder="CVC"
                                     @bind-Value="cvc" Variant="@Variant.Text" />
                     </MudItem>
                 </MudGrid>
             </MudExpansionPanel>
-            <MudText Class="ml-4 mt-4" Typo="Typo.body1">En continuant vous accepté les conditions générales</MudText>
-            <MudCheckBox @bind-Checked="@CheckBox1" Label="J'accepte le traitement de mes données par Maison d'eau D'or à des fins marketing"></MudCheckBox>
-            <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Dark">Payer 150€</MudButton>
+         <MudText Class="ml-4 mt-4" Typo="Typo.body1">@(Lang.Get("paymentPageRules"))</MudText>
+         <MudCheckBox @bind-Checked="@CheckBox1" Label=@(Lang.Get("paymentPageAcceptRules"))></MudCheckBox>
+         <MudButton Class="ma-4" Variant="Variant.Filled" Color="Color.Dark">@(Lang.Get("paymentPageText"))</MudButton>
         </MudPaper>
 
 
     <MudPaper Class="p-4">
 
-        <MudText Align="Align.Center" Typo="Typo.h3">Résumé de la commande</MudText>
+         <MudText Align="Align.Center" Typo="Typo.h3">@(Lang.Get("paymentPageTitleResume"))</MudText>
         <MudDivider Class="my-2" />
 
         <MudDivider Class="my-2" />
-        <MudExpansionPanel Text="Message à l'attention du commerçant">
-            <MudTextField T="string" @bind-Value="Msg" Label="Message" Variant="Variant.Outlined"></MudTextField>
+         <MudExpansionPanel Text=@(Lang.Get("paymentPageLblMsg"))>
+             <MudTextField T="string" @bind-Value="Msg" Label=@(Lang.Get("contactMsg")) Variant="Variant.Outlined"></MudTextField>
         </MudExpansionPanel>
-        <MudExpansionPanel Text="Code Promo">
-            <MudTextField T="string" @bind-Value="Promo" Label="Code Promo" Variant="Variant.Outlined"></MudTextField>
+         <MudExpansionPanel Text=@(Lang.Get("paymentPageLblPromo"))>
+             <MudTextField T="string" @bind-Value="Promo" Label=@(Lang.Get("paymentPageLblPromo")) Variant="Variant.Outlined"></MudTextField>
         </MudExpansionPanel>
         <MudDivider Class="my-2" />
         <MudStack Class="ml-3">
-            <MudText Align="Align.Left" Typo="Typo.body1">Coût Total             180.00€</MudText>
-            <MudText Align="Align.Left" Typo="Typo.body1">Livraison               00.00€</MudText>
-            <MudText Align="Align.Left" Typo="Typo.body1">Total             180.00€</MudText>
-            <MudText Align="Align.Left" Typo="Typo.body2">dont TVA:0.00€</MudText>
+             <MudText Align="Align.Left" Typo="Typo.body1">@(Lang.Get("paymentPageLblTotal"))             180.00€</MudText>
+             <MudText Align="Align.Left" Typo="Typo.body1">@(Lang.Get("paymentPageLblDelivery"))                00.00€</MudText>
+             <MudText Align="Align.Left" Typo="Typo.body1">@(Lang.Get("paymentPageLblTotal"))             180.00€</MudText>
+             <MudText Align="Align.Left" Typo="Typo.body2">@(Lang.Get("paymentPageLblTVA"))  0.00€</MudText>
         </MudStack>
 
 

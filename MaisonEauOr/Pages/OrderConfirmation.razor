@@ -6,6 +6,7 @@
 @inject MailerService MailerService
 @inject NavigationManager NavManager
 @inject ISnackbar Snackbar
+@inject LocalizationService Lang
 
 @if (_order is null)
 {
@@ -15,7 +16,7 @@
     return;
 }
 
-<PageTitle>Maison eau d'or - Page de paiement</PageTitle>
+<PageTitle>@(Lang.Get("orderConfirmationPageTitle"))</PageTitle>
 
 @if (_sending)
 {
@@ -25,54 +26,54 @@
 }
 
 <MudContainer Class="mb-16" MaxWidth="MaxWidth.ExtraLarge">
-    <MudText Typo="Typo.h3">Confirmation de commande</MudText>
+    <MudText Typo="Typo.h3">@(Lang.Get("orderConfirmationconfirmationTitle"))</MudText>
     <MudGrid Justify="Justify.Center">
         
         <MudItem Class="px-6" xs="12" sm="12" md="8">
-            <MudExpansionPanel Text="1. Contact" @bind-IsExpanded="_firstExpand">
+            <MudExpansionPanel Text=@(Lang.Get("orderConfirmationcontactPanelTitle")) @bind-IsExpanded="_firstExpand">
                 <MudText Typo="Typo.body2" Style="@($"color:{Colors.Grey.Default};")">Uniquement � des fin de facturation et de commande</MudText>
-                <MudTextField T="string" InputType="InputType.Text" Label=" Nom complet" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField T="string" InputType="InputType.Email" Label="E-mail" Variant="Variant.Outlined"></MudTextField>
-                <MudTextField T="string" InputType="InputType.Telephone" Label="Num�ro de t�l�phone" Variant="Variant.Outlined"></MudTextField>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandSecond">Continuer</MudButton>
+                <MudTextField T="string" InputType="InputType.Text" Label=@(Lang.Get("orderConfirmationfullNameLabel")) Variant="Variant.Outlined"></MudTextField>
+                <MudTextField T="string" InputType="InputType.Email" Label=@(Lang.Get("orderConfirmationemailLabel")) Variant="Variant.Outlined"></MudTextField>
+                <MudTextField T="string" InputType="InputType.Telephone" Label=@(Lang.Get("orderConfirmationphoneNumberLabel")) Variant="Variant.Outlined"></MudTextField>
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandSecond">@(Lang.Get("orderConfirmationcontinueButtonLabel1"))</MudButton>
             </MudExpansionPanel>
 
-            <MudExpansionPanel Text="2. Mode de livraison" @bind-IsExpanded="_secondExpand">
-                <MudTextField T="string" Label="Nom complet" Variant="Variant.Outlined"/>
-                <MudTextField T="string" @bind-Value="_address" Label="Adresse" Variant="Variant.Outlined"/>
-                <MudTextField T="string" @bind-Value="_town" Label="Ville" Variant="Variant.Outlined"/>
-                <MudTextField T="string" @bind-Value="_postaleCode" Mask="@(new PatternMask("00000"))" Label="Code postal" Variant="Variant.Outlined"/>
-                <MudTextField T="string" Label="Pays" Variant="Variant.Outlined"/>
-                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandThird">Continuer</MudButton>
+            <MudExpansionPanel Text=@(Lang.Get("orderConfirmationdeliveryPanelTitle")) @bind-IsExpanded="_secondExpand">
+                <MudTextField T="string" Label=@(Lang.Get("orderConfirmationfullNameLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" @bind-Value="_address" Label=@(Lang.Get("orderConfirmationaddressLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" @bind-Value="_town" Label=@(Lang.Get("orderConfirmationcityLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" @bind-Value="_postaleCode" Mask="@(new PatternMask("00000"))" Label=@(Lang.Get("orderConfirmationpostalCodeLabel")) Variant="Variant.Outlined" />
+                <MudTextField T="string" Label=@(Lang.Get("orderConfirmationcountryLabel")) Variant="Variant.Outlined" />
+                <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@ExpandThird">@(Lang.Get("orderConfirmationcontinueButtonLabel1"))</MudButton>
             </MudExpansionPanel>
 
-            <MudExpansionPanel Text="3. Moyen de paiement" @bind-IsExpanded="_thirdExpand">
+            <MudExpansionPanel Text=@(Lang.Get("orderConfirmationpaymentPanelTitle")) @bind-IsExpanded="_thirdExpand">
                 <MudRadioGroup @bind-SelectedOption="@_selectedOption">
-                    <MudRadio Option="@("CB")" Color="Color.Dark"><MudIcon Icon="@Icons.CreditCard"/> CB</MudRadio>
-                    <MudRadio Class="mx-4" Option="@("PAYPAL")" Color="Color.Dark"><MudIcon Icon="fab fa-paypal"/> Paypal</MudRadio>
-                    <MudRadio Option="@("IPAY")" Color="Color.Dark"><MudIcon Icon="@IconsC.Brands.Apple"/> Ipay</MudRadio>
+                    <MudRadio Option="@("CB")" Color="Color.Dark"><MudIcon Icon="@Icons.CreditCard" /> @(Lang.Get("orderConfirmationcreditCardLabel"))</MudRadio>
+                    <MudRadio Class="mx-4" Option="@("PAYPAL")" Color="Color.Dark"><MudIcon Icon="fab fa-paypal" /> @(Lang.Get("orderConfirmationpaypalLabel"))</MudRadio>
+                    <MudRadio Option="@("IPAY")" Color="Color.Dark"><MudIcon Icon="@IconsC.Brands.Apple" /> @(Lang.Get("orderConfirmationipayLabel"))</MudRadio>
                 </MudRadioGroup>
                 @switch (_selectedOption)
                 {
                     case "CB":
                     {
-                        <MudText Class="mt-3" Typo="Typo.body1">Payer avec Carte de cr�dit/d�bit</MudText>
-                        <MudTextField T="string" Label="Nom sur la carte" Variant="Variant.Outlined"></MudTextField>
+                            <MudText Class="mt-3" Typo="Typo.body1">@(Lang.Get("orderConfirmationpayWithCreditCard"))</MudText>
+                            <MudTextField T="string" Label=@(Lang.Get("orderConfirmationcardHolderLabel")) Variant="Variant.Outlined"></MudTextField>
                         <MudGrid Style="max-width: 400px;" Justify="Justify.SpaceBetween">
                             <MudItem xs="12">
-                                <MudTextField T="string" Mask="@(new PatternMask("0000 0000 0000 0000"))" Label="Num�ro de carte bancaire"
+                                    <MudTextField T="string" Mask="@(new PatternMask("0000 0000 0000 0000"))" Label=@(Lang.Get("orderConfirmationcardNumberLabel"))
                                               Variant="@Variant.Text" Clearable/>
                             </MudItem>
                             <MudItem xs="5">
-                                <MudTextField T="DateTime?" Mask="@(new DateMask("MM/YY", 'Y', 'M'))" Label="Date d'expiration"
+                                     <MudTextField T="DateTime?" Mask="@(new DateMask("MM/YY", 'Y', 'M'))" Label=@(Lang.Get("orderConfirmationexpirationDateLabel"))
                                               Variant="@Variant.Text"/>
                             </MudItem>
 
                             <MudItem xs="4">
-                                <MudTextField T="int" Mask="@(new PatternMask("000"))" Label="Cryptogramme" Placeholder="CVC" Variant="@Variant.Text"/>
+                                     <MudTextField T="int" Mask="@(new PatternMask("000"))" Label=@(Lang.Get("orderConfirmationcvcLabel")) Placeholder="CVC" Variant="@Variant.Text" />
                             </MudItem>
                             <MudItem xs="12">
-                                <MudTextField Class="mt-4" T="string" Label="Code Promo" Variant="Variant.Outlined" Clearable Adornment="Adornment.Start" AdornmentIcon="@Icons.Discount"/>
+                                     <MudTextField Class="mt-4" T="string" Label=@(Lang.Get("orderConfirmationpromoCodeLabel")) Variant="Variant.Outlined" Clearable Adornment="Adornment.Start" AdornmentIcon="@Icons.Discount" />
                             </MudItem>
                         </MudGrid>
                         break;
@@ -81,7 +82,7 @@
                     {
                         <MudStack Row Justify="Justify.Center">
                             <MudButton Class="py-3 px-12" Variant="Variant.Filled" Color="Color.Warning" Style="color: #000;">
-                                Payer avec Paypal
+                                     @(Lang.Get("orderConfirmationpayWithPaypal"))
                                 <MudIcon Class="ml-4" Icon="fab fa-cc-paypal" Style="color: #0079C1!important;"/>
                             </MudButton>
                         </MudStack>
@@ -91,7 +92,7 @@
                     {
                         <MudStack Row Justify="Justify.Center">
                             <MudButton Class="py-3 px-12" Variant="Variant.Filled" Color="Color.Dark" Style="color: #fff;">
-                                Payer avec Apple Pay
+                                     @(Lang.Get("orderConfirmationpayWithApplePay"))
                                 <MudIcon Class="ml-4" Icon="fab fa-cc-apple-pay" Style="color: #fff;"/>
                             </MudButton>
                         </MudStack>
@@ -100,13 +101,13 @@
                 }
             </MudExpansionPanel>
             <MudText Class="mt-2" Typo="Typo.body1">
-                En continuant vous accepter nos
+                @(Lang.Get("orderConfirmationtermsAndConditionsMessage"))
                 <MudLink Color="Color.Dark" Underline="Underline.Always" Href="/terms-and-conditions">conditions g�n�rales de vente.</MudLink>
             </MudText>
-            <MudCheckBox T="bool" Label="J'accepte le traitement de mes donn�es par Maison d'eau D'or � des fins marketing."></MudCheckBox>
+            <MudCheckBox T="bool" Label=@(Lang.Get("orderConfirmationmarketingConsentLabel"))></MudCheckBox>
             <MudStack Class="px-16" Row Justify="Justify.Center">
                 <MudButton Class="mt-3" Variant="Variant.Filled" Color="Color.Dark" OnClick="@(async () => await SetOrderStatus())" FullWidth>
-                    Payer @_products.TotalWithTva().ToString("C")
+                    @(Lang.Get("orderConfirmationpayButtonLabel")) @_products.TotalWithTva().ToString("C")
                 </MudButton>
             </MudStack>
         </MudItem>
@@ -194,7 +195,7 @@
         {
             if (_order.Payed)
             {
-                Snackbar.Add("Votre commande a d�j� �t� pay�e !", Severity.Info);
+                Snackbar.Add(Lang.Get("orderConfirmationMessage"), Severity.Info);
                 NavManager.NavigateTo("/profile");
             }
             else
