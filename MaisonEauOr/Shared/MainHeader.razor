@@ -26,7 +26,7 @@
             <MudToolBar>
                 <AuthorizeView Roles="Admin">
                     <Authorized>
-                        <MudTooltip Class="ml-2" Text="Panel d'administration" Arrow>
+                        <MudTooltip Class="ml-2" Text="@(Lang.Get("header_admin_panel"))" Arrow>
                             <MudIconButton Icon="@Icons.AdminPanelSettings" Color="Color.Secondary" Class="ml-4" Href="/admin-panel"/>
                         </MudTooltip>
                     </Authorized>
@@ -35,19 +35,19 @@
                     @if (_currentUser != null && _currentUser.Role != UserRole.Guest)
                     {
                         <MudStack Class="px-8 py-2" Row="false" Justify="Justify.Center">
-                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/profile" Underline="Underline.Hover">Profil</MudLink>
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/profile" Underline="Underline.Hover">@(Lang.Get("header_profil"))</MudLink>
                             <MudDivider DividerType="DividerType.Middle" Style="border-color: black!important;"/>
-                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/profile/orders" Underline="Underline.Hover">Vos commandes</MudLink>
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/profile/orders" Underline="Underline.Hover">@(Lang.Get("header_your_orders"))</MudLink>
                             <MudDivider DividerType="DividerType.FullWidth" Style="border-color: black!important; border-width: thin!important;"/>
-                            <MudButton Class="mx-auto" Color="Color.Secondary" Variant="Variant.Text" OnClick="@(async() => await LogoutUserAsync())">Déconnexion</MudButton>
+                            <MudButton Class="mx-auto" Color="Color.Secondary" Variant="Variant.Text" OnClick="@(async() => await LogoutUserAsync())">@(Lang.Get("header_deco"))</MudButton>
                         </MudStack>
                     }
                     else
                     {
                         <MudStack Class="px-8 py-4" Row="false" Justify="Justify.Center">
-                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/signin" Underline="Underline.Hover"><b>Se connecter</b></MudLink>
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/signin" Underline="Underline.Hover"><b>@(Lang.Get("header_reco"))</b></MudLink>
                             <MudDivider DividerType="DividerType.Middle" Style="border-color: black!important;"/>
-                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/signup" Underline="Underline.Hover">S'inscrire</MudLink>
+                            <MudLink Class="mx-auto" Color="Color.Dark" Href="/signup" Underline="Underline.Hover">@(Lang.Get("header_signup"))</MudLink>
                         </MudStack>
                     }
                 </MudMenu>
@@ -67,19 +67,19 @@
     <nav style="@_style" class="navbar">
         <div class="dropdown-div">
             <button onclick="@(() => Open(0))" class="dropbtn">
-                Parfums
+                @(Lang.Get("header_perfumes"))
                 <i class="ml-3 fa fa-caret-down"></i>
             </button>
             <div class="dropdown-content @(_isOpen[0] ? "show" : "")">
-                <a href="/catalog-perfumes">Le Bar à parfums</a>
-                <a href="/catalog-gourmets">Les Evasions Gourmandes</a>
+                <a href="/catalog-perfumes">@(Lang.Get("header_perfumes_bar"))</a>
+                <a href="/catalog-gourmets">@(Lang.Get("header_gourmet"))</a>
             </div>
         </div>
-        <a href="/catalog-homes" onclick="@(() => CloseAll())">Maison</a>
-        <a href="/catalog-musks" onclick="@(() => CloseAll())">Muscs Tahara intime</a>
-        <a href="/catalog-cosmetics" onclick="@(() => CloseAll())">Cosmétiques</a>
-        <a href="/catalog-mists" onclick="@(() => CloseAll())">Brumes</a>
-        <a href="/catalog-hairproducts" onclick="@(() => CloseAll())">Produits capillaire</a>
+        <a href="/catalog-homes" onclick="@(() => CloseAll())">@(Lang.Get("header_home"))</a>
+        <a href="/catalog-musks" onclick="@(() => CloseAll())">@(Lang.Get("header_musks"))</a>
+        <a href="/catalog-cosmetics" onclick="@(() => CloseAll())">@(Lang.Get("header_cosmetics"))</a>
+        <a href="/catalog-mists" onclick="@(() => CloseAll())">@(Lang.Get("header_mists"))</a>
+        <a href="/catalog-hairproducts" onclick="@(() => CloseAll())">@(Lang.Get("header_hair"))</a>
     </nav>
     <CascadingValue Name="MainHeaderInstance" Value="@this">
          <BasketDrawer @ref="_drawer"/>

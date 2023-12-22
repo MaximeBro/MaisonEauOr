@@ -1,19 +1,21 @@
-﻿<footer>
+﻿@inject LocalizationService Lang
+
+<footer>
     <div class="grid-info">
         <div>
             <MudStack Row Justify="Justify.Center">
                 <img src="images/icon/security.svg" alt="security" class="opacity-75"/>
             </MudStack>
-            <p>Paiement sécurisé</p>
-            <p class="facultatif"> Paypal, CB, Apple Pay</p>
+             <p>@(Lang.Get("footer_securised"))</p>
+             <p class="facultatif"> @(Lang.Get("footer_payment_type"))</p>
         </div>
         <div>
             <MudStack>
                 <img src="images/icon/delivery-box.svg" alt="delivery-box" class="opacity-75"/>
             </MudStack>
             <p>
-                Livraison en <br/>
-                Europe
+                 @(Lang.Get("footer_delivery_countries")) <br />
+                 @(Lang.Get("footer_delivery_coutrines2"))
             </p>
         </div>
         <div>
@@ -23,7 +25,7 @@
                 <a href="#"><img src="images/icon/instagram.svg" alt="instagram" class="opacity-75"/></a>
             </div>
             <p>
-                Nous suivre
+                 @(Lang.Get("footer_follow_us"))
             </p>
         </div>
         
@@ -35,25 +37,34 @@
             </MudLink>
         </div>
         <div class="left">
-            <h3 class="facultatif">Menu</h3>
+             <h3 class="facultatif">@(Lang.Get("footer_menu"))</h3>
             <ul>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-perfumes"><span>Parfums</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-homes"><span>Maison</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-musks"><span>Musc Tahara Intime</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-cosmetics"><span>Cosmétiques</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-mists"><span>Brumes corps & cheveux</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-hairproducts"><span>Produits capillaire</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-perfumes"><span>@(Lang.Get("footer_perfumes"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-homes"><span>@(Lang.Get("footer_houses"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-musks"><span>@(Lang.Get("footer_musks"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-cosmetics"><span>@(Lang.Get("footer_cosmetics"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-mists"><span>@(Lang.Get("footer_mists"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/catalog-hairproducts"><span>@(Lang.Get("footer_hairproducts"))</span></MudLink></li>
             </ul>
         </div>
         <div class="right">
-            <h3 class="facultatif">Besoin d'aide</h3>
+             <h3 class="facultatif">@(Lang.Get("footer_needhelp"))</h3>
             <ul>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/about"><span>À propos</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/contact"><span>Contactez-nous</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/privacy-policy"><span>Politique de confidentialité</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/cookie-policy"><span>Politique de cookies</span></MudLink></li>
-                <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/terms-and-conditions"><span>Conditions générales de vente</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/about"><span>@(Lang.Get("footer_about"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/contact"><span>@(Lang.Get("footer_contact"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/privacy-policy"><span>@(Lang.Get("footer_privacy_policy"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/cookie-policy"><span>@(Lang.Get("footer_cookie_policy"))</span></MudLink></li>
+                 <li><MudLink Underline="Underline.Hover" Color="Color.Dark" Href="/terms-and-conditions"><span>@(Lang.Get("footer_terms_condition"))</span></MudLink></li>
             </ul>
         </div>
     </div>
 </footer>
+*
+ @code {
+    protected override void OnInitialized()
+    {
+        Lang.LanguageChanged += InvokeStateChanged;
+    }
+
+    private async Task InvokeStateChanged(string lang) => await InvokeAsync(StateHasChanged);
+}
